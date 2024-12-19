@@ -13,17 +13,18 @@
       display: none;
     }
 
-    overflow-y: auto;
-    overflow-x: hidden;
-    scrollbar-gutter: stable;
     border-right: 1px solid var(--gray-2);
-    position: sticky;
-    top: var(--header-height);
-    max-height: calc(100vh - var(--header-height));
     min-height: calc(100vh - var(--header-height) - var(--footer-height));
 
     & .sidebarContentWrapper {
       padding: 24px 14px;
+      position: fixed;
+      top: var(--header-height);
+      bottom: var(--footer-height);
+      min-width: var(--sidebar-min-width);
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-gutter: stable;
 
       &>.sidebarNavTree {
         padding: 2px;
