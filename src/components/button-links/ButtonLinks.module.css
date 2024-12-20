@@ -1,12 +1,15 @@
 ul.buttonLinks {
   --gap: 14px;
   --cols: var(--large-size-columns);
+
   @media(max-width: 950px) {
     --cols: var(--small-size-columns);
   }
+
   @media(max-width: 784px) {
     --cols: var(--large-size-columns);
   }
+
   @media(max-width: 650px) {
     --cols: var(--small-size-columns);
   }
@@ -21,5 +24,10 @@ ul.buttonLinks {
     --flex-basis: calc((100% / var(--cols)) - (var(--gap) * (var(--cols) - 1)) / var(--cols));
     flex-basis: var(--flex-basis);
     max-width: var(--flex-basis);
+
+    & a {
+      height: 100%;
+      text-align: center;
+    }
   }
 }
