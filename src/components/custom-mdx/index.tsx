@@ -8,6 +8,7 @@ import Callout, { Note, Tip, Important, Warning, Caution } from "../callout";
 import CardLinks from "../card-links";
 import VTSequence from "../vt-sequence";
 import ButtonLinks from "../button-links";
+import HashLink from "../hashlink";
 
 interface CustomMDXProps {
   content: MDXRemoteSerializeResult;
@@ -26,6 +27,7 @@ export default function CustomMDX({ content }: CustomMDXProps) {
           h5: (props) => JumplinkHeader({ ...props, as: "h5" }),
           h6: (props) => JumplinkHeader({ ...props, as: "h6" }),
           li: LI,
+          a: HashLink as any,
           p: BodyParagraph,
           pre: CodeBlock,
           blockquote: Blockquote,
