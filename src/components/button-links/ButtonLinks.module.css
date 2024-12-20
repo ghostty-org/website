@@ -24,10 +24,5 @@ ul.buttonLinks {
     --flex-basis: calc((100% / var(--cols)) - (var(--gap) * (var(--cols) - 1)) / var(--cols));
     flex-basis: var(--flex-basis);
     max-width: var(--flex-basis);
-
-    & a {
-      height: 100%;
-      text-align: center;
-    }
   }
 }

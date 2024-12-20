@@ -69,4 +69,10 @@
     font-size: 16px;
     padding: 10px 34px;
   }
+
+  & a {
+    height: 100%;
+    text-align: center;
+  }
+
 }
