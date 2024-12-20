@@ -43,6 +43,9 @@
 .buttonLink {
   display: flex;
   justify-content: center;
+  height: 100%;
+  text-align: center;
+
   &.brand {
     --button-color: var(--brand-color);
   }
@@ -68,11 +71,6 @@
   &.large {
     font-size: 16px;
     padding: 10px 34px;
-  }
-
-  & a {
-    height: 100%;
-    text-align: center;
   }
 
 }
