@@ -9,7 +9,13 @@ export default function ScrollToTopButton() {
   );
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 100) {
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      const scrollTop = window.scrollY;
+
+      // Show button when scrolled down more than 100px AND not at bottom
+      const isNotAtBottom = documentHeight - (scrollTop + windowHeight) > 50;
+      if (scrollTop > 100 && isNotAtBottom) {
         setShowScrollToTopButton(true);
       } else {
         setShowScrollToTopButton(false);
