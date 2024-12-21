@@ -1,6 +1,0 @@
-
-# 2024-12-21 10:57:39.738972
-+/add src/components/scroll-to-top/index.tsx
-
-# 2024-12-21 10:58:02.311539
-+/code Make it so that the scroll button disappears when at the bottom of the page aswell
