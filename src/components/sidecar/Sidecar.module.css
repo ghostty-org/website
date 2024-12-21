@@ -2,9 +2,37 @@
   --left-padding: 12px;
   --base-depth: 2; /* H1's & H2's will have standard padding */
   --depth-padding: 8px; /* Additional padding for each header number above H2 */
+  --gradient-height: 20px;
+  --gradient-color: var(--gray-0);
+
+  &::before,
+  &::after {
+    content: "";
+    position: sticky;
+    display: block;
+    left: 0;
+    right: 0;
+    height: var(--gradient-height);
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+  }
+
+  &::before {
+    top: 0;
+    background: linear-gradient(to bottom, var(--gradient-color), transparent);
+  }
+
+  &::after {
+    bottom: 0;
+    background: linear-gradient(to top, var(--gradient-color), transparent);
+  }
 
   & ul {
     list-style: none;
+    position: relative;
+    z-index: 0;
     & li {
       --item-color: var(--gray-4);
       &:hover {
@@ -16,10 +44,11 @@
       border-left: 2px solid var(--item-color);
       padding: 2px 0;
       padding-left: calc(
-        var(--left-padding) + (
-          (max(var(--depth), var(--base-depth)) - (var(--base-depth) - 1))
-          * var(--depth-padding)
-        )
+        var(--left-padding) +
+          (
+            (max(var(--depth), var(--base-depth)) - (var(--base-depth) - 1)) *
+              var(--depth-padding)
+          )
       );
       & p {
         color: var(--item-color);

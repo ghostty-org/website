@@ -1,3 +1,4 @@
+import React, { useEffect, useRef, useState } from "react";
 import classNames from "classnames";
 import { H6, P } from "../text";
 import s from "./Sidecar.module.css";
@@ -28,18 +29,36 @@ export default function Sidecar({
   inViewHeaderIDs,
   hidden = false,
 }: SidecarProps) {
+  const activeItemRef = useRef<HTMLLIElement>(null);
+  const sidecarRef = useRef<HTMLDivElement>(null);
+
   items = items.filter((v) => v.depth <= MAX_SIDECAR_HEADER_DEPTH);
 
-  // Calculate the first header that's in view
-  var activeHeaderID: null | string;
+  var activeHeaderID: null | string = null;
   for (const item of items) {
     if (inViewHeaderIDs.includes(item.id.substring(1))) {
       activeHeaderID = item.id;
       break;
     }
   }
+
+  useEffect(() => {
+    if (activeItemRef.current && sidecarRef.current) {
+      const sidecarElement = sidecarRef.current;
+      const activeItemRect = activeItemRef.current.getBoundingClientRect();
+      const sidecarRect = sidecarElement.getBoundingClientRect();
+
+      // Keep the active item in the center of the sidecar, if possible
+      const targetPosition = sidecarRect.height / 2 - activeItemRect.height / 2;
+      const currentPosition = activeItemRect.top - sidecarRect.top;
+      const scrollAmount = currentPosition - targetPosition;
+
+      sidecarElement.scrollBy({ top: scrollAmount, behavior: "smooth" });
+    }
+  }, [activeHeaderID]);
+
   return (
-    <div className={classNames(s.sidecar, className)}>
+    <div ref={sidecarRef} className={classNames(s.sidecar, className)}>
       {items.length > MIN_SIDECAR_ITEMS && !hidden && (
         <ul>
           {items.map(({ id, title, depth }) => {
@@ -47,6 +66,7 @@ export default function Sidecar({
             return (
               <li
                 key={`${id}${active}`}
+                ref={active ? activeItemRef : null}
                 className={classNames({ [s.active]: active })}
                 style={
                   {
