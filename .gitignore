@@ -40,3 +40,8 @@ next-env.d.ts
 
 # bun files
 bun.lockb
+
+# Aider files
+.aider.tags.cache.v3/
+.aich.md
+.aiih
