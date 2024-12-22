@@ -48,7 +48,7 @@ export async function getStaticProps({ params: { path } }: StaticPropsParams) {
   const navTreeData = await loadDocsNavTreeData(DOCS_DIRECTORY, activePageSlug);
   const docsPageData = await loadDocsPage(DOCS_DIRECTORY, activePageSlug);
   const breadcrumbs = navTreeToBreadcrumbs(
-    "Ghostty Docs",
+    "Introduction",
     DOCS_PAGES_ROOT_PATH,
     navTreeData,
     activePageSlug

@@ -58,7 +58,7 @@ function contextualizeNavFile(
     {
       type: "link",
       path: "",
-      title: "Ghostty Docs",
+      title: "Introduction",
       active: activePageSlug === "index",
     },
     ...navFile.items.map(contextualizeNavTreeNode(activePageSlug, "")),
