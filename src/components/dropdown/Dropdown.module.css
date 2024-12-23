@@ -61,10 +61,10 @@
 
 .icon {
   transition: transform 0.2s ease;
-}
 
-.icon.open {
-  transform: rotate(180deg);
+  &.open {
+    transform: rotate(180deg);
+  }
 }
 
 .menu {
