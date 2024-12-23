@@ -14,7 +14,9 @@
   font-weight: 500;
   border: 1px solid;
   border-radius: var(--form-border-radius);
-  transition: border-color .15s ease, background-color .15s ease;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
   box-shadow: var(--form-box-shadow);
 
   &.neutral {
@@ -22,8 +24,8 @@
     border-color: var(--gray-3);
     background-color: var(--gray-0);
 
-    &:hover  {
-      @media(hover: hover) {
+    &:hover {
+      @media (hover: hover) {
         background-color: var(--gray-3);
       }
     }
@@ -34,8 +36,8 @@
     color: var(--gray-9);
     background-color: var(--gray-0);
 
-    &:hover  {
-      @media(hover: hover) {
+    &:hover {
+      @media (hover: hover) {
         background-color: var(--brand-color);
       }
     }
@@ -55,7 +57,6 @@
     font-size: 16px;
     padding: 10px;
   }
-
 }
 
 .icon {
@@ -86,11 +87,11 @@
   background: none;
   cursor: pointer;
   color: var(--gray-9);
-  transition: background-color .15s ease;
+  transition: background-color 0.15s ease;
   text-decoration: none;
 
   &:hover {
-    @media(hover: hover) {
+    @media (hover: hover) {
       background-color: var(--gray-3);
     }
   }
@@ -114,4 +115,3 @@
     padding: 8px 16px;
   }
 }
-

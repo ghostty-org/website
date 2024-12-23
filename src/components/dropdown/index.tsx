@@ -1,13 +1,13 @@
-import { forwardRef, LegacyRef, useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from "react";
 
-import { ChevronDown } from 'lucide-react';
-import classNames from 'classnames';
+import { ChevronDown } from "lucide-react";
+import classNames from "classnames";
 
-import s from './Dropdown.module.css';
-import Link from 'next/link';
+import s from "./Dropdown.module.css";
+import Link from "next/link";
 
-type DropdownSize = 'small' | 'medium' | 'large';
-type DropdownTheme = 'neutral' | 'brand';
+type DropdownSize = "small" | "medium" | "large";
+type DropdownTheme = "neutral" | "brand";
 
 interface DropdownOptionBase {
   label: string;
@@ -25,94 +25,102 @@ interface DropdownOptionWithLink extends DropdownOptionBase {
 
 type DropdownOption = DropdownOptionWithValue | DropdownOptionWithLink;
 
+// Helper type to check if array of options has value property
+type IsValueOption<T> = T extends DropdownOptionWithValue ? true : false;
 
-interface DropdownProps {
-  options: DropdownOption[];
-  value?: string;
-  onChange?: (value: string) => void;
+type DropdownProps<T extends DropdownOption> = {
+  options: T[];
   placeholder?: string;
   size?: DropdownSize;
   theme?: DropdownTheme;
   className?: string;
   width?: string;
-}
+} & (IsValueOption<T> extends true
+  ? {
+      value?: string;
+      onChange: (value: string) => void;
+    }
+  : {
+      value?: never;
+      onChange?: never;
+    });
 
-function Dropdown(
-  {
-    options,
-    value,
-    onChange,
-    placeholder = 'Select option',
-    size = 'medium',
-    theme = 'brand',
-    className,
-    width,
-  }: DropdownProps,
-  ref?: LegacyRef<HTMLDivElement>
-) {
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+function Dropdown<T extends DropdownOption>({
+  options,
+  value,
+  onChange,
+  placeholder = "Select option",
+  size = "medium",
+  theme = "brand",
+  className,
+  width,
+}: DropdownProps<T>) {
+  const [open, setOpen] = useState(false);
+  const toggleOpen = () => setOpen(!open);
 
-  const selectedOption = options.find(opt => opt.value === value);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+
+  // Find selected option by either value or current path
+  const selectedOption = options.find((opt) =>
+    "value" in opt ? opt.value === value : false,
+  );
 
   const handleSelect = (option: DropdownOption) => {
-    if ('value' in option && option.value) {
+    if ("value" in option && option.value) {
       onChange?.(option.value);
     }
 
-    setIsOpen(false);
-  }
+    setOpen(false);
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setOpen(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
     <div
-      ref={(node) => {
-        if (typeof ref === 'function') ref(node);
-        else if (ref) ref.current = node;
-        if (dropdownRef) dropdownRef.current = node;
-      }}
+      ref={dropdownRef}
       className={classNames(s.dropdownContainer, className)}
       style={width ? { width } : undefined}
     >
       <button
         type="button"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={toggleOpen}
         className={classNames(s.trigger, {
-          [s.small]: size === 'small',
-          [s.medium]: size === 'medium',
-          [s.large]: size === 'large',
-          [s.neutral]: theme === 'neutral',
-          [s.brand]: theme === 'brand',
+          [s.small]: size === "small",
+          [s.medium]: size === "medium",
+          [s.large]: size === "large",
+          [s.neutral]: theme === "neutral",
+          [s.brand]: theme === "brand",
         })}
       >
         <span>{selectedOption?.label || placeholder}</span>
         <ChevronDown
-          className={classNames(s.icon, { [s.open]: isOpen })}
-          size={size === 'small' ? 14 : size === 'medium' ? 16 : 18}
+          className={classNames(s.icon, { [s.open]: open })}
+          size={size === "small" ? 14 : size === "medium" ? 16 : 18}
         />
       </button>
-
-{isOpen && (
+      {open && (
         <div className={s.menu}>
           {options.map((option) => {
             const optionClasses = classNames(s.option, {
-              [s.selected]: 'value' in option ? option.value === value : false,
-              [s.small]: size === 'small',
-              [s.medium]: size === 'medium',
-              [s.large]: size === 'large',
+              [s.selected]: "value" in option ? option.value === value : false,
+              [s.small]: size === "small",
+              [s.medium]: size === "medium",
+              [s.large]: size === "large",
             });
 
-            if ('href' in option && option.href) {
+            if ("href" in option && option.href) {
               return (
                 <Link
                   key={option.href}
@@ -138,9 +146,8 @@ function Dropdown(
           })}
         </div>
       )}
-
     </div>
   );
 }
 
-export default forwardRef(Dropdown);
+export default Dropdown;
