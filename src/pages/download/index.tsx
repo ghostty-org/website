@@ -5,11 +5,12 @@ import { H1, H2, P } from "@/components/text";
 import NavFooterLayout from "@/layouts/nav-footer-layout";
 import { fetchLatestGhosttyVersion } from "@/lib/fetch-latest-ghostty-version";
 import { loadDocsNavTreeData } from "@/lib/fetch-nav";
-import { CodeXml, Download, Package } from "lucide-react";
+import { CodeXml, Download } from "lucide-react";
 import Image from "next/image";
 import SVGIMG from "../../../public/ghostty-logo.svg";
 import { DOCS_DIRECTORY } from "../docs/[...path]";
 import s from "./DownloadPage.module.css";
+import Dropdown from "@/components/dropdown";
 
 export async function getStaticProps() {
   return {
@@ -62,12 +63,15 @@ export default function DownloadPage({
               description="Choose a pre-built package for quick setup on your Linux distribution, or build source for complete control."
             >
               <div className={s.linuxLinks}>
-                <ButtonLink
+                <Dropdown
+                  options={[
+                    { href: 'debian', label: 'Debian' },
+                    { href: 'arch', label: 'Arch' },
+                    { href: 'source', label: 'Source' },
+                  ]}
+                  placeholder="Select distribution"
                   size="large"
-                  href="/docs/install/binary#linux"
-                  text="Package Manager"
-                  icon={<Package strokeWidth={2} size={18} />}
-                  showExternalIcon={false}
+                  width="228px"
                 />
                 <ButtonLink
                   size="large"

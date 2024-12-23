@@ -1,0 +1,117 @@
+.dropdownContainer {
+  position: relative;
+  width: max-content;
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 36px;
+  cursor: pointer;
+  user-select: none;
+  font-weight: 500;
+  border: 1px solid;
+  border-radius: var(--form-border-radius);
+  transition: border-color .15s ease, background-color .15s ease;
+  box-shadow: var(--form-box-shadow);
+
+  &.neutral {
+    color: var(--gray-9);
+    border-color: var(--gray-3);
+    background-color: var(--gray-0);
+
+    &:hover  {
+      @media(hover: hover) {
+        background-color: var(--gray-3);
+      }
+    }
+  }
+
+  &.brand {
+    border-color: var(--brand-color);
+    color: var(--gray-9);
+    background-color: var(--gray-0);
+
+    &:hover  {
+      @media(hover: hover) {
+        background-color: var(--brand-color);
+      }
+    }
+  }
+
+  &.small {
+    font-size: 12px;
+    padding: 6px;
+  }
+
+  &.medium {
+    font-size: 14px;
+    padding: 7px;
+  }
+
+  &.large {
+    font-size: 16px;
+    padding: 10px;
+  }
+
+}
+
+.icon {
+  transition: transform 0.2s ease;
+}
+
+.icon.open {
+  transform: rotate(180deg);
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background-color: var(--gray-0);
+  border: 1px solid var(--brand-color);
+  border-radius: var(--form-border-radius);
+  box-shadow: var(--form-box-shadow);
+  z-index: 10;
+}
+
+.option {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--gray-9);
+  transition: background-color .15s ease;
+  text-decoration: none;
+
+  &:hover {
+    @media(hover: hover) {
+      background-color: var(--gray-3);
+    }
+  }
+
+  &.selected {
+    background-color: var(--gray-2);
+  }
+
+  &.small {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+
+  &.medium {
+    font-size: 14px;
+    padding: 6px 12px;
+  }
+
+  &.large {
+    font-size: 16px;
+    padding: 8px 16px;
+  }
+}
+
