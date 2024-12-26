@@ -8,7 +8,9 @@ import GridContainer, { NavAndFooterGridConfig } from "../grid-container";
 import Link, { ButtonLink, SimpleLink } from "../link";
 import NavTree, { BreakNode, LinkNode, NavTreeNode } from "../nav-tree";
 import GhosttyWordmark from "./ghostty-wordmark.svg";
+import '@docsearch/css';
 import s from "./Navbar.module.css";
+import { DocSearch } from "@docsearch/react"
 import { useRouter } from "next/router";
 
 export interface NavbarProps {
@@ -94,6 +96,13 @@ export default function Navbar({
         <NextLink href="/">
           <Image src={GhosttyWordmark} alt="Ghostty" />
         </NextLink>
+      <div className={s.search}>
+      <DocSearch
+        appId="PVKTWXOYZX"
+        indexName="ghostty"
+        apiKey="4b2b0f475ce709fe29e07740b277de61"
+      />
+      </div>
         <div className={s.desktopLinks}>
           {links && (
             <ul className={s.linkList}>

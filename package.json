@@ -9,6 +9,7 @@
     "lint": "next lint && prettier 'src/**/*.ts' --write"
   },
   "dependencies": {
+    "@docsearch/react": "^3.8.2",
     "@r4ai/remark-callout": "^0.6.2",
     "classnames": "^2.5.1",
     "gray-matter": "^4.0.3",

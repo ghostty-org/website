@@ -117,3 +117,16 @@
     }
   }
 }
+
+.search {
+  width: 50%;
+
+  & :global(.DocSearch) {
+    width: 100%;
+  }
+
+  & :global(.DocSearch-Button){
+    border: 1px solid var(--brand-color);
+    border-radius: 10px;
+  }
+}
