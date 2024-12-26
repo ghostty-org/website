@@ -21,8 +21,15 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.25s ease-in-out;
+  transition:
+    background-color 0.25s ease-in-out,
+    opacity 0.25s ease-in-out;
   color: var(--gray-6);
+  opacity: 0;
+}
+
+.codeBlock:hover .copyButton {
+  opacity: 1;
 }
 
 .copyButton:hover {
