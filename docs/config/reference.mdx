@@ -154,6 +154,12 @@ then you can get an odd numbered pixel size by specifying a half point.
 
 For example, 13.5pt @ 2px/pt = 27px
 
+MacOS users may find this setting doesn't work. If that is the case,
+double check that you do not have another config file located at:
+`~/Library/Application\ Support/com.mitchellh.ghostty/config`. Deleting any
+settings from that file will allow the settings in your `.config/ghostty/config`
+file to load.
+
 Changing this configuration at runtime will only affect new terminals,
 i.e. new windows, tabs, etc. Note that you may still not see the change
 depending on your `window-inherit-font-size` setting. If that setting is
