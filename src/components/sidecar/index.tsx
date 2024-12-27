@@ -14,6 +14,7 @@ interface SidecarProps {
   className?: string;
   items: SidecarItem[];
   hidden?: boolean;
+  alphabeticallySorted?: boolean;
 }
 
 // If there's less items than this, the sidecar content won't render
@@ -27,6 +28,7 @@ export default function Sidecar({
   className,
   items,
   hidden = false,
+  alphabeticallySorted = false,
 }: SidecarProps) {
   const activeItemRef = useRef<HTMLLIElement>(null);
   const sidecarRef = useRef<HTMLDivElement>(null);
@@ -37,6 +39,12 @@ export default function Sidecar({
   const activeHeaderID = useMemo(() => {
     return shownItems.find((v) => headerIdsInView.includes(v.id))?.id;
   }, [shownItems, headerIdsInView]);
+  const sortedItems = useMemo(() => {
+    if (alphabeticallySorted) {
+      return items.sort((a, b) => a.title.localeCompare(b.title));
+    }
+    return items;
+  }, [items, alphabeticallySorted]);
 
   useEffect(() => {
     if (activeItemRef.current && sidecarRef.current) {
@@ -55,9 +63,9 @@ export default function Sidecar({
 
   return (
     <div ref={sidecarRef} className={classNames(s.sidecar, className)}>
-      {items.length > MIN_SIDECAR_ITEMS && !hidden && (
+      {sortedItems.length > MIN_SIDECAR_ITEMS && !hidden && (
         <ul>
-          {items.map(({ id, title, depth }) => {
+          {sortedItems.map(({ id, title, depth }) => {
             const active = id === activeHeaderID;
             return (
               <li

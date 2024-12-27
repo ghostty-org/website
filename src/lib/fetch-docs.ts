@@ -38,6 +38,7 @@ export interface DocsPageData {
   content: MDXRemoteSerializeResult;
   relativeFilePath: string;
   pageHeaders: PageHeader[];
+  alphabeticallySortedSidecar: boolean;
 }
 
 export async function loadDocsPage(
@@ -104,6 +105,9 @@ async function loadDocsPageFromRelativeFilePath(
       : null,
     hideSidecar: mdxFileContent.data.hasOwnProperty("hideSidecar")
       ? mdxFileContent.data.hideSidecar
+      : false,
+    alphabeticallySortedSidecar: mdxFileContent.data.hasOwnProperty("alphabeticallySortedSidecar")
+      ? mdxFileContent.data.alphabeticallySortedSidecar
       : false,
     content,
     pageHeaders,

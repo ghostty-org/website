@@ -77,6 +77,7 @@ export default function DocsPage({
     relativeFilePath,
     pageHeaders,
     hideSidecar,
+    alphabeticallySortedSidecar,
   },
   breadcrumbs,
 }: DocsPageProps) {
@@ -143,6 +144,7 @@ export default function DocsPage({
             hidden={hideSidecar}
             className={s.sidecar}
             items={pageHeaders}
+            alphabeticallySorted={alphabeticallySortedSidecar}
           />
         </main>
       </div>
