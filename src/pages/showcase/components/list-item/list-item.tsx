@@ -1,7 +1,7 @@
-import GenericCard from "@/components/generic-card";
 import s from "./ListItem.module.css";
 import Button from "@/components/button";
-import { ImageProps } from "next/image";
+import Image, { ImageProps } from "next/image";
+import { H3, P } from "@/components/text";
 
 interface ListItemProps {
   image: ImageProps;
@@ -9,14 +9,12 @@ interface ListItemProps {
 export default function ListItem({ image }: ListItemProps) {
   return (
     <li className={s.ListItem}>
-      <GenericCard
-        title="title"
-        description="desc"
-        padding="12px 12px 24px"
-        image={image}
-      >
+      <Image {...image} />
+      <section className={s.content}>
+        <H3 className={s.title}>title</H3>
+        <P className={s.description}>desc</P>
         <Button theme="brand">View config</Button>
-      </GenericCard>
+      </section>
     </li>
   );
 }

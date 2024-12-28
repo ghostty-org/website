@@ -1,6 +1,22 @@
 .ListItem {
+
   & img {
     width: 100%;
     height: auto;
+  }
+
+  & .content {
+    border: 1px solid var(--gray-2);
+    padding: 12px 12px 24px;
+    border-radius: 10px;
+
+    & .title {
+      margin-bottom: 8px;
+    }
+
+    & .description {
+      margin-bottom: 16px;
+    }
+
   }
 }
