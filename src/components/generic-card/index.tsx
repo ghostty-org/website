@@ -1,11 +1,9 @@
 import { SpacingProp } from "@/types/style";
 import { H2, P } from "../text";
 import s from "./GenericCard.module.css";
-import { ImageProps } from "next/image";
 
 interface GenericCardProps {
   title: string;
-  image?: ImageProps;
   description: string;
   padding?: SpacingProp;
   children?: React.ReactNode;
