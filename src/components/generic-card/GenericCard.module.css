@@ -1,0 +1,16 @@
+.genericCard {
+  border: 1px solid var(--gray-2);
+  border-radius: 10px;
+
+  & .title {
+    margin-bottom: 8px;
+  }
+
+  & .description {
+    margin-bottom: 16px;
+  }
+
+  & .children {
+    display: flex;
+  }
+}

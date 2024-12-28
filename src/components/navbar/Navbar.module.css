@@ -6,6 +6,10 @@
   background: var(--gray-0);
   border-bottom: 1px solid var(--gray-2);
 
+  @media print {
+    display: none;
+  }
+
   & .gridContainer {
     height: 100%;
     display: flex;

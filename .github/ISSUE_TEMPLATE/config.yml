@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Terminal Issues
+    url: https://github.com/ghostty-org/ghostty/blob/main/CONTRIBUTING.md
+    about: "If you're looking to file an issue about the terminal, click here!"
+  - name: Ghostty Website
+    url: https://ghostty.org
+    about: "Ghostty is a fast, feature-rich, and cross-platform terminal emulator that uses platform-native UI and GPU acceleration."

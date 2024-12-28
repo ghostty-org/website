@@ -68,7 +68,7 @@ body {
 }
 
 /* This a slightly modified atom-one-dark theme */
-.hljs {
+pre code {
   display: block;
   overflow-x: auto;
   padding: 0.5em;
@@ -143,4 +143,35 @@ body {
 
 .hljs-link {
   text-decoration: underline;
+}
+
+@media print {
+  /* Invert the lightness in print mode */
+  html,
+  body {
+    --gray-0: #ededf1;
+    --gray-1: #e7e7eb;
+    --gray-2: #d8d8de;
+    --gray-3: #adadb5;
+    --gray-4: #767680;
+    --gray-5: #666669;
+    --gray-6: #383839;
+    --gray-7: #212123;
+    --gray-8: #111113;
+    --gray-9: #08080d;
+    --black: #ffffff;
+    --white: #000000;
+
+    background: white;
+
+    --atom-one-blue: #0e5c99;
+    --atom-one-green: #4e6a24;
+    --atom-one-yellow: #805215;
+    --atom-one-purple: #8b2085;
+    --atom-one-red: #a11b2c;
+    --atom-one-orange: #8b553a;
+    --atom-one-teal: #2b959d;
+    --atom-one-gray: #8f97a3;
+    --atom-one-white: #434958;
+  }
 }

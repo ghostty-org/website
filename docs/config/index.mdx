@@ -35,13 +35,14 @@ Ghostty is configured using a text-based configuration file.
 
 ### File Location
 
-The configuration file is loaded from the following locations:
+The configuration file, `config`, is loaded from these locations in the following order:
 
-- `$XDG_CONFIG_HOME/ghostty/config` (all platforms). If `XDG_CONFIG_HOME`
-  is not set, it defaults to `$HOME/.config`.
-
-- `~/Library/Application\ Support/com.mitchellh.ghostty/config` (macOS only).
-  macOS also supports the XDG location.
+#### XDG configuration Path (all platforms):
+- `$XDG_CONFIG_HOME/ghostty/config`.
+- if **XDG_CONFIG_HOME** is not defined, it defaults to `$HOME/.config/ghostty/config`.
+#### macOS-specific Path (macOS only):
+- `$HOME/Library/Application\ Support/com.mitchellh.ghostty/config`.
+- macOS also supports the XDG configuration path mentioned above.
 
 If both locations exist, they are loaded in the order above
 with conflicting values in later files overriding earlier ones.

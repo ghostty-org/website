@@ -1,5 +1,6 @@
 import classNames from "classnames";
 import s from "./GridContainer.module.css";
+import { UnitProp } from "@/types/style";
 
 export const NavAndFooterGridConfig: GridConfig = {
   mobilePadding: "28px",
@@ -12,9 +13,6 @@ export const StandardGridConfig: GridConfig = {
   mobilePadding: "24px",
   maxWidth: "1300px",
 };
-
-type Unit = "px" | "em";
-type UnitProp = `${number}${Unit}`;
 
 interface GridContainerProps {
   className?: string;

@@ -9,6 +9,7 @@ import { serialize } from "next-mdx-remote/serialize";
 import rehypeHighlight, {
   type Options as RehypeHighlightOptions,
 } from "rehype-highlight";
+import { all } from "lowlight";
 import remarkGfm from "remark-gfm";
 import slugify from "slugify";
 import type { Plugin } from "unified";
@@ -28,6 +29,11 @@ export interface DocsPageData {
   slug: string;
   title: string;
   description: string;
+  // There are scenarios in which the GitHub link should
+  // not be the website source MDX file, due to the MDX being
+  // generated from some upstream source. This is an optional
+  // frontmatter that can override the link.
+  editOnGithubLink: string | null;
   hideSidecar: boolean;
   content: MDXRemoteSerializeResult;
   relativeFilePath: string;
@@ -77,7 +83,13 @@ async function loadDocsPageFromRelativeFilePath(
           parseAnchorLinks({ pageHeaders }),
         ],
         rehypePlugins: [
-          [rehypeHighlight, { detect: true } satisfies RehypeHighlightOptions],
+          [
+            rehypeHighlight,
+            {
+              detect: false,
+              languages: all,
+            } satisfies RehypeHighlightOptions,
+          ],
         ],
       },
     },
@@ -87,6 +99,9 @@ async function loadDocsPageFromRelativeFilePath(
     relativeFilePath,
     title: mdxFileContent.data.title,
     description: mdxFileContent.data.description,
+    editOnGithubLink: mdxFileContent.data.editOnGithubLink
+      ? mdxFileContent.data.editOnGithubLink
+      : null,
     hideSidecar: mdxFileContent.data.hasOwnProperty("hideSidecar")
       ? mdxFileContent.data.hideSidecar
       : false,

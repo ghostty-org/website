@@ -7,8 +7,8 @@ description: |-
 
 The Ghostty project only officially provides prebuilt binaries
 for macOS. Other platforms may provide packages for Ghostty,
-but those packages are maintained by the community. This page will
-list both official and community-provided binary packages.
+but those packages are not officially maintained by the Ghostty project.
+This page will list both official and community-provided binary packages.
 
 ## macOS
 
@@ -22,18 +22,19 @@ process as installing many typical macOS applications.
 
 ### Homebrew
 
-A Homebrew cask is available and maintained by the community.
+A [Homebrew cask](https://formulae.brew.sh/cask/ghostty) is available and maintained by the Ghostty community.
 
-```bash
-brew install ghostty
+```sh
+brew install --cask ghostty
 ```
 
-## Linux
+## Linux (Official)
 
-Pre-built Linux binaries or packages are provided by the community.
-At the time of writing, no community-provided packages are available
-because Ghostty has only recently been publicly released. This page
-will be updated as community-provided packages become available.
+Pre-built Linux binaries are packaged by distributions and not the
+Ghostty project. The packages listed in this section are all official
+packages provided by the respective distributions.
+[Community-built packages](#linux-(community)) are also available. See
+the warning associated with those packages for more information.
 
 If your platform isn't available, you must
 [build Ghostty from source](/docs/install/build).
@@ -45,6 +46,35 @@ If your platform isn't available, you must
   need any help, feel free to make an issue. Once your package is ready, submit
   a pull request to add it to this page!
 </Tip>
+
+### Arch Linux
+
+The latest tagged release of Ghostty is available as
+[`ghostty`](https://archlinux.org/packages/extra/x86_64/ghostty/)
+in Arch Linux's `[extra]` repository.
+
+```sh
+pacman -S ghostty
+```
+
+Additionally a recipe for building and installing the tip of the `main`
+branch from source is available in the Arch User Repository (AUR) as
+[ghostty-git](https://aur.archlinux.org/packages/ghostty-git).
+Installation may be done with an AUR helper or from source per the
+[usual AUR instructions](https://wiki.archlinux.org/title/Arch_User_Repository#Installing_and_upgrading_packages).
+
+```sh
+# Install Ghostty tip
+yay -S ghostty-git
+```
+
+### Gentoo
+
+Ghostty is available in the official Gentoo repository.
+
+```sh
+emerge -av ghostty
+```
 
 ### Nix Flake
 
@@ -88,22 +118,35 @@ Below is an example:
 }
 ```
 
-### Arch Linux
+<Note>
+This isn't an official package in Nixpkgs but it is officially maintained
+by the Ghostty project so we put it in the "official" section.
+</Note>
 
-The recommended way to install Ghostty is to install the existing package in the
-`extra` repository. This package is maintained by the community.
+### Void Linux
 
-```sh
-pacman -S ghostty
-```
-
-#### AUR
-
-There is also an AUR package
-[ghostty-git](https://aur.archlinux.org/packages/ghostty-git)
-being maintained that builds against the `main` branch.
+Ghostty is available in the official package repository.
 
 ```sh
-# Install Ghostty tip
-yay -S ghostty-git
+xbps-install ghostty
 ```
+
+## Linux (Community)
+
+The packages in this section provide binary installs for Ghostty but
+are not official packages within the associated distributions. These
+packages are maintained by community members and as such a higher level
+of caution should be taken when installing them.
+
+### Fedora
+
+Ghostty is available in [Fedora COPR](https://copr.fedorainfracloud.org/coprs/pgdev/ghostty/).
+
+```sh
+dnf copr enable pgdev/ghostty
+dnf install ghostty
+```
+
+<Warning>
+This is a user-maintained package and not an official Fedora package.
+</Warning>

@@ -1,0 +1,41 @@
+name: Bug Report
+title: "[ BUG ] "
+description: Bug Report for ghostty.org
+
+labels: ["bug"]
+
+body:
+  - type: markdown
+    attributes:
+      value: >-
+        > [!IMPORTANT]
+
+        > **This is not the place to report bugs for Ghostty, the terminal emulator**. This form should be used to report a bug in [ghostty.org](https://ghostty.org). To create a bug report for the terminal, [follow the contribution guidelines](https://github.com/ghostty-org/ghostty/blob/main/CONTRIBUTING.md).
+  - type: dropdown
+    id: dropdown-0
+    attributes:
+      label: Browser on which this bug occurs
+      options:
+        - Google Chrome
+        - Microsoft Edge
+        - Safari
+        - Mozilla Firefox
+        - Opera
+        - Brave
+        - Other (Specify Below)
+      default: 0
+  - type: textarea
+    id: textarea-1
+    attributes:
+      value: Put the behavior you expected from the site here.
+      label: Expected Behavior
+  - type: textarea
+    id: textarea-2
+    attributes:
+      value: Put the behavior you actually got from the site here.
+      label: Actual Behavior
+  - type: textarea
+    id: textarea-3
+    attributes:
+      value: Put any extra information you can include here.
+      label: Extra Details

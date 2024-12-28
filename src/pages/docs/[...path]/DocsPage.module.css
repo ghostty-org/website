@@ -16,6 +16,10 @@
       display: none;
     }
 
+    @media print {
+      display: none;
+    }
+
     overflow-y: auto;
     overflow-x: hidden;
     scrollbar-gutter: stable;
@@ -78,6 +82,10 @@
     &:hover {
       background: var(--gray-3);
     }
+
+    @media print {
+      display: none;
+    }
   }
 
   & .contentWrapper {
@@ -92,6 +100,10 @@
       /* This is when the sidebar goes away */
       max-width: 100%;
       margin: 24px auto 54px auto;
+    }
+
+    @media print {
+      max-width: 100%;
     }
 
     & .docsContentWrapper {
@@ -109,6 +121,10 @@
 
       @media (max-width: 784px) {
         /* This is when the sidebar goes away */
+        max-width: 100%;
+      }
+
+      @media print {
         max-width: 100%;
       }
     }
@@ -129,6 +145,9 @@
       @media(max-width: 1276px) {
         display: none;
       }
+      @media print {
+        display: none;
+      }
     }
   }
 
@@ -138,6 +157,10 @@
 
     svg {
       margin-left: 4px;
+    }
+
+    @media print {
+      display: none;
     }
   }
 }
