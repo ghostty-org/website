@@ -43,13 +43,11 @@ To install system-wide (requires sudo)
 zig build -Doptimize=ReleaseFast -p /usr install
 ```
 
-To install for a single user (does not require sudo)
+To install for current user (does not require sudo)
 
 ```shell-session
 zig build -Doptimize=ReleaseFast -p ~/.local install
 ```
-
-=======
 
 On Linux, this will build a ready-to-use binary at `zig-out/bin/ghostty`.
 On macOS, this will build the Xcode framework but additional steps are
