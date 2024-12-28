@@ -1,0 +1,20 @@
+.showcasePage {
+
+  & .header {
+    padding: 0 0 28px;
+  }
+
+  & .list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+
+    &>li {
+      flex-basis: calc(33% - 16px);
+      flex-shrink: 1;
+    }
+  }
+}
