@@ -1,0 +1,61 @@
+.modal {
+  top: 0;
+  left: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  position: fixed;
+  pointer-events: none;
+  background: color-mix(in srgb, var(--black) 60%, transparent);
+
+  & .dialog {
+    pointer-events: all;
+    top: 20%;
+    overflow: hidden;
+    border: none;
+    border-radius: 10px;
+    width: 100%;
+    margin: 0 auto;
+    max-width: 700px;
+
+    & .closeButton {
+      position: absolute;
+      cursor: pointer;
+      background: none;
+      border: none;
+      top: 12px;
+      right: 12px;
+      color: var(--black);
+    }
+
+    & img {
+      z-index: 1;
+      width: 100%;
+      height: auto;
+    }
+
+    & .content {
+      padding: 12px 12px 24px;
+
+      & .buttonContainer {
+        display: flex;
+        padding: 0 0 12px;
+        gap: 24px;
+
+        >button {
+          flex-basis: calc(50% - 12px)
+        }
+      }
+
+      & .title {
+        margin: 0 0 4px;
+      }
+
+      & .author {
+        color: var(--gray-5);
+        margin: 0 0 16px;
+      }
+    }
+  }
+}
