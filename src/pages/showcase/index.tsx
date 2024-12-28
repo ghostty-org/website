@@ -51,7 +51,15 @@ export default function Showcase({
         </header>
         <ul className={s.list}>
           {Array.from(Array(12).keys(), (_, index) => (
-            <ListItem key={index} />
+            <ListItem
+              key={index}
+              image={{
+                src: "/placeholder.png",
+                alt: "placeholder image",
+                width: 500,
+                height: 300,
+              }}
+            />
           ))}
         </ul>
       </SectionWrapper>

@@ -1,14 +1,7 @@
 import { SpacingProp } from "@/types/style";
 import { H2, P } from "../text";
 import s from "./GenericCard.module.css";
-import Image from "next/image";
-
-interface ImageProps {
-  src: string;
-  alt: string;
-  width: number | `${number}`;
-  height: number | `${number}`;
-}
+import Image, { ImageProps } from "next/image";
 
 interface GenericCardProps {
   title: string;

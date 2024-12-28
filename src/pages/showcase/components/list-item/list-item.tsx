@@ -1,20 +1,19 @@
 import GenericCard from "@/components/generic-card";
 import s from "./ListItem.module.css";
 import Button from "@/components/button";
+import { ImageProps } from "next/image";
 
-export default function ListItem() {
+interface ListItemProps {
+  image: ImageProps;
+}
+export default function ListItem({ image }: ListItemProps) {
   return (
     <li className={s.ListItem}>
       <GenericCard
         title="title"
         description="desc"
         padding="12px 12px 24px"
-        image={{
-          src: "/placeholder.png",
-          alt: "placeholder image",
-          width: 500,
-          height: 300,
-        }}
+        image={image}
       >
         <Button theme="brand">View config</Button>
       </GenericCard>
