@@ -6,11 +6,11 @@ import { JetBrains_Mono } from "next/font/google";
 import { forwardRef, UIEventHandler } from "react";
 import s from "./Text.module.css";
 
-// https://github.com/orioncactus/pretendard
-export const pretendardVariable = localFont({
-  src: "./font/pretendard-variable.woff2",
+// https://github.com/orioncactus/pretendard/tree/main/packages/pretendard-std
+export const pretendardStdVariable = localFont({
+  src: "./font/pretendard-std-variable.woff2",
   display: "auto",
-  variable: "--pretendard-variable",
+  variable: "--pretendard-std-variable",
 });
 
 export const jetbrainsMono = JetBrains_Mono({
@@ -48,7 +48,8 @@ const Text = forwardRef<HTMLElement, TextProps>(function Text(
       ref={ref as any}
       onScroll={onScroll}
       className={classNames(s.text, className, {
-        [pretendardVariable.className]: font === "display" || font === "body",
+        [pretendardStdVariable.className]:
+          font === "display" || font === "body",
         [jetbrainsMono.className]: font === "code",
         [s.weightLight]: weight === "light",
         [s.weightRegular]: weight === "regular",
