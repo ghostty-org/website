@@ -34,9 +34,14 @@ On Linux, you may need to install additional dependencies. See
 need Xcode installed with both the macOS and iOS SDKs enabled. See
 [Mac `.app`](#mac-.app).
 
-With Zig and necessary dependencies installed, a binary can be built using
-`zig build`:
+With Zig and necessary dependencies installed, first clone and enter the local repository.
+```sh
+git clone https://github.com/ghostty-org/ghostty
+cd ghostty
+```
 
+Then, a binary can be built using
+`zig build`:
 ```sh
 zig build -Doptimize=ReleaseFast
 ```
