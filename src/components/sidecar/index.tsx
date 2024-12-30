@@ -3,6 +3,7 @@ import classNames from "classnames";
 import { H6, P } from "../text";
 import s from "./Sidecar.module.css";
 import { useStore } from "@/lib/use-store";
+import Fuse from "fuse.js";
 
 interface SidecarItem {
   id: string;
@@ -28,15 +29,31 @@ export default function Sidecar({
   items,
   hidden = false,
 }: SidecarProps) {
+  const [searchTerm, setSearchTerm] = useState("");
   const activeItemRef = useRef<HTMLLIElement>(null);
   const sidecarRef = useRef<HTMLDivElement>(null);
   const headerIdsInView = useStore((state) => state.headerIdsInView);
   const shownItems = useMemo(() => {
     return items.filter((v) => v.depth <= MAX_SIDECAR_HEADER_DEPTH);
   }, [items]);
+
+  const fuse = useMemo(() => {
+    return new Fuse(shownItems, {
+      keys: ["title"],
+      threshold: 0.3, // This felt pretty good
+    });
+  }, [shownItems]);
+
+  const filteredItems = useMemo(() => {
+    if (!searchTerm) return shownItems;
+    return fuse
+      .search(searchTerm)
+      .map((result: { item: SidecarItem }) => result.item);
+  }, [shownItems, searchTerm, fuse]);
+
   const activeHeaderID = useMemo(() => {
-    return shownItems.find((v) => headerIdsInView.includes(v.id))?.id;
-  }, [shownItems, headerIdsInView]);
+    return filteredItems.find((v) => headerIdsInView.includes(v.id))?.id;
+  }, [filteredItems, headerIdsInView]);
 
   useEffect(() => {
     if (activeItemRef.current && sidecarRef.current) {
@@ -54,35 +71,44 @@ export default function Sidecar({
   }, [activeHeaderID]);
 
   return (
-    <div ref={sidecarRef} className={classNames(s.sidecar, className)}>
-      {items.length > MIN_SIDECAR_ITEMS && !hidden && (
-        <ul>
-          {items.map(({ id, title, depth }) => {
-            const active = id === activeHeaderID;
-            return (
-              <li
-                key={`${id}${active}`}
-                ref={active ? activeItemRef : null}
-                className={classNames({ [s.active]: active })}
-                style={
-                  {
-                    "--depth": depth,
-                  } as React.CSSProperties
-                }
-              >
-                {/* Intentionally using an a tag and not next/link:
+    <div className={classNames(s.sidecarWrapper, className)}>
+      <input
+        type="text"
+        placeholder="🔎 Search..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className={s.searchBar}
+      />
+      <div ref={sidecarRef} className={classNames(s.sidecar, className)}>
+        {items.length > MIN_SIDECAR_ITEMS && !hidden && (
+          <ul>
+            {filteredItems.map(({ id, title, depth }) => {
+              const active = id === activeHeaderID;
+              return (
+                <li
+                  key={`${id}${active}`}
+                  ref={active ? activeItemRef : null}
+                  className={classNames({ [s.active]: active })}
+                  style={
+                    {
+                      "--depth": depth,
+                    } as React.CSSProperties
+                  }
+                >
+                  {/* Intentionally using an a tag and not next/link:
               as we want our :target selectors to trigger here.
               See: https://github.com/vercel/next.js/issues/51346
               Also, we're remaining on the same page always here,
               so no client-side routing handing is needed. */}
-                <a href={`#${id}`}>
-                  <P weight={active ? "medium" : "regular"}>{title}</P>
-                </a>
-              </li>
-            );
-          })}
-        </ul>
-      )}
+                  <a href={`#${id}`}>
+                    <P weight={active ? "medium" : "regular"}>{title}</P>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
     </div>
   );
 }

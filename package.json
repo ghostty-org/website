@@ -11,6 +11,7 @@
   "dependencies": {
     "@r4ai/remark-callout": "^0.6.2",
     "classnames": "^2.5.1",
+    "fuse.js": "^7.0.0",
     "gray-matter": "^4.0.3",
     "klaw-sync": "^6.0.0",
     "lucide-react": "^0.424.0",
