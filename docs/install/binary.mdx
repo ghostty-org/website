@@ -76,6 +76,16 @@ Ghostty is available in the official Gentoo repository.
 emerge -av ghostty
 ```
 
+### NixOS
+
+Ghostty is available in [nixpkgs unstable](https://search.nixos.org/packages?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=ghostty).
+
+```
+environment.systemPackages = [
+  pkgs.ghostty
+];
+```
+
 ### Nix Flake
 
 There is Nix package that can be used in the
@@ -184,14 +194,4 @@ After adding the repository, install Ghostty:
 ```sh
 rpm-ostree update --install ghostty
 ```
-### NixOS
 
-Ghostty is also available as a nixpkg (https://search.nixos.org/packages?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=ghostty)
-
-Add the following Nix code to your NixOS Configuration, usually located in /etc/nixos/configuration.nix
-
-
-```environment.systemPackages = [
-    pkgs.ghostty
-  ];
-```
