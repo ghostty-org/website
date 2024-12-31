@@ -170,3 +170,36 @@ a GUI to modify the configuration file.
   [#3748](https://github.com/ghostty-org/ghostty/pull/3748)
 - GTK: Fix possible segfault when closing surfaces.
   [#3694](https://github.com/ghostty-org/ghostty/pull/3694)
+
+## Known Issues
+
+Ghostty 1.0.1 still contains many known issues, but is considered stable
+for general, professional use.
+
+We are working hard to triage and resolve these issues. This release addresses
+what we felt were the most critical issues, especially given many people are
+about to return from holiday and get back to work.
+Please see the GitHub discussions and issue tracker for more information
+on known or newly discovered issues.
+
+## Roadmap
+
+We plan to release a version 1.0.2 in the near future. We don't want to
+get in the habit of releasing too many patch versions, but there are still
+a number of important issues discovered from our initial public release that
+we feel are important to resolve as quickly as possible.
+
+The major categories of issues we are looking into for 1.0.2 are keyboard
+input issues especially with non-US keyboard layouts, xterm compatibility
+issues, and GUI issues on both Linux and macOS.
+
+Long term, we plan to follow a general pattern of only releasing one or
+two patch versions after a significant release, followed by a months-long
+period of development towards the next significant release[^1]. This pattern
+will allow package maintainers to keep up with our releases and get them into
+distribution channels without too much churn, and allow maintainers to focus
+on new features and improvements.
+
+[^1]: Barring any critical issues or security advisories that require
+      immediate attention.
+
