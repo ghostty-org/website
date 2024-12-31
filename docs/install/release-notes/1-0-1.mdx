@@ -171,6 +171,17 @@ a GUI to modify the configuration file.
 - GTK: Fix possible segfault when closing surfaces.
   [#3694](https://github.com/ghostty-org/ghostty/pull/3694)
 
+## Changes for Package Maintainers
+
+- The Ghostty source tarball is now named `ghostty-${VERSION}.tar.gz`
+  (from `ghostty-source.tar.gz`) and extracts to a directory named
+  `ghostty-${VERSION}` (from `ghostty-source`). This better aligns with
+  standard source tarball conventions. The `PACKAGING.md` file has been
+  updated to reflect this change.
+  [#3490](https://github.com/ghostty-org/ghostty/pull/3490)
+- `DESTDIR` now works properly as documented in `PACKAGING.md`.
+  [#3426](https://github.com/ghostty-org/ghostty/pull/3426)
+
 ## Known Issues
 
 Ghostty 1.0.1 still contains many known issues, but is considered stable
