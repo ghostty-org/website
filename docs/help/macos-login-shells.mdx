@@ -1,63 +1,65 @@
 ---
 title: macOS Login Shells
 description: |-
-  In other unix systems terminal emulators are generally started
-  using non-login shells. Due to various reasons, macOS defaults 
-  all shells as login shells.
+  In other Unix systems terminal emulators are generally started
+  using non-login shells. Due to various reasons, macOS defaults
+  all terminals as login shells.
 ---
 
-By default, macOS terminals are started as login shells. Traditionally unix systems
-start terminal emulators as non-login interactive shells, only calling the shells
-rc files per instance, and running .profile files as the user logs in.
-
-Ghostty respects the macOS defaults when run on macOS, and will start each shell
-as a login shell.
+Ghostty respects the macOS traditions and will start each shell as a login
+shell. This matches the behavior of other terminal emulators on macOS, most
+notably the default Terminal.app. However, this behavior is different from
+other Unix systems, and may cause confusion for users who are used to the
+behavior of those systems.
 
 ## Why Login Shells
 
 Traditionally, unix shells have two main files that expect to be run before the user
-is able to interact with the shell; a profile file and the rc file. Since macOS 
-10.15 (macOS Catalina) the default shell is zsh which uses the `.zprofile` and 
-`.zshrc` files. On most Linux systems `.zprofile` (or similar) is executed when the user
-initially logs in. This is due to whatever GUI is being used to login was 
-itself started by a login shell, letting subsequent shells inherit the environment
-and any setup done by `.zprofile`. The idea here is that any expensive 
+is able to interact with the shell: a profile file and the rc file. The
+profile file is usually run once at login and is used to set up the environment
+for the user. The rc file is run every time a new shell is created and is used
+to set up the shell itself.
+
+Using zsh as an example (the default shell on macOS since 10.15):
+zsh uses the `.zprofile` and `.zshrc` files. On most Linux systems `.zprofile`
+(or similar) is executed when the user initially logs in via something like
+a desktop manager. This allows subsequent shells to inherit the environment
+and any setup done by `.zprofile`. The idea here is that any expensive
 initialization only needs done once at login, and subsequent shells can reuse
 everything from the setup process.
 
 <Note>
-We use zsh as the example shell, however most shells can be interchanged and
+Zsh is used as an example but almost any shell can be used in its place and
 have the same behavior, with the exception of bash. Bash will **only** read
 `.bashrc` if the shell is both interactive and non-login. Since macOS moved from
 tcsh to bash in OSX 10.2 Jaguar, this difference in bash may have been
-overlooked, resulting in developers placing their shell setup entirely in 
-`.profile` as `.bashrc` would rarely be run, specifically not by starting a new 
-terminal. Now that zsh is the new default, `.zprofile` and `.zshrc` are both 
+overlooked, resulting in developers placing their shell setup entirely in
+`.profile` as `.bashrc` would rarely be run, specifically not by starting a new
+terminal. Now that zsh is the new default, `.zprofile` and `.zshrc` are both
 called starting an interavtive non-login shell.
 </Note>
 
-macOS differs in that the GUI used to login to the system does not run `.zprofile`
-as it has its own method of loading in system level global settings. This means
-that any terminal emulator must run shells as login or else new shells would
-be potentially broken since they would be missing any setup process in 
-`.zprofile`. This is the unfortunate reality, but makes sense in that there is no
-`.xsession` or similar, since `.zprofile` is never run, that can give a users
-terminals access to initial settings or set things like global environment 
-variables [^1].
+macOS differs in that the GUI used to login to the system does not run
+`.zprofile` as it has its own method of loading in system level global
+settings. This means that any terminal emulator must run shells as login or
+else new shells would be potentially broken since they would be missing any
+setup process in `.zprofile`. This is the unfortunate reality, but makes sense
+in that there is no `.xsession` or similar, since `.zprofile` is never run,
+that can give a users terminals access to initial settings or set things like g
+lobal environment variables [^1].
 
-This however does *not* mean that everything should just go in `.zprofile`, or 
+This however does *not* mean that everything should just go in `.zprofile`, or
 that the two files are always called together. Since zsh in started in login
 mode and interactive mode, both `.zprofile` and `.zshrc` will run every time
-a new terminal is created, however, if you run a shell inside of a terminal 
-emulator that will only be an interactive shell, it will lose access to the 
+a new terminal is created. However, if you run a shell inside of a terminal
+emulator that will only be an interactive shell and it will lose access to the
 parent shells settings that were initialized in `.zprofile`. You can test this
 by placing an alias in your `.zprofile` and starting a terminal instance and
 running that alias, then run `zsh` and you will find that the alias is no longer
 available.
 
-Therefore, most shell setup should still go in the `.zshrc` file so that any shells, 
+Therefore, most shell setup should still go in the `.zshrc` file so that any shells,
 terminal or otherwise, are initialized correctly. This is also somewhat in line
 with how dotfiles on other Linux systems would be written.
-
 
 [^1]: [Why are interactive shells on OSX login shells by default?](https://unix.stackexchange.com/questions/119627/why-are-interactive-shells-on-osx-login-shells-by-default)
