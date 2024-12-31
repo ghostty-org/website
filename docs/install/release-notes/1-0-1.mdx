@@ -1,0 +1,172 @@
+---
+title: Ghostty 1.0.1
+description: |-
+  Release notes for Ghostty 1.0.1, released on December 31, 2024.
+---
+
+## Security
+
+- [GHSA-5hcq-3j4q-4v6p](https://github.com/ghostty-org/ghostty/security/advisories/GHSA-5hcq-3j4q-4v6p).
+  Fixed a security vulnerability where Ghostty was improperly handling
+  window title sequences in such a way that could lead to arbitrary code
+  execution (required user interaction).
+
+- [GHSA-hfg5-8q2c-crhc](https://github.com/ghostty-org/ghostty/security/advisories/GHSA-hfg5-8q2c-crhc).
+  The file created with `write_*_file` keybind actions previously defaulted to
+  mode `0644` allowing any local user to read the file. The file now defaults
+  to mode `0600` to prevent unauthorized access.
+
+## Highlights
+
+### Default Configuration File
+
+PR: [#3460](https://github.com/ghostty-org/ghostty/pull/3460)
+
+Ghostty will now create a default configuration file on launch if no
+non-empty configuration files are found. In line with our
+[zero configuration philosophy](http://localhost:3000/docs/config#zero-configuration-philosophy),
+the default configuration file only has comments, but the comments help
+educate users on file location, syntax, and documentation.
+
+For the 1.0.0 release, we noticed there was a significant amount of confusion
+about where the configuration file was located, how to edit it, and what
+options were available. This change is intended to help users better
+understand how to configure Ghostty.
+
+### Bitmap Font Support
+
+PR: [#4115](https://github.com/ghostty-org/ghostty/pull/4115) (CoreText),
+[#3837](https://github.com/ghostty-org/ghostty/pull/3837) (Freetype)
+
+Ghostty now supports bitmap fonts on both macOS and Linux. Bitmap fonts
+must still be in truetype format, but may contain bitmaps for each glyph
+instead of outlines.
+
+### macOS: "Settings" Improvements
+
+PR: [#4004](https://github.com/ghostty-org/ghostty/pull/4004)
+
+The "Settings" menu option (`open_config` keybinding action) has
+improved in several ways.
+
+First, Ghostty now finds the first non-empty configuration file to open
+if one exists. Previously, Ghostty would always open the XDG configuration
+path first, even if the AppSupport path existed. This led to confusion because
+the AppSupport path overrides the XDG path. Now, Ghostty will open the
+AppSupport path if it exists, and if not, it will open the XDG path.
+
+Second, Ghostty now properly prioritizes opening the AppSupport path over
+the XDG path if neither path exists. This is important because the AppSupport
+path overrides all other paths on macOS.
+
+Third, Ghostty now uses the `-t` flag with `open` to open the configuration
+file in a text editor.
+
+<Note>
+A future update will allow users to use their `$EDITOR` to open the
+configuration file. And another future update will allow users to use
+a GUI to modify the configuration file.
+</Note>
+
+## Improvements
+
+- `confirm-close-surface` can now be set to `always` to always show the
+  confirmation dialog when closing a window.
+  [#3700](https://github.com/ghostty-org/ghostty/pull/3700)
+- macOS: Add "terminal" keyword to the Spotlight search metadata.
+  [#3745](https://github.com/ghostty-org/ghostty/pull/3745)
+- GTK: Add `window-titlebar-foreground` and `window-titlebar-background`
+  configuration options.
+  [#3806](https://github.com/ghostty-org/ghostty/pull/3806)
+- Bundled iTerm2 color schemes updated to
+  [e030599a](https://github.com/mbadolato/iTerm2-Color-Schemes/tree/e030599a6a6e19fcd1ea047c7714021170129d56).
+
+## Bug Fixes
+
+[Full list of closed issues on GitHub](https://github.com/ghostty-org/ghostty/milestone/2?closed=1).
+
+- keybinds with triggers that map to a key are now treated as a translated
+  key and not a unicode trigger, i.e. `cmd+1` now works in addition to
+  `cmd+one` and `cmd+.` is the same as `cmd+period`.
+  [#4147](https://github.com/ghostty-org/ghostty/pull/4147)
+- `write_selection_file` would sometimes write empty contents.
+  [#4078](https://github.com/ghostty-org/ghostty/pull/4078)
+- Hyperlinks within TUI applications are more stable.
+  [#3903](https://github.com/ghostty-org/ghostty/pull/3903)
+- Reloading configuration no longer overrides OSC 10/11/12.
+  [#3228](https://github.com/ghostty-org/ghostty/pull/3228)
+- `scrollback-limit` configuration now accepts numbers larger than 32-bit.
+  [#3906](https://github.com/ghostty-org/ghostty/pull/3906)
+- Fix issues `background-opacity` on both macOS and Linux.
+  [#3347](https://github.com/ghostty-org/ghostty/pull/3347)
+- Fix a crash that could happen if `--font-family=""` was set specifically
+  on the command-line.
+  [#4151](https://github.com/ghostty-org/ghostty/pull/4151)
+- vt: mode 2031 DSR reports are no longer sent for OSC 10/11/12 in
+  accordance with the updated specification.
+  [#3994](https://github.com/ghostty-org/ghostty/pull/3994)
+- vt: fix direct-color parsing edge cases
+  [#4216](https://github.com/ghostty-org/ghostty/pull/4216)
+- bash: shell integration works better with `sudo` aliases.
+  [#4080](https://github.com/ghostty-org/ghostty/pull/4080)
+
+### macOS
+
+- macOS: Fixed a resource leak where windows were not fully destroyed.
+  [#4128](https://github.com/ghostty-org/ghostty/pull/4128)
+- macOS: Fixed an issue where `toggle_visibility` would bring up unusable
+  "ghost windows" in certain circumstances. [#3219](https://github.com/ghostty-org/ghostty/issues/3219)
+- macOS: Quick Terminal now works with `focus-follows-mouse`.
+  [#3337](https://github.com/ghostty-org/ghostty/issues/3337)
+- macOS: Titlebar is now opaque like the rest of Ghostty when fullscreen.
+  [#3834](https://github.com/ghostty-org/ghostty/pull/3834)
+- macOS: Exiting fullscreen now restores proper background opacity.
+  [#3553](https://github.com/ghostty-org/ghostty/issues/3553)
+- macOS: `open_config` action now prefers AppSupport path over XDG to
+  match loading priority.
+  [#3953](https://github.com/ghostty-org/ghostty/issues/3953)
+- macOS: `open_config` action now uses the `-t` flag with `open` so
+  that a text editor opens.
+  [#3284](https://github.com/ghostty-org/ghostty/issues/3284)
+- macOS: Fixed an issue that would sometimes cause the quick terminal
+  to consume 100% CPU, causing significant battery drain. The quick
+  terminal now idles with no CPU usage.
+  [#4055](https://github.com/ghostty-org/ghostty/pull/4055)
+- macOS: App bundle now contains the `nvim` directory.
+  [#3966](https://github.com/ghostty-org/ghostty/issues/3966)
+- macOS: Help menu item opens the Ghostty documentation.
+  [#3990](https://github.com/ghostty-org/ghostty/pull/3990)
+- macOS: Blur radius being unset now properly reloads at runtime.
+  [#3954](https://github.com/ghostty-org/ghostty/pull/3954)
+- macOS: Fix startup crash when `$HOME` was not writable.
+  [#3949](https://github.com/ghostty-org/ghostty/pull/3949)
+
+### Linux (GTK)
+
+- GTK: Detect proper system color scheme on older GTK versions by falling
+  back to a deprecated API if the recommended one is not available.
+  [#4035](https://github.com/ghostty-org/ghostty/pull/4035)
+- GTK: Fixed a broken window when both `gtk-titlebar=false` and
+  `gtk-tabs-location=hidden`.
+  [#3178](https://github.com/ghostty-org/ghostty/issues/3178)
+- GTK: Fix version comparison that was incorrectly detecting minimum
+  GTK versions for some features.
+  [#3977](https://github.com/ghostty-org/ghostty/pull/3977)
+- GTK: Install the 1024x1024 app icon for supporting desktop environments.
+  [#4003](https://github.com/ghostty-org/ghostty/pull/4003)
+- GTK: Fix artifacting issues when `window-decoration=false` and
+  `gtk-titlebar=true`.
+  [#3999](https://github.com/ghostty-org/ghostty/pull/3999)
+- GTK: Tab overview is now styled when `window-theme=ghostty`
+  (requires libadwaita 1.8).
+  [#3920](https://github.com/ghostty-org/ghostty/pull/3920)
+- GTK: Tab overview works even when `gtk-titlebar=false`.
+  [#3940](https://github.com/ghostty-org/ghostty/pull/3940)
+- GTK: Add a small delay to title changes to avoid flickering.
+  [#3746](https://github.com/ghostty-org/ghostty/pull/3746)
+- GTK: Add `xdg-terminal-exec` fields to the desktop file.
+  [#3853](https://github.com/ghostty-org/ghostty/pull/3853)
+- GTK: Support building against libgtk without X11 support.
+  [#3748](https://github.com/ghostty-org/ghostty/pull/3748)
+- GTK: Fix possible segfault when closing surfaces.
+  [#3694](https://github.com/ghostty-org/ghostty/pull/3694)
