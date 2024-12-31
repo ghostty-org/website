@@ -59,13 +59,21 @@ Select all text on the screen.
 ## `scroll_to_bottom`
 ## `scroll_page_up`
 ## `scroll_page_down`
-## `scroll_page_fractional`
-## `scroll_page_lines`
 Scroll the screen varying amounts.
+
+## `scroll_page_fractional`
+Scroll the screen by a fraction of a page. (e.g., -.25 for 25% of a page
+up, +.25 for 25% of a page down). Value must be less than 1.
+
+## `scroll_page_lines`
+Scroll the screen by line. (e.g., -1 for 1 line up, +1 for 1
+line down).
 
 ## `adjust_selection`
 Adjust an existing selection in a given direction. This action
-does nothing if there is no active selection.
+does nothing if there is no active selection. Valid values are: "left",
+"right", "up", "down", "page_up", "page_down", "home", "end",
+"beginning_of_line" and "end_of_line".
 
 ## `jump_to_prompt`
 Jump the viewport forward or back by prompt. Positive number is the
@@ -105,7 +113,7 @@ Go to the previous tab.
 Go to the next tab.
 
 ## `last_tab`
-Go to the last tab (the one with the highest index)
+Go to the last tab (the one with the highest index).
 
 ## `goto_tab`
 Go to the tab with the specific number, 1-indexed. If the tab number
@@ -122,24 +130,29 @@ This only works with libadwaita enabled currently.
 
 ## `new_split`
 Create a new split in the given direction. The new split will appear in
-the direction given.
+the direction given. Valid values are: "right", "down", "left", "up" and
+"auto".
+
+  - "auto": splits along the larger direction.
 
 ## `goto_split`
-Focus on a split in a given direction.
+Focus on a split in a given direction. Valid values are: "previous",
+"next", "top", "left", "bottom" and "right".
 
 ## `toggle_split_zoom`
 zoom/unzoom the current split.
 
 ## `resize_split`
 Resize the current split by moving the split divider in the given
-direction
+direction. (e.g. "right,10" moves the split divider 10 columns to the
+right). Valid values are: "up", "down", "left" and "right".
 
 ## `equalize_splits`
 Equalize all splits in the current window
 
 ## `inspector`
 Show, hide, or toggle the terminal inspector for the currently focused
-terminal.
+terminal. Valid values are: "toggle", "show" and "hide".
 
 ## `open_config`
 Open the configuration file in the default OS editor. If your default OS
