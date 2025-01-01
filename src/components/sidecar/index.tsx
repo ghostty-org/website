@@ -34,9 +34,19 @@ export default function Sidecar({
   const shownItems = useMemo(() => {
     return items.filter((v) => v.depth <= MAX_SIDECAR_HEADER_DEPTH);
   }, [items]);
+  const [lastActiveHeaderID, setLastActiveHeaderID] = useState<string | null>(
+    null,
+  );
   const activeHeaderID = useMemo(() => {
-    return shownItems.find((v) => headerIdsInView.includes(v.id))?.id;
-  }, [shownItems, headerIdsInView]);
+    const currentActiveID = shownItems.find((v) =>
+      headerIdsInView.includes(v.id),
+    )?.id;
+    if (currentActiveID && currentActiveID !== lastActiveHeaderID) {
+      setLastActiveHeaderID(currentActiveID);
+      return currentActiveID;
+    }
+    return lastActiveHeaderID;
+  }, [shownItems, headerIdsInView, lastActiveHeaderID]);
 
   useEffect(() => {
     if (activeItemRef.current && sidecarRef.current) {
