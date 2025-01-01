@@ -195,6 +195,28 @@ After adding the repository, install Ghostty:
 rpm-ostree update --install ghostty
 ```
 
+### openSUSE
+
+Ghostty is available for openSUSE Tumbleweed:
+
+```sh
+zypper addrepo https://download.opensuse.org/repositories/home:avindra/openSUSE_Tumbleweed/home:avindra.repo
+zypper refresh
+zypper install ghostty
+```
+
+Also available for openSUSE Factory ARM:
+
+```sh
+zypper addrepo https://download.opensuse.org/repositories/home:avindra/openSUSE_Factory_ARM/home:avindra.repo
+zypper refresh
+zypper install ghostty
+```
+
+<Warning>
+This is a user-maintained package. It is not an official openSUSE package.
+</Warning>
+
 ### Ubuntu
 
 An Ubuntu package (.deb) is available from
