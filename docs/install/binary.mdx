@@ -76,6 +76,16 @@ Ghostty is available in the official Gentoo repository.
 emerge -av ghostty
 ```
 
+### NixOS
+
+Ghostty is available in [nixpkgs unstable](https://search.nixos.org/packages?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=ghostty).
+
+```
+environment.systemPackages = [
+  pkgs.ghostty
+];
+```
+
 ### Nix Flake
 
 There is Nix package that can be used in the
