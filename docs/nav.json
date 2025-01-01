@@ -399,6 +399,11 @@
           "type": "link",
           "path": "/macos-tiling-wms",
           "title": "macOS Tiling Window Managers"
+        },
+        {
+          "type": "link",
+          "path": "/macos-login-shells",
+          "title": "macOS Login Shells"
         }
       ]
     }
