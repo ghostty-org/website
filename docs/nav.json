@@ -29,6 +29,18 @@
           "type": "link",
           "path": "/pre",
           "title": "Prerelease Builds"
+        },
+        {
+          "type": "folder",
+          "path": "/release-notes",
+          "title": "Release Notes",
+          "children": [
+            {
+              "type": "link",
+              "path": "/1-0-1",
+              "title": "1.0.1"
+            }
+          ]
         }
       ]
     },
@@ -387,6 +399,11 @@
           "type": "link",
           "path": "/macos-tiling-wms",
           "title": "macOS Tiling Window Managers"
+        },
+        {
+          "type": "link",
+          "path": "/macos-login-shells",
+          "title": "macOS Login Shells"
         }
       ]
     }

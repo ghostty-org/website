@@ -76,6 +76,16 @@ Ghostty is available in the official Gentoo repository.
 emerge -av ghostty
 ```
 
+### NixOS
+
+Ghostty is available in [nixpkgs unstable](https://search.nixos.org/packages?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=ghostty).
+
+```
+environment.systemPackages = [
+  pkgs.ghostty
+];
+```
+
 ### Nix Flake
 
 There is Nix package that can be used in the
@@ -185,7 +195,7 @@ After adding the repository, install Ghostty:
 rpm-ostree update --install ghostty
 ```
 
-### OpenSUSE
+### openSUSE
 
 Ghostty is available for openSUSE Tumbleweed:
 
@@ -202,3 +212,23 @@ zypper addrepo https://download.opensuse.org/repositories/home:avindra/openSUSE_
 zypper refresh
 zypper install ghostty
 ```
+
+<Warning>
+This is a user-maintained package. It is not an official openSUSE package.
+</Warning>
+
+### Ubuntu
+
+An Ubuntu package (.deb) is available from
+[ghostty-ubuntu](https://github.com/mkasberg/ghostty-ubuntu) on GitHub. After
+downloading the .deb for your Ubuntu version from the
+[Releases](https://github.com/mkasberg/ghostty-ubuntu/releases) page, install it
+as below:
+
+```sh
+sudo dpkg -i ghostty_*.deb
+```
+
+<Warning>
+This is a user-maintained package. It is not an official Ubuntu package.
+</Warning>
