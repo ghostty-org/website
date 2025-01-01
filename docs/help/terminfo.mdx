@@ -26,6 +26,12 @@ When you run Ghostty, it will automatically set the `TERM` environment
 variable to `xterm-ghostty` so long as it detects that the terminfo entry
 is available.
 
+<Important>
+**Ghostty's terminfo entry has been merged into ncurses.** As distros
+update their ncurses packages, Ghostty's terminfo entry will be available
+by default system-wide. This will take time to propagate.
+</Important>
+
 ## Sudo
 
 If you use `sudo`, sudo may reset your environment variables and you may see
