@@ -45,8 +45,8 @@ settings. This means that any terminal emulator must run shells as login or
 else new shells would be potentially broken since they would be missing any
 setup process in `.zprofile`. This is the unfortunate reality, but makes sense
 in that there is no `.xsession` or similar, since `.zprofile` is never run,
-that can give a users terminals access to initial settings or set things like g
-lobal environment variables [^1].
+that can give a users terminals access to initial settings or set things like
+global environment variables [^1].
 
 This however does *not* mean that everything should just go in `.zprofile`, or
 that the two files are always called together. Since zsh in started in login
