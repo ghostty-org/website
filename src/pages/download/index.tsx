@@ -43,7 +43,10 @@ export default function DownloadPage({
         <SectionWrapper>
           <div className={s.header}>
             <Image src={SVGIMG} alt={""} />
-            <H1 className={s.pageTitle}>Download Ghostty</H1>
+            <div className={s.pageTitle}>
+              <H1>Download Ghostty</H1>
+              <div><b>{ latestVersion }</b> (<a href={ "/docs/install/release-notes/" + latestVersion.replace(/\./g, "-") }>Release Notes</a>)</div>
+            </div>
           </div>
           <div className={s.downloadCards}>
             <GenericCard
