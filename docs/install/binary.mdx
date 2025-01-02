@@ -232,3 +232,11 @@ sudo dpkg -i ghostty_*.deb
 <Warning>
 This is a user-maintained package. It is not an official Ubuntu package.
 </Warning>
+
+Another ready-to-use, user-maintained repository is available [here](https://gitlab.com/packaging/ghostty).
+
+```sh
+sudo curl -sL -o /etc/apt/trusted.gpg.d/morph027-ghostty.asc https://packaging.gitlab.io/ghostty/deb/gpg.key
+. /etc/lsb-release; echo "deb [arch=$(dpkg --print-architecture)] https://packaging.gitlab.io/ghostty/deb/${DISTRIB_CODENAME} ${DISTRIB_CODENAME} main" | sudo tee /etc/apt/sources.list.d/morph027-ghostty.list
+sudo apt-get install ghostty
+```
