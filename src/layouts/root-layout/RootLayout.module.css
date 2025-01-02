@@ -1,5 +1,5 @@
 .rootLayout {
-  font-family: var(--pretendard-variable);
+  font-family: var(--pretendard-std-variable);
 
   & a {
 		color: var(--gray-9);
