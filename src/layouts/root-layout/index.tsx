@@ -38,15 +38,18 @@ export default function RootLayout({
         <meta property="og:url" content="https://ghostty.org" />
         <meta property="og:site_name" content="Ghostty" />
         <meta property="og:description" content={description} />
+        <meta property="og:image" content="/social-share-card.jpg" />
+        <meta property="og:image:width" content="1800" />
+        <meta property="og:image:height" content="3200" />
 
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
         <link rel="shortcut icon" href="/favicon.ico" />
-        <meta property="og:image" content="/social-share-card.jpg" />
         <meta
           name="twitter:image"
           content="https://ghostty.org/social-share-card.jpg"
         />
+        <meta property="twitter:card" content="summary_large_image" />
 
         <meta name="darkreader-lock" />
       </Head>
