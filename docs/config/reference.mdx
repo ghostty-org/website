@@ -161,6 +161,10 @@ depending on your `window-inherit-font-size` setting. If that setting is
 true, only the first window will be affected by this change since all
 subsequent windows will inherit the font size of the previous window.
 
+On Linux with GTK, font size is scaled according to both display-wide and
+text-specific scaling factors, which are often managed by your desktop
+environment (e.g. the GNOME display scale and large text settings).
+
 ## `font-variation`
 ## `font-variation-bold`
 ## `font-variation-italic`
@@ -324,7 +328,7 @@ terminals. Only new terminals will use the new configuration.
 
 FreeType load flags to enable. The format of this is a list of flags to
 enable separated by commas. If you prefix a flag with `no-` then it is
-disabled. If you omit a flag, it's default value is used, so you must
+disabled. If you omit a flag, its default value is used, so you must
 explicitly disable flags you don't want. You can also use `true` or `false`
 to turn all flags on or off.
 
@@ -501,7 +505,7 @@ this is set to any value other than null, DEC mode 12 will be ignored but
 
 Valid values are:
 
-  * `` (blank)
+  * ` ` (blank)
   * `true`
   * `false`
 
@@ -1155,7 +1159,7 @@ is only used for the initial size.
 BUG: On Linux with GTK, the calculated window size will not properly take
 into account window decorations. As a result, the grid dimensions will not
 exactly match this configuration. If window decorations are disabled (see
-window-decorations), then this will work as expected.
+`window-decoration`), then this will work as expected.
 
 Windows smaller than 10 wide by 4 high are not allowed.
 
@@ -1206,6 +1210,18 @@ The position where new tabs are created. Valid values:
     or at the end if there are no focused tabs.
 
   * `end` - Insert the new tab at the end of the tab list.
+
+## `window-titlebar-background`
+
+Background color for the window titlebar. This only takes effect if
+window-theme is set to ghostty. Currently only supported in the GTK app
+runtime.
+
+## `window-titlebar-foreground`
+
+Foreground color for the window titlebar. This only takes effect if
+window-theme is set to ghostty. Currently only supported in the GTK app
+runtime.
 
 ## `resize-overlay`
 
@@ -1310,6 +1326,18 @@ pastes are considered safe. "Bracketed" pastes are pastes while the running
 program has bracketed paste mode enabled (a setting set by the running
 program, not the terminal emulator).
 
+## `title-report`
+
+Enables or disabled title reporting (CSI 21 t). This escape sequence
+allows the running program to query the terminal title. This is a common
+security issue and is disabled by default.
+
+<Warning>
+ This can expose sensitive information at best and enable
+arbitrary code execution at worst (with a maliciously crafted title
+and a minor amount of user interaction).
+</Warning>
+
 ## `image-storage-limit`
 
 The total amount of bytes that can be used for image data (i.e. the Kitty
@@ -1392,8 +1420,12 @@ This configuration can only be set via CLI arguments.
 
 ## `confirm-close-surface`
 
-Confirms that a surface should be closed before closing it. This defaults to
-true. If set to false, surfaces will close without any confirmation.
+Confirms that a surface should be closed before closing it.
+
+This defaults to `true`. If set to `false`, surfaces will close without
+any confirmation. This can also be set to `always`, which will always
+confirm closing a surface, even if shell integration says a process isn't
+running.
 
 ## `quit-after-last-window-closed`
 
@@ -2059,8 +2091,6 @@ Valid values are:
    available, but do not automatically download or install the update.
  * `download` - Check for updates, automatically download the update,
    notify the user, but do not automatically install the update.
-
-The default value is `check`.
 
 Changing this value at runtime works after a small delay.
 
