@@ -74,8 +74,9 @@ field as an alias` which can be safely ignored.
 The bundled version of `ncurses` is too old to emit a terminfo entry that can be
 read by more recent versions of `tic`, and the command will fail with a bunch
 of `Illegal character` messages. You can fix this by using Homebrew to install
-a recent version of `ncurses` and replacing `infocmp` above with the full path
-`/opt/homebrew/opt/ncurses/bin/infocmp`.
+a recent version of `ncurses` with `brew install ncurses` and replacing 
+`infocmp` above with the full path `/opt/homebrew/opt/ncurses/bin/infocmp` or 
+`/usr/local/opt/ncurses/bin/infocmp`.
 </Note>
 
 ### Configure SSH to fall back to a known terminfo entry
