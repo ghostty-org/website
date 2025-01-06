@@ -34,11 +34,13 @@ On Linux, you may need to install additional dependencies. See
 need Xcode installed with both the macOS and iOS SDKs enabled. See
 [Mac `.app`](#mac-.app).
 
-Begin by cloning the Ghostty repository and changing into the directory:
+Begin by cloning the Ghostty repository, then change into the directory and
+checkout the current release:
 
 ```sh
 git clone https://github.com/ghostty-org/ghostty
 cd ghostty
+git checkout v1.0.1
 ```
 
 With Zig and necessary dependencies installed, a binary can then be built
@@ -80,13 +82,13 @@ Required dependencies:
 #### Arch Linux
 
 ```sh
-sudo pacman -S gtk4 libadwaita
+sudo pacman -S gtk4 libadwaita wayland-protocols
 ```
 
 #### Debian and Ubuntu
 
 ```sh
-sudo apt install libgtk-4-dev libadwaita-1-dev git
+sudo apt install libgtk-4-dev libadwaita-1-dev
 ```
 
 On Debian unstable/testing, the `gcc-multilib` package is also required
