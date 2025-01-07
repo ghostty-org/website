@@ -1,4 +1,4 @@
-import { jetbrainsMono, pretendardVariable } from "@/components/text";
+import { jetbrainsMono, pretendardStdVariable } from "@/components/text";
 import classNames from "classnames";
 import Head from "next/head";
 import s from "./RootLayout.module.css";
@@ -23,7 +23,7 @@ export default function RootLayout({
     <div
       className={classNames(
         s.rootLayout,
-        pretendardVariable.variable,
+        pretendardStdVariable.variable,
         jetbrainsMono.variable,
         className,
       )}
