@@ -34,13 +34,23 @@ On Linux, you may need to install additional dependencies. See
 need Xcode installed with both the macOS and iOS SDKs enabled. See
 [Mac `.app`](#mac-.app).
 
-Begin by cloning the Ghostty repository, then change into the directory and
-checkout the current release:
+Begin by cloning the Ghostty repository and changing into the directory:
 
 ```sh
 git clone https://github.com/ghostty-org/ghostty
 cd ghostty
-git checkout v1.0.1
+```
+
+To select a stable build, list the available releases using: 
+```sh
+git tag --list
+```
+Now, find the release you want to build from. The latest stable tag is
+recommended while the "tip" tag is a rolling development build.
+
+Then checkout the selected tag:
+```sh
+git checkout <selected-tag>
 ```
 
 With Zig and necessary dependencies installed, a binary can then be built
