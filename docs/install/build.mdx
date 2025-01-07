@@ -74,19 +74,20 @@ because Ghostty will build everything else statically by default.
 Required dependencies:
 
   * `gtk4`
-  * `libadwaita`
+  * `libadwaita` (unless using `-Dgtk-adwaita=false`)
   * `pkg-config`
+  * `wayland-protocols` (unless using `-Dgtk-wayland=false`)
 
 #### Arch Linux
 
 ```sh
-sudo pacman -S gtk4 libadwaita
+sudo pacman -S gtk4 libadwaita wayland-protocols
 ```
 
 #### Debian and Ubuntu
 
 ```sh
-sudo apt install libgtk-4-dev libadwaita-1-dev git
+sudo apt install libgtk-4-dev libadwaita-1-dev git wayland-protocols
 ```
 
 On Debian unstable/testing, the `gcc-multilib` package is also required
