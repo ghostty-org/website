@@ -7,19 +7,16 @@ Ghostty includes a number of utility actions that can be accessed as subcommands
 Actions provide utilities to work with config, list keybinds, list fonts, demo themes,
 and debug.
 ## version
-The `version` command is used to display information about Ghostty. Recognized as
-either `+version` or `--version`.
+The `version` command is used to display information about Ghostty.
 
 ```
 ghostty --version
 ```
 
 ## help
-The `help` command shows general help about Ghostty. Recognized as either
-`-h, `--help`, or like other actions `+help`.
-
-You can also specify `--help` or `-h` along with any action such as
-`+list-themes` to see help for a specific action.
+The `help` command shows general help about Ghostty. You can also specify
+`--help` or `-h` along with any action such as `+list-themes` to see help
+for a specific action.
 
 ```
 ghostty --help
@@ -35,21 +32,14 @@ by family name, then font name. If a family name is given with `--family`,
 the sorting will be disabled and the results instead will be shown in the
 same priority order Ghostty would use to pick a font.
 
-Flags:
+The `--family` argument can be used to filter results to a specific family.
+The family handling is identical to the `font-family` set of Ghostty
+configuration values, so this can be used to debug why your desired font may
+not be loading.
 
-  * `--bold`: Filter results to specific bold styles. It is not guaranteed
-    that only those styles are returned. They are only prioritized.
-
-  * `--italic`: Filter results to specific italic styles. It is not guaranteed
-    that only those styles are returned. They are only prioritized.
-
-  * `--style`: Filter results based on the style string advertised by a font.
-    It is not guaranteed that only those styles are returned. They are only
-    prioritized.
-
-  * `--family`: Filter results to a specific font family. The family handling
-    is identical to the `font-family` set of Ghostty configuration values, so
-    this can be used to debug why your desired font may not be loading.
+The `--bold` and `--italic` arguments can be used to filter results to
+specific styles. It is not guaranteed that only those styles are returned,
+it will just prioritize fonts that match those styles.
 
 ```
 ghostty +list-fonts
@@ -64,15 +54,11 @@ loaded by the config file. If no config file is found or there aren't any
 changes to the keybinds it will print out the default ones configured for
 Ghostty
 
-Flags:
+The `--default` argument will print out all the default keybinds configured
+for Ghostty
 
-  * `--default`: will print out all the default keybinds
-
-  * `--docs`: currently does nothing, intended to print out documentation
-    about the action associated with the keybinds
-
-  * `--plain`: will disable formatting and make the output more
-    friendly for Unix tooling. This is default when not printing to a tty.
+The `--plain` flag will disable formatting and make the output more
+friendly for Unix tooling. This is default when not printing to a tty.
 
 ```
 ghostty +list-keybinds
@@ -111,7 +97,6 @@ to the resources directory.
 Flags:
 
   * `--path`: Show the full path to the theme.
-
   * `--plain`: Force a plain listing of themes.
 
 ```
@@ -127,13 +112,10 @@ ghostty +list-colors
 ```
 
 ## list-actions
-The `list-actions` command is used to list all the available keybind
-actions for Ghostty. These are distinct from the CLI Actions which can
-be listed via `+help`
+The `list-actions` command is used to list all the available keybind actions
+for Ghostty.
 
-Flags:
-
-  * `--docs`: will print out the documentation for each action.
+The `--docs` argument will print out the documentation for each action.
 
 ```
 ghostty +list-actions
@@ -175,16 +157,25 @@ ghostty +show-config
 ## validate-config
 The `validate-config` command is used to validate a Ghostty config file.
 
-When executed without any arguments, this will load the config from the default
-location.
+When executed without any arguments, this will load the config from the default location.
 
-Flags:
-
-  * `--config-file`: can be passed to validate a specific target config file in
-    a non-default location
+The `--config-file` argument can be passed to validate a specific target config
+file in a non-default location.
 
 ```
 ghostty +validate-config
+```
+
+## crash-report
+The `crash-report` command is used to inspect and send crash reports.
+
+When executed without any arguments, this will list existing crash reports.
+
+This command currently only supports listing crash reports. Viewing
+and sending crash reports is unimplemented and will be added in the future.
+
+```
+ghostty +crash-report
 ```
 
 ## show-face
@@ -212,17 +203,5 @@ Flags:
 
 ```
 ghostty +show-face
-```
-
-## crash-report
-The `crash-report` command is used to inspect and send crash reports.
-
-When executed without any arguments, this will list existing crash reports.
-
-This command currently only supports listing crash reports. Viewing
-and sending crash reports is unimplemented and will be added in the future.
-
-```
-ghostty +crash-report
 ```
 
