@@ -133,6 +133,15 @@ This isn't an official package in Nixpkgs but it is officially maintained
 by the Ghostty project so we put it in the "official" section.
 </Note>
 
+
+### openSUSE
+
+Ghostty is available as [`ghostty`](https://software.opensuse.org/package/ghostty) in the official openSUSE Tumbleweed repository.
+
+```sh
+zypper install ghostty
+```
+
 ### Void Linux
 
 Ghostty is available in the official package repository.
@@ -194,28 +203,6 @@ After adding the repository, install Ghostty:
 ```sh
 rpm-ostree update --install ghostty
 ```
-
-### openSUSE
-
-Ghostty is available for openSUSE Tumbleweed:
-
-```sh
-zypper addrepo https://download.opensuse.org/repositories/X11:/terminals/openSUSE_Factory/X11:terminals.repo
-zypper refresh
-zypper install ghostty
-```
-
-Also available for openSUSE Factory ARM:
-
-```sh
-zypper addrepo https://download.opensuse.org/repositories/home:avindra/openSUSE_Factory_ARM/home:avindra.repo
-zypper refresh
-zypper install ghostty
-```
-
-<Warning>
-This is a user-maintained package. It is not an official openSUSE package.
-</Warning>
 
 ### Ubuntu
 
