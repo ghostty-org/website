@@ -76,18 +76,17 @@ Required dependencies:
   * `gtk4`
   * `libadwaita` (unless using `-Dgtk-adwaita=false`)
   * `pkg-config`
-  * `wayland-protocols` (unless using `-Dgtk-wayland=false`)
 
 #### Arch Linux
 
 ```sh
-sudo pacman -S gtk4 libadwaita wayland-protocols
+sudo pacman -S gtk4 libadwaita
 ```
 
 #### Debian and Ubuntu
 
 ```sh
-sudo apt install libgtk-4-dev libadwaita-1-dev git wayland-protocols
+sudo apt install libgtk-4-dev libadwaita-1-dev git
 ```
 
 On Debian unstable/testing, the `gcc-multilib` package is also required
@@ -108,13 +107,13 @@ Ubuntu 23.10 is 6.5.0 which has a bug which
 On Fedora variants, use
 
 ```sh
-sudo dnf install gtk4-devel zig libadwaita-devel wayland-protocols-devel
+sudo dnf install gtk4-devel zig libadwaita-devel
 ```
 
 On Fedora Atomic variants, use
 
 ```sh
-rpm-ostree install gtk4-devel zig libadwaita-devel wayland-protocols-devel
+rpm-ostree install gtk4-devel zig libadwaita-devel
 ```
 
 #### Gentoo
