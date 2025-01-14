@@ -1,4 +1,7 @@
 .ListItem {
+  border: 1px solid var(--gray-2);
+  border-radius: 10px;
+  overflow: hidden;
 
   & img {
     width: 100%;
@@ -6,9 +9,7 @@
   }
 
   & .content {
-    border: 1px solid var(--gray-2);
     padding: 12px 12px 24px;
-    border-radius: 10px;
 
     & .title {
       margin-bottom: 8px;

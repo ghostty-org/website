@@ -45,7 +45,7 @@ export default function Modal({ onClose, content }: ModalProps) {
               description={description}
             />
           ) : (
-            <CodeBlock>{code}</CodeBlock>
+            <CodeBlock className={s.codeBlock}>{code}</CodeBlock>
           )}
         </section>
       </dialog>

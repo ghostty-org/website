@@ -36,7 +36,7 @@
     }
 
     & .content {
-      padding: 12px 12px 24px;
+      padding: 12px;
 
       & .buttonContainer {
         display: flex;
@@ -56,6 +56,12 @@
         color: var(--gray-5);
         margin: 0 0 16px;
       }
+    }
+
+    & .codeBlock {
+      padding: 8px;
+      max-height: 250px;
+      overflow: scroll;
     }
   }
 }
