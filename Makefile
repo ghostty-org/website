@@ -10,6 +10,12 @@ node_modules/.installed: package.json
 .env.local:
 	cp .env.sample .env.local
 
+.PHONY: sync-webdata
+sync-webdata:
+	test -d "$(GHOSTTY_BUILD_DIR)"  # if this fails, set GHOSTTY_BUILD_DIR to the ghostty output directory
+	cp $(GHOSTTY_BUILD_DIR)/share/ghostty/webdata/config.mdx ./docs/config/reference.mdx
+	cp $(GHOSTTY_BUILD_DIR)/share/ghostty/webdata/actions.mdx ./docs/config/keybind/reference.mdx
+
 # ====================================
 # ======= Docker Configuration =======
 # ====================================
