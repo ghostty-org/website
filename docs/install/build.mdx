@@ -41,6 +41,18 @@ git clone https://github.com/ghostty-org/ghostty
 cd ghostty
 ```
 
+To select a stable build, list the available releases using: 
+```sh
+git tag --list
+```
+Now, find the release you want to build from. The latest stable tag is
+recommended while the "tip" tag is a rolling development build.
+
+Then checkout the selected tag:
+```sh
+git checkout <selected-tag>
+```
+
 With Zig and necessary dependencies installed, a binary can then be built
 using `zig build`:
 
@@ -80,13 +92,13 @@ Required dependencies:
 #### Arch Linux
 
 ```sh
-sudo pacman -S gtk4 libadwaita
+sudo pacman -S gtk4 libadwaita wayland-protocols
 ```
 
 #### Debian and Ubuntu
 
 ```sh
-sudo apt install libgtk-4-dev libadwaita-1-dev git
+sudo apt install libgtk-4-dev libadwaita-1-dev
 ```
 
 On Debian unstable/testing, the `gcc-multilib` package is also required
