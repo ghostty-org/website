@@ -122,17 +122,17 @@ This only works with libadwaita enabled currently.
 
 ## `new_split`
 Create a new split in the given direction. The new split will appear in
-the direction given.
+the direction given. For example `new_split:up`. Valid values are left, right, up, down and auto.
 
 ## `goto_split`
-Focus on a split in a given direction.
+Focus on a split in a given direction. For example `goto_split:top`. Valid values are top, bottom, left, right, previous and next.
 
 ## `toggle_split_zoom`
 zoom/unzoom the current split.
 
 ## `resize_split`
 Resize the current split by moving the split divider in the given
-direction
+direction. For example `resize_split:left,10`. The valid directions are up, down, left and right.
 
 ## `equalize_splits`
 Equalize all splits in the current window
@@ -191,10 +191,17 @@ When the quick terminal loses focus, it disappears. The terminal state
 is preserved between appearances, so you can always press the keybinding
 to bring it back up.
 
+To enable the quick terminally globally so that Ghostty doesn't
+have to be focused, prefix your keybind with `global`. Example:
+
+```ini
+keybind = global:cmd+grave_accent=toggle_quick_terminal
+```
+
 The quick terminal has some limitations:
 
   - It is a singleton; only one instance can exist at a time.
-  - It does not support tabs. However, it does allow split panes with default keybindings.
+  - It does not support tabs, but it does support splits.
   - It will not be restored when the application is restarted
     (for systems that support window restoration).
   - It supports fullscreen, but fullscreen will always be a non-native
@@ -204,6 +211,8 @@ The quick terminal has some limitations:
 
 See the various configurations for the quick terminal in the
 configuration file to customize its behavior.
+
+This currently only works on macOS.
 
 ## `toggle_visibility`
 Show/hide all windows. If all windows become shown, we also ensure

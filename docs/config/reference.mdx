@@ -59,7 +59,7 @@ If you want to overwrite a previous set value rather than append a fallback,
 specify the value as `""` (empty string) to reset the list and then set the
 new values. For example:
 
-```ini
+```
 font-family = ""
 font-family = "My Favorite Font"
 ```
@@ -161,6 +161,10 @@ depending on your `window-inherit-font-size` setting. If that setting is
 true, only the first window will be affected by this change since all
 subsequent windows will inherit the font size of the previous window.
 
+On Linux with GTK, font size is scaled according to both display-wide and
+text-specific scaling factors, which are often managed by your desktop
+environment (e.g. the GNOME display scale and large text settings).
+
 ## `font-variation`
 ## `font-variation-bold`
 ## `font-variation-italic`
@@ -239,48 +243,58 @@ adjustments cannot go below 1px.
 
 ## `adjust-font-baseline`
 
-Distance in pixels from the bottom of the cell to the text baseline.
+Distance in pixels or percentage adjustment from the bottom of the cell to the text baseline.
 Increase to move baseline UP, decrease to move baseline DOWN.
+See the notes about adjustments in `adjust-cell-width`.
 
 ## `adjust-underline-position`
 
-Distance in pixels from the top of the cell to the top of the underline.
+Distance in pixels or percentage adjustment from the top of the cell to the top of the underline.
 Increase to move underline DOWN, decrease to move underline UP.
+See the notes about adjustments in `adjust-cell-width`.
 
 ## `adjust-underline-thickness`
 
 Thickness in pixels of the underline.
+See the notes about adjustments in `adjust-cell-width`.
 
 ## `adjust-strikethrough-position`
 
-Distance in pixels from the top of the cell to the top of the strikethrough.
+Distance in pixels or percentage adjustment from the top of the cell to the top of the strikethrough.
 Increase to move strikethrough DOWN, decrease to move underline UP.
+See the notes about adjustments in `adjust-cell-width`.
 
 ## `adjust-strikethrough-thickness`
 
-Thickness in pixels of the strikethrough.
+Thickness in pixels or percentage adjustment of the strikethrough.
+See the notes about adjustments in `adjust-cell-width`.
 
 ## `adjust-overline-position`
 
-Distance in pixels from the top of the cell to the top of the overline.
+Distance in pixels or percentage adjustment from the top of the cell to the top of the overline.
 Increase to move overline DOWN, decrease to move underline UP.
+See the notes about adjustments in `adjust-cell-width`.
 
 ## `adjust-overline-thickness`
 
-Thickness in pixels of the overline.
+Thickness in pixels or percentage adjustment of the overline.
+See the notes about adjustments in `adjust-cell-width`.
 
 ## `adjust-cursor-thickness`
 
-Thickness in pixels of the bar cursor and outlined rect cursor.
+Thickness in pixels or percentage adjustment of the bar cursor and outlined rect cursor.
+See the notes about adjustments in `adjust-cell-width`.
 
 ## `adjust-cursor-height`
 
-Height in pixels of the cursor. Currently applies to all cursor types:
+Height in pixels or percentage adjustment of the cursor. Currently applies to all cursor types:
 bar, rect, and outlined rect.
+See the notes about adjustments in `adjust-cell-width`.
 
 ## `adjust-box-thickness`
 
-Thickness in pixels of box drawing characters.
+Thickness in pixels or percentage adjustment of box drawing characters.
+See the notes about adjustments in `adjust-cell-width`.
 
 ## `grapheme-width-method`
 
@@ -314,7 +328,7 @@ terminals. Only new terminals will use the new configuration.
 
 FreeType load flags to enable. The format of this is a list of flags to
 enable separated by commas. If you prefix a flag with `no-` then it is
-disabled. If you omit a flag, it's default value is used, so you must
+disabled. If you omit a flag, its default value is used, so you must
 explicitly disable flags you don't want. You can also use `true` or `false`
 to turn all flags on or off.
 
@@ -491,7 +505,7 @@ this is set to any value other than null, DEC mode 12 will be ignored but
 
 Valid values are:
 
-  * `` (blank)
+  * ` ` (blank)
   * `true`
   * `false`
 
@@ -655,7 +669,7 @@ other behaviors as well:
     (i.e. by wrapping your command in a shell, setting env vars, etc.).
     This is a safety measure to prevent unexpected behavior. If you want
     shell integration with a `-e`-executed command, you must either
-    name your binary appopriately or source the shell integration script
+    name your binary appropriately or source the shell integration script
     manually.
 
 
@@ -807,7 +821,27 @@ overwrite previously set values. The list of actions is available in
 the documentation or using the `ghostty +list-actions` command.
 
 Trigger: `+`-separated list of keys and modifiers. Example: `ctrl+a`,
-`ctrl+shift+b`, `up`. Some notes:
+`ctrl+shift+b`, `up`.
+
+Valid keys are currently only listed in the
+[Ghostty source code](https://github.com/ghostty-org/ghostty/blob/d6e76858164d52cff460fedc61ddf2e560912d71/src/input/key.zig#L255).
+This is a documentation limitation and we will improve this in the future.
+A common gotcha is that numeric keys are written as words: i.e. `one`,
+`two`, `three`, etc. and not `1`, `2`, `3`. This will also be improved in
+the future.
+
+Valid modifiers are `shift`, `ctrl` (alias: `control`), `alt` (alias: `opt`,
+`option`), and `super` (alias: `cmd`, `command`). You may use the modifier
+or the alias. When debugging keybinds, the non-aliased modifier will always
+be used in output.
+
+<Note>
+ The fn or "globe" key on keyboards are not supported as a
+modifier. This is a limitation of the operating systems and GUI toolkits
+that Ghostty uses.
+</Note>
+
+Some additional notes for triggers:
 
   * modifiers cannot repeat, `ctrl+ctrl+a` is invalid.
 
@@ -820,17 +854,6 @@ Trigger: `+`-separated list of keys and modifiers. Example: `ctrl+a`,
     physical key mapping rather than a logical one. A physical key
     mapping responds to the hardware keycode and not the keycode
     translated by any system keyboard layouts. Example: "ctrl+physical:a"
-
-Valid modifiers are `shift`, `ctrl` (alias: `control`), `alt` (alias: `opt`,
-`option`), and `super` (alias: `cmd`, `command`). You may use the modifier
-or the alias. When debugging keybinds, the non-aliased modifier will always
-be used in output.
-
-<Note>
- The fn or "globe" key on keyboards are not supported as a
-modifier. This is a limitation of the operating systems and GUI toolkits
-that Ghostty uses.
-</Note>
 
 You may also specify multiple triggers separated by `>` to require a
 sequence of triggers to activate the action. For example,
@@ -1136,7 +1159,7 @@ is only used for the initial size.
 BUG: On Linux with GTK, the calculated window size will not properly take
 into account window decorations. As a result, the grid dimensions will not
 exactly match this configuration. If window decorations are disabled (see
-window-decorations), then this will work as expected.
+`window-decoration`), then this will work as expected.
 
 Windows smaller than 10 wide by 4 high are not allowed.
 
@@ -1187,6 +1210,18 @@ The position where new tabs are created. Valid values:
     or at the end if there are no focused tabs.
 
   * `end` - Insert the new tab at the end of the tab list.
+
+## `window-titlebar-background`
+
+Background color for the window titlebar. This only takes effect if
+window-theme is set to ghostty. Currently only supported in the GTK app
+runtime.
+
+## `window-titlebar-foreground`
+
+Foreground color for the window titlebar. This only takes effect if
+window-theme is set to ghostty. Currently only supported in the GTK app
+runtime.
 
 ## `resize-overlay`
 
@@ -1254,7 +1289,7 @@ value larger than this will be clamped to the maximum value.
 
 If true, when there are multiple split panes, the mouse selects the pane
 that is focused. This only applies to the currently focused window; i.e.
-mousing over a split in an unfocused window will now focus that split
+mousing over a split in an unfocused window will not focus that split
 and bring the window to front.
 
 Default is false.
@@ -1290,6 +1325,18 @@ If true, bracketed pastes will be considered safe. By default, bracketed
 pastes are considered safe. "Bracketed" pastes are pastes while the running
 program has bracketed paste mode enabled (a setting set by the running
 program, not the terminal emulator).
+
+## `title-report`
+
+Enables or disabled title reporting (CSI 21 t). This escape sequence
+allows the running program to query the terminal title. This is a common
+security issue and is disabled by default.
+
+<Warning>
+ This can expose sensitive information at best and enable
+arbitrary code execution at worst (with a maliciously crafted title
+and a minor amount of user interaction).
+</Warning>
 
 ## `image-storage-limit`
 
@@ -1373,8 +1420,12 @@ This configuration can only be set via CLI arguments.
 
 ## `confirm-close-surface`
 
-Confirms that a surface should be closed before closing it. This defaults to
-true. If set to false, surfaces will close without any confirmation.
+Confirms that a surface should be closed before closing it.
+
+This defaults to `true`. If set to `false`, surfaces will close without
+any confirmation. This can also be set to `always`, which will always
+confirm closing a surface, even if shell integration says a process isn't
+running.
 
 ## `quit-after-last-window-closed`
 
@@ -1453,6 +1504,11 @@ Valid values are:
   * `center` - Terminal appears at the center of the screen.
 
 Changing this configuration requires restarting Ghostty completely.
+
+<Note>
+ There is no default keybind for toggling the quick terminal.
+To enable this feature, bind the `toggle_quick_terminal` action to a key.
+</Note>
 
 ## `quick-terminal-screen`
 
@@ -1920,7 +1976,7 @@ already a running process.
 
 If `false`, each new ghostty process will launch a separate application.
 
-The default value is `detect` which will default to `true` if Ghostty
+The default value is `desktop` which will default to `true` if Ghostty
 detects that it was launched from the `.desktop` file such as an app
 launcher (like Gnome Shell)  or by D-Bus activation. If Ghostty is launched
 from the command line, it will default to `false`.
@@ -2036,8 +2092,6 @@ Valid values are:
  * `download` - Check for updates, automatically download the update,
    notify the user, but do not automatically install the update.
 
-The default value is `check`.
-
 Changing this value at runtime works after a small delay.
 
 ## `auto-update-channel`
@@ -2062,3 +2116,4 @@ Changing this configuration requires a full restart of
 Ghostty to take effect.
 
 This only works on macOS since only macOS has an auto-update feature.
+

@@ -57,14 +57,14 @@ in Arch Linux's `[extra]` repository.
 pacman -S ghostty
 ```
 
-Additionally a recipe for building and installing the tip of the `main`
+Additionally, a recipe for building and installing the tip of the `main`
 branch from source is available in the Arch User Repository (AUR) as
 [ghostty-git](https://aur.archlinux.org/packages/ghostty-git).
 Installation may be done with an AUR helper or from source per the
 [usual AUR instructions](https://wiki.archlinux.org/title/Arch_User_Repository#Installing_and_upgrading_packages).
 
 ```sh
-# Install Ghostty tip
+# Install Ghostty git
 yay -S ghostty-git
 ```
 
@@ -74,6 +74,16 @@ Ghostty is available in the official Gentoo repository.
 
 ```sh
 emerge -av ghostty
+```
+
+### NixOS
+
+Ghostty is available in [nixpkgs unstable](https://search.nixos.org/packages?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=ghostty).
+
+```
+environment.systemPackages = [
+  pkgs.ghostty
+];
 ```
 
 ### Nix Flake
@@ -147,6 +157,78 @@ dnf copr enable pgdev/ghostty
 dnf install ghostty
 ```
 
+Ghostty is also available in [Terra](https://terra.fyralabs.com/).
+
+ ```sh
+ dnf install --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.com/terra$releasever' terra-release
+ dnf install ghostty
+ ```
+
 <Warning>
-This is a user-maintained package and not an official Fedora package.
+These are user-maintained packages and not official Fedora packages.
+</Warning>
+
+#### Silverblue (and other immutable variants)
+
+Add the copr repository to your system:
+
+```sh
+sudo $EDITOR /etc/yum.repos.d/_copr:copr.fedorainfracloud.org:pgdev:ghostty.repo
+```
+
+```ini
+[copr:copr.fedorainfracloud.org:pgdev:ghostty]
+name=Copr repo for Ghostty owned by pgdev
+baseurl=https://download.copr.fedorainfracloud.org/results/pgdev/ghostty/fedora-$releasever-$basearch/
+type=rpm-md
+skip_if_unavailable=True
+gpgcheck=1
+gpgkey=https://download.copr.fedorainfracloud.org/results/pgdev/ghostty/pubkey.gpg
+repo_gpgcheck=0
+enabled=1
+enabled_metadata=1
+```
+
+After adding the repository, install Ghostty:
+
+```sh
+rpm-ostree update --install ghostty
+```
+
+### openSUSE
+
+Ghostty is available for openSUSE Tumbleweed:
+
+```sh
+zypper addrepo https://download.opensuse.org/repositories/X11:/terminals/openSUSE_Factory/X11:terminals.repo
+zypper refresh
+zypper install ghostty
+```
+
+Also available for openSUSE Factory ARM:
+
+```sh
+zypper addrepo https://download.opensuse.org/repositories/home:avindra/openSUSE_Factory_ARM/home:avindra.repo
+zypper refresh
+zypper install ghostty
+```
+
+<Warning>
+This is a user-maintained package. It is not an official openSUSE package.
+</Warning>
+
+### Ubuntu
+
+An Ubuntu package (.deb) is available from
+[ghostty-ubuntu](https://github.com/mkasberg/ghostty-ubuntu) on GitHub. After
+downloading the .deb for your Ubuntu version from the
+[Releases](https://github.com/mkasberg/ghostty-ubuntu/releases) page, install it
+as below:
+
+```sh
+sudo dpkg -i ghostty_*.deb
+```
+
+<Warning>
+This is a user-maintained package. It is not an official Ubuntu package.
 </Warning>

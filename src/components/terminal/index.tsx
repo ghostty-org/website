@@ -38,7 +38,7 @@ export default function Terminal({
   const handleScroll = (e: UIEvent<HTMLElement>) => {
     const { scrollTop, scrollHeight, clientHeight } = e.target as HTMLElement;
     const position = Math.ceil(
-      (scrollTop / (scrollHeight - clientHeight)) * 100
+      (scrollTop / (scrollHeight - clientHeight)) * 100,
     );
     if (position < 100) {
       setAutoScroll(false);
@@ -61,7 +61,6 @@ export default function Terminal({
   const padding = " ".repeat(whitespacePadding);
   return (
     <div
-      tabIndex={0}
       className={classNames(
         s.terminal,
         className,
@@ -75,7 +74,7 @@ export default function Terminal({
         {
           [s.adwaita]: platformStyle === "adwaita",
           [s.macos]: platformStyle === "macos",
-        }
+        },
       )}
       style={
         {

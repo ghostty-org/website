@@ -1,0 +1,60 @@
+.tagList {
+  list-style: none;
+  display: flex;
+  gap: 6px;
+
+  & .tag {
+    --tag-color: var(--brand-color);
+
+    &.blue {
+      --tag-color: var(--atom-one-blue)
+    }
+
+    &.green {
+      --tag-color: var(--atom-one-green)
+    }
+
+    &.yellow {
+      --tag-color: var(--atom-one-yellow)
+    }
+
+    &.purple {
+      --tag-color: var(--atom-one-purple)
+    }
+
+    &.red {
+      --tag-color: var(--atom-one-red)
+    }
+
+    &.orange {
+      --tag-color: var(--atom-one-orange)
+    }
+
+    &.teal {
+      --tag-color: var(--atom-one-teal)
+    }
+
+    &.gray {
+      --tag-color: var(--atom-one-gray)
+    }
+
+    &.white {
+      --tag-color: var(--atom-one-white)
+    }
+
+    position: relative;
+    padding: 0 8px 2px;
+    border: 1px solid transparent;
+    border-radius: var(--form-border-radius);
+    box-shadow: var(--form-box-shadow);
+    background-color: color-mix(in srgb, var(--tag-color) 50%, transparent);
+    color: var(--tag-color);
+
+
+    & .text {
+      font-size: 12px;
+      color: var(--white)
+    }
+
+  }
+}

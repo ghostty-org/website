@@ -1,7 +1,7 @@
 import { ButtonLink } from "@/components/link";
 import { NavTreeNode } from "@/components/nav-tree";
 import SectionWrapper from "@/components/section-wrapper";
-import { H1 } from "@/components/text";
+import { H1, P, Span } from "@/components/text";
 import NavFooterLayout from "@/layouts/nav-footer-layout";
 import { fetchLatestGhosttyVersion } from "@/lib/fetch-latest-ghostty-version";
 import { loadDocsNavTreeData } from "@/lib/fetch-nav";
@@ -44,6 +44,17 @@ export default function DownloadPage({
           <div className={s.header}>
             <Image src={SVGIMG} alt={""} />
             <H1 className={s.pageTitle}>Download Ghostty</H1>
+            <P weight="regular" className={s.versionInfo}>
+              Version {latestVersion} -{" "}
+              <a
+                href={
+                  "/docs/install/release-notes/" +
+                  latestVersion.replace(/\./g, "-")
+                }
+              >
+                Release Notes
+              </a>
+            </P>
           </div>
           <div className={s.downloadCards}>
             <GenericCard

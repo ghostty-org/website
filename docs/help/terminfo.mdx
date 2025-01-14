@@ -26,6 +26,12 @@ When you run Ghostty, it will automatically set the `TERM` environment
 variable to `xterm-ghostty` so long as it detects that the terminfo entry
 is available.
 
+<Important>
+**Ghostty's terminfo entry has been merged into ncurses.** As distros
+update their ncurses packages, Ghostty's terminfo entry will be available
+by default system-wide. This will take time to propagate.
+</Important>
+
 ## Sudo
 
 If you use `sudo`, sudo may reset your environment variables and you may see
@@ -42,7 +48,7 @@ this for you. To enable the shell-integration feature specify
 
 If you use SSH to connect to other machines that do not have Ghostty's
 terminfo entry, you will see error messages like `missing or unsuitable
-terminal: xterm-ghostty`.
+terminal: xterm-ghostty` or `WARNING: terminal is not fully functional`.
 
 Hopefully someday Ghostty will have terminfo entries pre-distributed
 everywhere, but in the meantime there are two ways to resolve the situation:
@@ -68,8 +74,9 @@ field as an alias` which can be safely ignored.
 The bundled version of `ncurses` is too old to emit a terminfo entry that can be
 read by more recent versions of `tic`, and the command will fail with a bunch
 of `Illegal character` messages. You can fix this by using Homebrew to install
-a recent version of `ncurses` and replacing `infocmp` above with the full path
-`/opt/homebrew/opt/ncurses/bin/infocmp`.
+a recent version of `ncurses` with `brew install ncurses` and replacing 
+`infocmp` above with the full path `/opt/homebrew/opt/ncurses/bin/infocmp` or 
+`/usr/local/opt/ncurses/bin/infocmp`.
 </Note>
 
 ### Configure SSH to fall back to a known terminfo entry

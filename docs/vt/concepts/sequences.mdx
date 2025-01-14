@@ -19,13 +19,16 @@ in a handful of different formats. Most begin with an escape character
 (`0x1B`), so control sequences are sometimes referred to as
 **escape codes** or **escape sequences**.
 
-There are five types of control sequences:
+There are eight types of control sequences:
 
 - Control Characters
 - Escape Sequences
-- CSI Sequences
-- DCS Sequences
-- APC Sequences
+- CSI Sequences ("Control Sequence Introducer")
+- OSC Sequences ("Operating System Command")
+- DCS Sequences ("Device Control Sequence")
+- SOS Sequences ("Start Of String")
+- PM Sequences ("Privacy Message")
+- APC Sequences ("Application Program Command")
 
 Each type of control sequence has a different format and purpose.
 They are described below along with their specific syntax. The
@@ -57,7 +60,7 @@ final = [0x30-0x7E]
 ## CSI Sequences
 
 CSI sequences are in the format below. An example CSI sequence
-is `ESC [ 1 ; 2 m`.
+is `ESC [ 1 ; 2 m`. CSI sequences are only capable of encoding integer values.
 
 ```
 csi_sequence = "0x1B" "[" params intermediates final
@@ -68,10 +71,54 @@ intermediates = [0x20-0x2F]*
 final = [0x40-0x7E]
 ```
 
+## OSC Sequences
+
+OSC Sequences are typically used to encode strings or other non-integer data to
+transmit between the terminal and the application. The format of an OSC sequence
+is below. An example OSC sequence is `OSC 2 ; 👻  Ghostty 👻  ST` (where `ST` is
+the String Terminator). By convention, OSC sequences *usually* have some integer
+identifier to identify the sequence.
+
+```
+osc_sequence = "0x1B" "]" data ST
+data = [0x20-0xFF]
+ST = "0x1B" "0x5C"
+```
+
 ## DCS Sequences
 
-Ghostty supports DCS sequences but these aren't yet documented.
+DCS Sequences are like a CSI sequence combined with an OSC sequence: they
+natively support integer parameters as well as string values. An example DSC
+sequence is `DCS + P q <string> ST`
+
+```
+dsc_sequence = "0x1B" "P" params intermediates final data ST
+params = param | param ";" params
+param = [0-9]
+intermediates = [0x20-0x2F]*
+final = [0x40-0x7E]
+data = [0x20-0xFF]
+ST = "0x1B" "0x5C"
+```
 
 ## APC Sequences
 
-Ghostty supports APC sequences but these aren't yet documented.
+Ghostty supports APC sequences. Currently there is only one supported APC
+sequence: the Kitty Graphics Protocol sequence. This is documented [here](https://sw.kovidgoyal.net/kitty/graphics-protocol/).
+
+```
+apc_sequence = "0x1B" "_" data ST
+data = [0x20-0xFF]
+ST = "0x1B" "0x5C"
+```
+
+## SOS and PM Sequences
+
+SOS and PM sequences are entirely ignored by Ghostty.
+
+```
+sos_sequence = "0x1B" "X" data ST
+pm_sequence = "0x1B" "^" data ST
+data = [0x20-0xFF]
+ST = "0x1B" "0x5C"
+```
