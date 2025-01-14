@@ -6,38 +6,16 @@ import { H3, H5, P } from "@/components/text";
 import { useState } from "react";
 import CodeBlock from "@/components/codeblock";
 import { CircleX } from "lucide-react";
+import { ShowcaseContent } from "../../types";
 
 interface ModalProps {
   onClose: () => void;
+  content: ShowcaseContent;
 }
 
-const code = `
-###------------------------------------
-##   Window
-#--------------------------------------
-title = Ghostty
-background-opacity = 0.6
-background-blur-radius = 8
-window-padding-x = 8
-window-padding-y = 8
-window-theme = dark
-# Remove when TMUX proficient  
-# window-decoration = false
-window-padding-color = extend
-
-###------------------------------------
-##   Font
-#--------------------------------------
-font-family = Berkeley Mono
-font-style = Regular
-font-size = 16
-
-font-family-bold = Berkeley Mono
-font-family-italic = Berkeley Mono
-`;
-
-export default function Modal({ onClose }: ModalProps) {
+export default function Modal({ onClose, content }: ModalProps) {
   const [viewMode, setViewMode] = useState<"detail" | "config">("detail");
+  const { code, title, description, author, images } = content;
 
   return (
     <section className={s.modal}>
@@ -46,8 +24,8 @@ export default function Modal({ onClose }: ModalProps) {
           <CircleX />
         </button>
         <Image
-          src="/placeholder.png"
-          alt="placeholder image"
+          src={images[0].src}
+          alt={images[0].altText}
           width={700}
           height={500}
         />
@@ -62,10 +40,9 @@ export default function Modal({ onClose }: ModalProps) {
           </div>
           {viewMode === "detail" ? (
             <DetailContent
-              title="Ghostty config"
-              author="Liam Canetti"
-              description="This is my ghostty config, there are many like it but this is my
-            own."
+              title={title}
+              author={author}
+              description={description}
             />
           ) : (
             <CodeBlock>{code}</CodeBlock>
