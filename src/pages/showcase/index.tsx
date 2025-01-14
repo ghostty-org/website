@@ -47,7 +47,7 @@ export default function Showcase({
         <SectionWrapper className={s.showcasePage}>
           <header className={s.header}>
             <H1>Showcase</H1>
-            <P>A curated list of Ghostty configs from our comminuty</P>
+            <P>A curated list of Ghostty configs from our community</P>
           </header>
           <ul className={s.list}>
             {showcaseItems.map((showcase) => (
