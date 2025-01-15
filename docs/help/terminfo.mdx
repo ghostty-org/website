@@ -70,6 +70,14 @@ col 31, terminal 'xterm-ghostty': older tic versions may treat the description
 field as an alias` which can be safely ignored.
 
 <Note>
+`tic` will normally place its results in the system database,
+`/usr/share/terminfo`.  This location can be overridden with the `TERMINFO`
+environment variable.  If `TERMINFO` is not set and `tic` cannot write to
+the system location, it will place the results in `$HOME/.terminfo` if it
+exists.  `man tic` for details.
+</Note>
+
+<Note>
 **macOS versions before Sonoma cannot use the system-bundled `infocmp`.**
 The bundled version of `ncurses` is too old to emit a terminfo entry that can be
 read by more recent versions of `tic`, and the command will fail with a bunch
