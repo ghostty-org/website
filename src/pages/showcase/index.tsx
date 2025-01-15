@@ -10,8 +10,8 @@ import s from "./ShowcasePage.module.css";
 import ListItem from "./components/list-item/list-item";
 import { useState } from "react";
 import Modal from "./components/modal";
-import { ShowcaseContent } from "./types";
 import { loadShowcaseContent } from "@/lib/fetch-showcase-content";
+import { ShowcaseContent } from "@/types/showcase";
 
 interface ShowcasePageProps {
   docsNavTree: NavTreeNode[];
@@ -57,7 +57,7 @@ export default function Showcase({
                 description={showcase.description}
                 image={{
                   src: showcase.images[0].src,
-                  alt: showcase.images[0].altText,
+                  alt: showcase.images[0].alt,
                   width: 500,
                   height: 300,
                 }}

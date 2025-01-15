@@ -1,13 +1,10 @@
-interface Image {
-  src: string;
-  altText: string;
-}
+import { ImageProps } from "next/image";
 
 export interface ShowcaseContent {
   id: string;
   title: string;
   author: string;
   description: string;
-  images: Image[];
+  images: Pick<ImageProps, "src" | "alt">[];
   code: string;
 }

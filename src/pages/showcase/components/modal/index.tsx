@@ -6,7 +6,7 @@ import { H3, H5, P } from "@/components/text";
 import { useState } from "react";
 import CodeBlock from "@/components/codeblock";
 import { CircleX } from "lucide-react";
-import { ShowcaseContent } from "../../types";
+import { ShowcaseContent } from "@/types/showcase";
 
 interface ModalProps {
   onClose: () => void;
@@ -25,7 +25,7 @@ export default function Modal({ onClose, content }: ModalProps) {
         </button>
         <Image
           src={images[0].src}
-          alt={images[0].altText}
+          alt={images[0].alt}
           width={700}
           height={500}
         />
