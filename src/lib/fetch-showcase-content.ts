@@ -1,5 +1,5 @@
+import { ShowcaseContent } from "@/types/showcase";
 import { promises as fs } from "fs";
-import { ShowcaseContent } from "@/pages/showcase/types";
 
 export async function loadShowcaseContent(): Promise<ShowcaseContent[]> {
   const docsFilePath = `showcase/showcaseConfig.json`;
