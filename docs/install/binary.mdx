@@ -235,14 +235,16 @@ This is a user-maintained package. It is not an official Ubuntu package.
 
 ### Debian
 
-A Debian package (.deb) is available from
-[ghostty-debian](https://github.com/dariogriffo/ghostty-debian) on GitHub. After
-downloading the .deb for your Ubuntu version from the
-[Releases](https://github.com/dariogriffo/ghostty-debian/releases) page, install it
-as below:
+_Unoficial_ Debian packages are available from
+[ghostty-debian](https://github.com/dariogriffo/ghostty-debian) on GitHub
+and on [debian.griffo.io] (https://debian.griffo.io)
+
+Installation via apt:
 
 ```sh
-sudo dpkg -i ghostty_*.deb
+curl -sS https://debian.griffo.io/3B9335DF576D3D58059C6AA50B56A1A69762E9FF.asc | gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/debian.griffo.io.gpg
+echo "deb https://debian.griffo.io//apt $(lsb_release -sc 2>/dev/null) main" | sudo tee /etc/apt/sources.list.d/debian.griffo.io.list
+sudo apt install ghostty
 ```
 
 <Warning>
