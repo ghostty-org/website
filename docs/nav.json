@@ -37,6 +37,11 @@
           "children": [
             {
               "type": "link",
+              "path": "/",
+              "title": "Overview"
+            },
+            {
+              "type": "link",
               "path": "/1-0-1",
               "title": "1.0.1"
             }
