@@ -140,6 +140,15 @@ sudo zypper install gtk4-devel libadwaita-devel pkgconf ncurses-devel
 sudo eopkg install libgtk-4-devel libadwaita-devel pkgconf zig
 ```
 
+#### Alpine
+
+```sh
+doas apk add gtk4.0-dev libadwaita-dev pkgconf ncurses
+```
+
+On Alpine, you should be on edge version to avoid package conflicts. 
+
+
 <Warning>
 GTK 4.14 on Wayland has a bug which may cause an immediate crash.
 There is an
