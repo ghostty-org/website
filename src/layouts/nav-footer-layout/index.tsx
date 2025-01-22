@@ -24,6 +24,8 @@ type NavFooterLayoutProps = RootLayoutProps & {
 };
 
 export default function NavFooterLayout(props: NavFooterLayoutProps) {
+  const currentYear = new Date().getFullYear();
+
   const { children, docsNavTree, ...otherProps } = props;
   return (
     <RootLayout {...otherProps}>
@@ -44,7 +46,7 @@ export default function NavFooterLayout(props: NavFooterLayoutProps) {
             href: "/download",
           },
         ]}
-        copyright="© 2024 Mitchell Hashimoto"
+        copyright={`© ${currentYear} Mitchell Hashimoto`}
       />
     </RootLayout>
   );
