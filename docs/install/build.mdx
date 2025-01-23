@@ -84,6 +84,14 @@ Required dependencies:
   * `libadwaita` (unless using `-Dgtk-adwaita=false`)
   * `pkg-config`
 
+<Warning>
+GTK 4.14 on Wayland has a bug which may cause an immediate crash.
+There is an
+[open issue](https://gitlab.gnome.org/GNOME/gtk/-/issues/6589)
+to track this GTK bug. You can workaround this issue by running ghostty with
+`GDK_DEBUG=gl-disable-gles ghostty`.
+</Warning>
+
 ### Alpine
 
 ```sh
@@ -153,13 +161,11 @@ sudo zypper install gtk4-devel libadwaita-devel pkgconf ncurses-devel
 sudo eopkg install libgtk-4-devel libadwaita-devel pkgconf zig
 ```
 
-<Warning>
-GTK 4.14 on Wayland has a bug which may cause an immediate crash.
-There is an
-[open issue](https://gitlab.gnome.org/GNOME/gtk/-/issues/6589)
-to track this GTK bug. You can workaround this issue by running ghostty with
-`GDK_DEBUG=gl-disable-gles ghostty`.
-</Warning>
+#### Void
+
+```sh
+sudo xbps-install gtk4-devel libadwaita-devel pkg-config zig
+```
 
 #### Broken Dependencies
 
