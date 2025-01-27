@@ -9,7 +9,6 @@
 
   /* Adwaita colors (see https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1.2/named-colors.html) */
   --adw-headerbar-color: #303030;
-  --adw-headerbar-backdrop-color: #242424;
   --adw-headerbar-shade-color: rgba(0, 0, 0, 0.36);
 
   &.fontXTiny {
@@ -57,17 +56,24 @@
     align-items: center;
     position: relative;
     border-radius: 9px 9px 0px 0px;
-    padding: var(--padding) 11px;
+    padding: var(--padding);
 
-    grid-template: "controls title .";
+    grid-template: "start title end";
     grid-template-columns: 1fr 1fr 1fr;
-
-    transition: 0.1s background;
 
     & .windowControls {
       list-style: none;
       display: flex;
-      grid-area: controls;
+
+      &.start {
+        justify-content: start;
+        grid-area: start;
+      }
+
+      &.end {
+        justify-content: end;
+        grid-area: end;
+      }
 
       & li {
         width: var(--control-size);
@@ -75,7 +81,6 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        transition: 0.1s background;
 
         &.circularButton {
           background: var(--gray-3);
@@ -119,19 +124,13 @@
     box-shadow: 0px 2px 1px var(--adw-headerbar-shade-color);
 
     & .header {
-      background: var(--adw-headerbar-backdrop-color);
-      /* Adwaita buttons are to the right by default (yes, you can get left buttons w/ GNOME Tweaks) */
-      grid-template-areas: ". title controls";
+      background: var(--adw-headerbar-color);
       border-bottom: 2px var(--adw-headerbar-shade-color);
 
       & .windowControls {
         gap: 12px;
       }
 
-      & .windowControls {
-        /* Arrange buttons from right to left */
-        flex-direction: row-reverse;
-      }
       & .title {
         color: white;
         font-weight: 800;
@@ -140,20 +139,18 @@
         color: white;
       }
     }
-
-    & .header {
-      background: var(--adw-headerbar-color);
-    }
   }
 
   &.macos {
     --control-size: 12px;
 
-    & .windowControls {
-      gap: 8px;
+    & .header {
+      padding: var(--padding) 11px;
     }
 
     & .windowControls {
+      gap: 8px;
+
       & li:first-child {
         background: var(--color-sunset-orange);
       }
@@ -165,5 +162,4 @@
       }
     }
   }
-
 }

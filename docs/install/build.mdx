@@ -41,6 +41,13 @@ git clone https://github.com/ghostty-org/ghostty
 cd ghostty
 ```
 
+To build a stable release, check out the associated tag. If you skip this
+step you'll build the [tip version](/docs/install/pre).
+
+```
+git checkout <tag>
+```
+
 With Zig and necessary dependencies installed, a binary can then be built
 using `zig build`:
 
@@ -76,6 +83,20 @@ Required dependencies:
   * `gtk4`
   * `libadwaita` (unless using `-Dgtk-adwaita=false`)
   * `pkg-config`
+
+<Warning>
+GTK 4.14 on Wayland has a bug which may cause an immediate crash.
+There is an
+[open issue](https://gitlab.gnome.org/GNOME/gtk/-/issues/6589)
+to track this GTK bug. You can workaround this issue by running ghostty with
+`GDK_DEBUG=gl-disable-gles ghostty`.
+</Warning>
+
+### Alpine
+
+```sh
+doas apk add gtk4.0-dev libadwaita-dev pkgconf ncurses
+```
 
 #### Arch Linux
 
@@ -125,22 +146,26 @@ emerge -av libadwaita gtk
 #### openSUSE Tumbleweed
 
 ```sh
-sudo zypper install gtk4-tools libadwaita-devel pkgconf-pkg-config zig
+sudo zypper install gtk4-devel libadwaita-devel pkgconf ncurses-devel zig
+```
+
+#### openSUSE Leap
+
+```sh
+sudo zypper install gtk4-devel libadwaita-devel pkgconf ncurses-devel
 ```
 
 #### Solus
 
 ```sh
-sudo eopkg install libgtk-4-devel libadwaita-devel perl-extutils-pkgconfig
+sudo eopkg install libgtk-4-devel libadwaita-devel pkgconf zig
 ```
 
-<Warning>
-GTK 4.14 on Wayland has a bug which may cause an immediate crash.
-There is an
-[open issue](https://gitlab.gnome.org/GNOME/gtk/-/issues/6589)
-to track this GTK bug. You can workaround this issue by running ghostty with
-`GDK_DEBUG=gl-disable-gles ghostty`.
-</Warning>
+#### Void
+
+```sh
+sudo xbps-install gtk4-devel libadwaita-devel pkg-config zig
+```
 
 #### Broken Dependencies
 
