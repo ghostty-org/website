@@ -408,10 +408,12 @@ be fixed in a future update:
 ## `background`
 
 Background color for the window.
+Specified as either hex (`#RRGGBB` or `RRGGBB`) or a named X11 color.
 
 ## `foreground`
 
 Foreground color for the window.
+Specified as either hex (`#RRGGBB` or `RRGGBB`) or a named X11 color.
 
 ## `selection-foreground`
 ## `selection-background`
@@ -419,6 +421,7 @@ Foreground color for the window.
 The foreground and background color for selection. If this is not set, then
 the selection color is just the inverted window background and foreground
 (note: not to be confused with the cell bg/fg).
+Specified as either hex (`#RRGGBB` or `RRGGBB`) or a named X11 color.
 
 ## `selection-invert-fg-bg`
 
@@ -446,16 +449,21 @@ This value does not apply to Emoji or images.
 ## `palette`
 
 Color palette for the 256 color form that many terminal applications use.
-The syntax of this configuration is `N=HEXCODE` where `N` is 0 to 255 (for
-the 256 colors in the terminal color table) and `HEXCODE` is a typical RGB
-color code such as `#AABBCC`.
+The syntax of this configuration is `N=COLOR` where `N` is 0 to 255 (for
+the 256 colors in the terminal color table) and `COLOR` is a typical RGB
+color code such as `#AABBCC` or `AABBCC`, or a named X11 color.
 
-For definitions on all the codes [see this cheat
-sheet](https://www.ditig.com/256-colors-cheat-sheet).
+The palette index can be in decimal, binary, octal, or hexadecimal.
+Decimal is assumed unless a prefix is used: `0b` for binary, `0o` for octal,
+and `0x` for hexadecimal.
+
+For definitions on the color indices and what they canonically map to,
+[see this cheat sheet](https://www.ditig.com/256-colors-cheat-sheet).
 
 ## `cursor-color`
 
 The color of the cursor. If this is not set, a default will be chosen.
+Specified as either hex (`#RRGGBB` or `RRGGBB`) or a named X11 color.
 
 ## `cursor-invert-fg-bg`
 
@@ -514,6 +522,7 @@ Valid values are:
 
 The color of the text under the cursor. If this is not set, a default will
 be chosen.
+Specified as either hex (`#RRGGBB` or `RRGGBB`) or a named X11 color.
 
 ## `cursor-click-to-move`
 
@@ -573,7 +582,7 @@ Multiplier for scrolling distance with the mouse wheel. Any value less
 than 0.01 or greater than 10,000 will be clamped to the nearest valid
 value.
 
-A value of "1" (default) scrolls te default amount. A value of "2" scrolls
+A value of "1" (default) scrolls the default amount. A value of "2" scrolls
 double the default amount. A value of "0.5" scrolls half the default amount.
 Et cetera.
 
@@ -615,6 +624,8 @@ rendering a semi-transparent rectangle over the split. This sets the color of
 that rectangle and can be used to carefully control the dimming effect.
 
 This will default to the background color.
+
+Specified as either hex (`#RRGGBB` or `RRGGBB`) or a named X11 color.
 
 ## `command`
 
@@ -762,7 +773,7 @@ default value of the running program.
 This configuration can be reloaded at runtime. If it is set, the title
 will update for all windows. If it is unset, the next title change escape
 sequence will be honored but previous changes will not retroactively
-be set. This latter case may require you restart programs such as neovim
+be set. This latter case may require you to restart programs such as Neovim
 to get the new title.
 
 ## `class`
@@ -1217,11 +1228,15 @@ Background color for the window titlebar. This only takes effect if
 window-theme is set to ghostty. Currently only supported in the GTK app
 runtime.
 
+Specified as either hex (`#RRGGBB` or `RRGGBB`) or a named X11 color.
+
 ## `window-titlebar-foreground`
 
 Foreground color for the window titlebar. This only takes effect if
 window-theme is set to ghostty. Currently only supported in the GTK app
 runtime.
+
+Specified as either hex (`#RRGGBB` or `RRGGBB`) or a named X11 color.
 
 ## `resize-overlay`
 
@@ -1879,9 +1894,6 @@ This only has an effect when `macos-icon` is set to `custom-style`.
 
 The color of the ghost in the macOS app icon.
 
-The format of the color is the same as the `background` configuration;
-see that for more information.
-
 <Note>
  This configuration is required when `macos-icon` is set to
 `custom-style`.
@@ -1889,14 +1901,15 @@ see that for more information.
 
 This only has an effect when `macos-icon` is set to `custom-style`.
 
+Specified as either hex (`#RRGGBB` or `RRGGBB`) or a named X11 color.
+
 ## `macos-icon-screen-color`
 
 The color of the screen in the macOS app icon.
 
 The screen is a gradient so you can specify multiple colors that
-make up the gradient. Colors should be separated by commas. The
-format of the color is the same as the `background` configuration;
-see that for more information.
+make up the gradient. Comma-separated colors may be specified as
+as either hex (`#RRGGBB` or `RRGGBB`) or as named X11 colors.
 
 <Note>
  This configuration is required when `macos-icon` is set to

@@ -133,6 +133,23 @@ This isn't an official package in Nixpkgs but it is officially maintained
 by the Ghostty project so we put it in the "official" section.
 </Note>
 
+
+### openSUSE
+
+Ghostty is available as [`ghostty`](https://software.opensuse.org/package/ghostty) in the official openSUSE Tumbleweed repository.
+
+```sh
+zypper install ghostty
+```
+
+### Solus
+
+Ghostty is available in the official package repository.
+
+```sh
+eopkg install ghostty
+```
+
 ### Void Linux
 
 Ghostty is available in the official package repository.
@@ -147,6 +164,16 @@ The packages in this section provide binary installs for Ghostty but
 are not official packages within the associated distributions. These
 packages are maintained by community members and as such a higher level
 of caution should be taken when installing them.
+
+### Debian
+
+Ghostty is available in [this community-maintained repository](https://github.com/clayrisser/debian-ghostty/).
+
+Instructions for each version are available in the README of the repository.
+
+<Warning>
+These are user-maintained packages and not official Debian packages.
+</Warning>
 
 ### Fedora
 
@@ -195,28 +222,6 @@ After adding the repository, install Ghostty:
 rpm-ostree update --install ghostty
 ```
 
-### openSUSE
-
-Ghostty is available for openSUSE Tumbleweed:
-
-```sh
-zypper addrepo https://download.opensuse.org/repositories/X11:/terminals/openSUSE_Factory/X11:terminals.repo
-zypper refresh
-zypper install ghostty
-```
-
-Also available for openSUSE Factory ARM:
-
-```sh
-zypper addrepo https://download.opensuse.org/repositories/home:avindra/openSUSE_Factory_ARM/home:avindra.repo
-zypper refresh
-zypper install ghostty
-```
-
-<Warning>
-This is a user-maintained package. It is not an official openSUSE package.
-</Warning>
-
 ### Ubuntu
 
 An Ubuntu package (.deb) is available from
@@ -226,9 +231,31 @@ downloading the .deb for your Ubuntu version from the
 as below:
 
 ```sh
-sudo dpkg -i ghostty_*.deb
+sudo apt install ./ghostty_*.deb
 ```
 
 <Warning>
 This is a user-maintained package. It is not an official Ubuntu package.
+</Warning>
+
+### Universal AppImage
+
+Ghosty is available as a Universal AppImage from
+[ghostty-appimage](https://github.com/psadi/ghostty-appimage) on GitHub.
+Upon downloading the `.appimage` file from the
+[Releases](https://github.com/psadi/ghostty-appimage/releases) page, follow the
+below instructions:
+
+```bash
+chmod +x Ghostty-x86_64.AppImage
+./Ghostty-x86_64.AppImage
+```
+
+Alternatively, setup can be done graphically by right-clicking
+the `Ghostty-x86_64.AppImage` file, selecting **Properties**, navigating to
+the **Permissions** tab and checking the box that says **Executable as
+Program**.
+
+<Warning>
+This is a user-maintained AppImage. It is not an official AppImage.
 </Warning>
