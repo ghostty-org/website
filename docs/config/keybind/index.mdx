@@ -117,6 +117,26 @@ keybinds will always consume the input regardless of this setting.
 Since they are not associated with a specific terminal surface,
 they're never encoded.
 
+#### `performabe:`
+
+Only consume the input if the action is able to be performed. For example,
+the `copy_to_clipboard` action will only consume the input if there is a
+selection to copy. If there is no selection, Ghostty behaves as if the
+keybind was not set. This has no effect with `global:` or `all:`-prefixed
+keybinds. For key sequences, this will reset the sequence if the action is
+not performable (acting identically to not having a keybind set at all).
+
+Performable keybinds will not appear as menu shortcuts in the application
+menu. This is because the menu shortcuts force the action to be performed
+regardless of the state of the terminal. Performable keybinds will still
+work, they just won't appear as a shortcut label in the menu.
+
+Example:
+
+```ini
+keybind = performable:ctrl+c=copy_to_clipboard
+```
+
 ## Action
 
 Action is what happens when the trigger is activated. It is

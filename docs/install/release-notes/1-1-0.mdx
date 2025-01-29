@@ -1,0 +1,590 @@
+---
+title: Ghostty 1.1.0
+description: |-
+  Release notes for Ghostty 1.1.0, released on January 30, 2025.
+---
+
+Ghostty 1.1.0 features **1 month of work** with changes from
+**84 contributors** over **564 commits.** The focus of this release
+remains on critical bug fixes and quality of life improvements based
+on feedback from the initial 1.0 release.
+
+## Security
+
+- [GHSA-98wc-794w-gjx3](https://github.com/ghostty-org/ghostty/security/advisories/GHSA-98wc-794w-gjx3).
+  Fixed an issue where Ghostty would leak some file descriptors to the
+  running shell or command.
+
+## Highlights
+
+### Server Side Decorations (SSD) on Linux
+
+PR:
+[#4630](https://github.com/ghostty-org/ghostty/pull/4630),
+[#4723](https://github.com/ghostty-org/ghostty/pull/4723),
+[#5124](https://github.com/ghostty-org/ghostty/pull/5124)
+
+On Linux in particular, window decorations have a wide variety of
+styles and behaviors. Ghostty's previous behavior was to always use
+client-side decorations (CSD), which made Ghostty look and feel too
+much like a "GNOME" application. In particular, Ghostty looked out of
+place on popular desktop environments like KDE Plasma.
+
+Ghostty 1.1 on Linux now supports server-side decorations (SSD) for
+compositors that support it. This allows Ghostty to look and feel more
+like a native application on a wider variety of desktop environments.
+This can be disabled if you prefer CSD or no decorations at all.
+
+<p align="center">
+  <a href="/images/1-1-0/csd.png" target="_blank">
+    <img src="/images/1-1-0/csd.png" width="360" style={{maxWidth: "50%", marginInline: "5px"}} />
+  </a>
+  <a href="/images/1-1-0/ssd.png" target="_blank">
+    <img src="/images/1-1-0/ssd.png" width="360" style={{maxWidth: "50%", marginInline: "5px"}} />
+  </a>
+</p>
+
+(Left/Top: Old Client-Side Decorations, Right/Bottom: New Server-Side Decorations)
+
+The `window-decoration` configuration option now has a new value `auto`
+which will use SSD if the compositor supports it and prefers it. A value
+of `server` will force SSD (if available). A value of `client` will force
+client-side decorations. And a value of `none` will disable decorations
+entirely.
+
+SSD is only supported on Wayland. Ghostty uses the
+[KDE Server Decoration](https://wayland.app/protocols/kde-server-decoration)
+protocol. Despite the name, this protocol is supported on almost every
+major Wayland compositor, not just KDE. For X11, we could not find a
+well-supported protocol for SSD, so we continue to use CSD.
+
+Future versions of Ghostty will continue to improve the native look and
+feel across different desktop environments in Linux to the best of our
+ability and protocol availability. For example, we're looking into native
+menu bars, currently.
+
+<Important>
+Future versions of Ghostty will remove the `gtk-adwaita` option
+and force a dependency on libadwaita. This is relevant to this change
+because we found the vast majority of users who wanted SSD were using
+`gtk-adwaita = false` to achieve this (which only worked in some cases).
+With the new SSD support, this workaround is no longer necessary.
+See [the dedication section](#gtk:-forcing-a-dependency-on-libadwaita) for more
+details.
+</Important>
+
+### Input Method Editor (IME) Improvements
+
+PR:
+[#3567](https://github.com/ghostty-org/ghostty/pull/3567),
+[#4332](https://github.com/ghostty-org/ghostty/pull/4332),
+[#4539](https://github.com/ghostty-org/ghostty/issues/4539),
+[#4854](https://github.com/ghostty-org/ghostty/pull/4854),
+[#4933](https://github.com/ghostty-org/ghostty/pull/4933),
+[#4999](https://github.com/ghostty-org/ghostty/pull/4999)
+
+For both macOS and Linux, we've tested IME with the following
+paradigms: CJK (Chinese, Japanese, Korean), dead keys (such as
+accented characters), emoji, Unicode hex input, and more and
+have massively improved the reliability and consistency of IME
+input.
+
+On Linux, we've tested both `fcitx` and `ibus` under both X11 and
+Wayland. We also tested multiple versions of each (in particular
+versions that are common in LTS distributions). We found a bug in
+ibus 1.5.29 that caused deadkey input to become "stuck" and worked
+around it.
+
+On macOS, we've ensured in particular that the AquaSKK and macSKK
+Japanese language input methods work out of the box, although we've
+also tested other IMEs and found them to work well as well.
+
+### "Performable" Keybindings
+
+PR:
+[#4328](https://github.com/ghostty-org/ghostty/pull/4328)
+
+Keybinds support a new `performable:` prefix. This prefix indicates that
+the keybind should only consume the input if the action is performed.
+
+For example, the keybind below will only consume `ctrl+c` if there is
+text able to be copied. Otherwise, `ctrl+c` will be passed to the shell
+(typically causing an interrupt signal).
+
+```
+keybind = performable:ctrl+c=copy_to_clipboard
+```
+
+<Note>
+Not all actions support `performable:`. Namely, many actions are always
+performed (e.g. `text`, `new_tab`, etc.). The performable prefix only
+applies to actions that have a meaningful "perform" state.
+</Note>
+
+### macOS: Alpha Blending Improvements
+
+PR:
+[#4913](https://github.com/ghostty-org/ghostty/pull/4913),
+[#5401](https://github.com/ghostty-org/ghostty/pull/5401)
+
+Alpha blending is the process of determining the result when a semi-transparent
+foreground color is placed in front of a background color. This affects the
+edges of text, and any images (displayed with Kitty Graphic Protocol) which
+have transparency in them.
+
+Before, this was performed by blending colors in the sRGB color space, which
+causes darkening around the edges of text when the foreground and background
+colors are different highly saturated colors. With Ghostty 1.1 on macOS, alpha
+blending is now performed in the P3 color space by default, which reduces the
+darkening issue thanks to the wider gamut and matches the appearance of native
+macOS applications like Terminal.app and TextEdit.
+
+Additionally, a configuration, `alpha-blending`, has been added to control this.
+The default is `native`, which has been described, but two more options are
+available:
+
+- `linear` performs blending in a linear color space, which is technically
+correct but has downsides like dark text seeming too thin and light text
+seeming too thick.
+- `linear-corrected` is like `linear` but applies a correction step to text
+which makes it appear extremely close to `native`, but without _any_ darkening
+problems.
+
+Below you can compare (from left to right) the old blending, the new `native`
+blending, `linear` blending, and `linear-corrected` blending. You may have to
+zoom in to see the differences correctly.
+
+<p align="center">
+  <img src="/images/1-1-0/srgb_blending.png" width="180" style={{maxWidth: "20%", marginInline: "5px"}} />
+  <img src="/images/1-1-0/p3_blending.png"  width="180" style={{maxWidth: "20%", marginInline: "5px"}} />
+  <img src="/images/1-1-0/linear_blending.png" width="180" style={{maxWidth: "20%", marginInline: "5px"}} />
+  <img src="/images/1-1-0/linear-corrected_blending.png" width="180" style={{maxWidth: "20%", marginInline: "5px"}} />
+</p>
+
+This is currently only available on macOS, but work is underway which should
+bring it to Linux as well in the future.
+
+### macOS: Quick Terminal Improvements
+
+PR:
+[#4049](https://github.com/ghostty-org/ghostty/pull/4049),
+[#4501](https://github.com/ghostty-org/ghostty/pull/4501),
+[#4999](https://github.com/ghostty-org/ghostty/pull/4999),
+[#5361](https://github.com/ghostty-org/ghostty/pull/5361)
+
+The quick terminal now works with native fullscreen windows,
+space changes while the quick terminal is open, IME widgets, left/right
+docks, and more.
+
+A new configuration `quick-terminal-space-behavior` has been added to
+control how the quick terminal reacts to changing macOS spaces while it
+is open. The default behavior is to follow the active space (`move`).
+You can also set it to `remain` to stay on the space it was opened on.
+
+## Full List
+
+[Full list of closed issues on GitHub](https://github.com/ghostty-org/ghostty/milestone/3?closed=1).
+
+In each section, we try to sort improvements before bug fixes.
+
+- Add the new `performable:` prefix to keybindings to only consume
+  the input if the action is performed. See
+  ["Performable" Keybindings](#%22performable%22-keybindings).
+  [#4328](https://github.com/ghostty-org/ghostty/pull/4328)
+- `shell-integration-features` now sets the proper environment variables
+  even when `shell-integration` is disabled. This is useful for environments
+  that manually source shell integration.
+  [#5046](https://github.com/ghostty-org/ghostty/pull/5046)
+- A new keybinding action `copy_url_to_clipboard` is available to copy
+  the URL (if any) under the cursor to the clipboard.
+  [#4633](https://github.com/ghostty-org/ghostty/pull/4633)
+- A new keybinding action `close_tab` can be used to close the tab and
+  all splits within the tab. This works on both macOS and GTK builds.
+  [#4331](https://github.com/ghostty-org/ghostty/pull/4331)
+- IPv6 URLs are now automatically turned into hyperlinks.
+  [#4743](https://github.com/ghostty-org/ghostty/issues/4743)
+- Filepaths without an explicit `file://` protocol can now be clicked
+  like any other hyperlink.
+  [#4713](https://github.com/ghostty-org/ghostty/issues/4713)
+- New configuration `split-divider-color` to explicitly set the divider
+  color for splits. If this is not set, the previous default behavior of
+  automatically determining the color based on your terminal background
+  color is used.
+  [#4236](https://github.com/ghostty-org/ghostty/issues/4326)
+- The `palette` configuration option now allows binary, octal, and hexadecimal
+  keys.
+  [#4298](https://github.com/ghostty-org/ghostty/issues/4298)
+- `goto_split` keybind parameter `top` and `bottom` have been renamed to
+  `up` and `down`, respectively. The old names are still supported for
+  backwards compatibility.
+  [#3427](https://github.com/ghostty-org/ghostty/pull/3427)
+- bash: use `\w` instead of `$PWD` for abbreviated titles.
+  [#4656](https://github.com/ghostty-org/ghostty/pull/4656)
+- bash: drop dependency on `sed`, which significantly reduces
+  per-prompt overhead
+  [#5141](https://github.com/ghostty-org/ghostty/pull/5141),
+  [#5142](https://github.com/ghostty-org/ghostty/pull/5142)
+- fish: fix sudo integration
+  [#5276](https://github.com/ghostty-org/ghostty/pull/5276)
+- Fix scenario where CPU would spin at 100% if `wait-after-command` was enabled.
+  [#4884](https://github.com/ghostty-org/ghostty/pull/4884)
+- Fix a possible memory corruption race condition when the renderer grid
+  size and terminal grid size mismatched.
+  [#5265](https://github.com/ghostty-org/ghostty/pull/5265)
+- Triple-click-and-drag now works when the triple click starts from a
+  blank line.
+  [#5068](https://github.com/ghostty-org/ghostty/pull/5068)
+- `super+triple-click` properly selects command output if the command line
+  wrapped.
+  [#5373](https://github.com/ghostty-org/ghostty/issues/5373)
+- vt: Fix incorrect alpha blending for Kitty image protocol.
+  [#5189](https://github.com/ghostty-org/ghostty/pull/5189)
+- vt: More robust and correct handling of mixed semicolon and colon
+  usage in SGR sequences. Practically, fixes some styling within the
+  Kakoune editor.
+  [#5022](https://github.com/ghostty-org/ghostty/pull/5022)
+- The `cursor-invert-fg-bg` option now works well with the invert VT sequence.
+  [#4777](https://github.com/ghostty-org/ghostty/issues/4777)
+- Remove `VTE_VERSION` from environment prior to executing shell. This
+  fixes issues where VTE's shell integration would mistakingly think Ghostty
+  was libvte-based.
+  [#4710](https://github.com/ghostty-org/ghostty/issues/4710)
+- Fix an issue that didn't allow an initial window size smaller than
+  `640x480`
+  [#4688](https://github.com/ghostty-org/ghostty/issues/4688)
+- vt: ConEmu OSC `9;4` parsing better matches ConEmu logic, fixing an
+  issue with some versions of systemd.
+  [#4727](https://github.com/ghostty-org/ghostty/issues/4727)
+- The `unbind` keybind action now also unbinds any matching physical
+  mapping.
+  [#4703](https://github.com/ghostty-org/ghostty/issues/4703)
+- Non-existent `config-file` now properly shows an error when `theme`
+  is also set.
+  [#4509](https://github.com/ghostty-org/ghostty/issues/4509)
+- vt: ConEmu OSC `9;1`, `9;2`, `9;3`, `9;5` are now parsed and ignored so they
+  don't conflict with OSC 9 desktop notifications.
+  [#4644](https://github.com/ghostty-org/ghostty/issues/4644),
+  [#4327](https://github.com/ghostty-org/ghostty/issues/4327),
+  [#4948](https://github.com/ghostty-org/ghostty/issues/4948),
+  [#4447](https://github.com/ghostty-org/ghostty/issues/4447)
+- Inspector: Memory values now specify units rather than raw bytes
+  [#4549](https://github.com/ghostty-org/ghostty/issues/4549)
+- Fix control sequence (e.g. `ctrl+c`) encoding in legacy mode for
+  various keyboard layouts such as Russian.
+  [#4518](https://github.com/ghostty-org/ghostty/issues/4518)
+- vt: Kitty graphics protocol temporary files must be named according to
+  the specification.
+  [#4451](https://github.com/ghostty-org/ghostty/issues/4451)
+- The default file limit (`RLIMIT_NOFILE`) is restored for the executed
+  shell or command.
+  [#4241](https://github.com/ghostty-org/ghostty/issues/4241)
+- Multiple `font-feature` values can be comma-separated. Previously,
+  you had to repeat `font-feature` multiple times. This is still supported.
+  [#3128](https://github.com/ghostty-org/ghostty/issues/3128)
+- vt: CSI intermediate bytes are now validated for all supported CSI
+  sequences.
+  [#3122](https://github.com/ghostty-org/ghostty/issues/3122)
+- Selected text no longer remains after a `clear_screen` keybinding.
+  [#3414](https://github.com/ghostty-org/ghostty/issues/3414)
+- Tilde (`~`) in filepaths now expands to the user's home directory
+  in path-typed configuration values.
+  [#3328](https://github.com/ghostty-org/ghostty/issues/3328)
+- Cache data now respects `XDG_CACHE_HOME`.
+  [#3458](https://github.com/ghostty-org/ghostty/pull/3458)
+- Default configuration file will now be created even if the parent
+  directories do not exist.
+  [#4295](https://github.com/ghostty-org/ghostty/pull/4295)
+- Inspector: Font size now shows fractional values.
+  [#4371](https://github.com/ghostty-org/ghostty/pull/4371)
+
+### macOS
+
+- macOS: Consistent and correct alpha blending for correct colors.
+  Options for matching Apple-style alpha blending as well as an
+  experimental "linear" blending mode that we think produces better
+  results for certain foreground/background color combinations.
+  See [macOS Alpha Blending Improvements](#macos-alpha-blending-improvements).
+  [#4913](https://github.com/ghostty-org/ghostty/pull/4913)
+- macOS: New config option `quick-terminal-space-behavior` to configure
+  how the quick terminal reacts to changing macOS spaces while it is open.
+  The default behavior is to follow the active space (remain open).
+  [#4049](https://github.com/ghostty-org/ghostty/pull/4049)
+- macOS: Selection clipboard is now supported. The `copy-on-select` option
+  now defaults to true for macOS. A new "Paste Selection" menu item is
+  available on macOS. This behavior matches Terminal.app.
+  [#4733](https://github.com/ghostty-org/ghostty/pull/4733)
+- macOS: A very short delay has been introduced for the default window
+  title to prevent a FOUC ("flash of unknown content") for new surfaces.
+  [#4799](https://github.com/ghostty-org/ghostty/pull/4799)
+- macOS: `font-thicken` now accepts an optional numeric value to adjust
+  the thickening factor.
+  [#4531](https://github.com/ghostty-org/ghostty/issues/4531)
+- macOS: Explicit Ghostty keybindings now take priority over
+  system keybindings (e.g. `cmd+h` can now be bound).
+  [#4591](https://github.com/ghostty-org/ghostty/issues/4591)
+- macOS: Non-boolean `font-feature` values such as `cv02 = 2` are now
+  supported.
+  [#3128](https://github.com/ghostty-org/ghostty/issues/3128)
+- macOS: Cache data now uses macOS system APIs to store data in the
+  OS-configured cache directory (typically `~/Library/Caches`).
+  [#3458](https://github.com/ghostty-org/ghostty/pull/3458)
+- macOS: Autohide the dock if the quick terminal would overlap with it.
+  [#5361](https://github.com/ghostty-org/ghostty/pull/5361)
+- macOS: Fix zombie processes leaking when the shell or command exits
+  before the containing UI is closed.
+  [#4554](https://github.com/ghostty-org/ghostty/pull/4554)
+- macOS: Hyperlinks in the top-left no loner appear hovered when
+  command is held anywhere outside the window.
+  [#5252](https://github.com/ghostty-org/ghostty/pull/5252)
+- macOS: When `macos-titlebar-style = hidden`, the titlebar area
+  can no longer be used to drag the window. You must now use option+drag
+  (standard macOS bindings) in the resize area.
+  [#2523](https://github.com/ghostty-org/ghostty/pull/2523)
+- macOS: Closing a tab with Stage Manager enabled no longer causes
+  Ghostty to lose focus.
+  [#5108](https://github.com/ghostty-org/ghostty/pull/5108)
+- macOS: Fix "background flash" for new and resized terminals.
+  [#5083](https://github.com/ghostty-org/ghostty/pull/5083)
+- macOS: Filepaths are shell escaped when files, URLs, are pasted.
+  [#5036](https://github.com/ghostty-org/ghostty/pull/5036)
+- macOS: Quick terminal no longer covers IME widget.
+  [#4999](https://github.com/ghostty-org/ghostty/pull/4999)
+- macOS: Text can now be dragged onto the terminal.
+  [#4932](https://github.com/ghostty-org/ghostty/pull/4932)
+- macOS: IME window position is now correct when `window-padding` is set.
+  [#4933](https://github.com/ghostty-org/ghostty/pull/4933)
+- macOS: Pasting multiple files now separates their path by a space
+  instead of a newline.
+  [#4956](https://github.com/ghostty-org/ghostty/pull/4956)
+- macOS: `toggle_visibility` no longer separates tabs from their parent
+  window.
+  [#4329](https://github.com/ghostty-org/ghostty/pull/4329)
+- macOS: Control-characters such as `ctrl+h` now work as expected for
+  input method editors (IME).
+  [#4854](https://github.com/ghostty-org/ghostty/pull/4854)
+- macOS: Fix crash when `window-step-resize` was used in conjunction with
+  an overly large initial window size.
+  [#4801](https://github.com/ghostty-org/ghostty/pull/4801)
+- macOS: Quick terminal now properly overlays native fullscreen windows.
+  [#4049](https://github.com/ghostty-org/ghostty/pull/4049)
+- macOS: Add strings for more macOS system permission requests that can
+  be triggered by child processes (e.g. Bluetooh access).
+  [#4668](https://github.com/ghostty-org/ghostty/issues/4668)
+- macOS: `new_tab` keybinding without any windows creates a new window.
+  [#4691](https://github.com/ghostty-org/ghostty/issues/4691)
+- macOS: Fix a retain cycle that prevented the `NSWindow` from being
+  released when closed.
+  [#4689](https://github.com/ghostty-org/ghostty/issues/4689)
+- macOS: Preedit text no longer disappears when a modifier key is pressed.
+  [#4634](https://github.com/ghostty-org/ghostty/issues/4634)
+- macOS: AquaSKK/macSKK Japanese language input methods now work.
+  [#4539](https://github.com/ghostty-org/ghostty/issues/4539)
+- macOS: Quick terminal now appears in the correct location with certain
+  multi-monitor configurations.
+  [#4501](https://github.com/ghostty-org/ghostty/issues/4501)
+- macOS: `command+<key>` release events are now properly encoded for
+  the Kitty keyboard protocol.
+  [#4591](https://github.com/ghostty-org/ghostty/issues/4591)
+- macOS: `cmd+period` and other keybinds can now be bound.
+  [#4591](https://github.com/ghostty-org/ghostty/issues/4591)
+- macOS: Window borders with dark mode now match macOS styling.
+  [#4308](https://github.com/ghostty-org/ghostty/issues/4308)
+- macOS: Auto-update no longer defaults to on. On first run, Ghostty will
+  ask for your permission to check for updates. The `auto-update` option
+  can still be used to configure this.
+  [#4433](https://github.com/ghostty-org/ghostty/issues/4433)
+- macOS: New configurations `window-position-x` and `window-position-y`
+  can be used to set the initial window position.
+  [#3929](https://github.com/ghostty-org/ghostty/issues/3929)
+- macOS: `macos-titlebar-style = hidden` restores properly after exiting
+  non-native fullscreen.
+  [#3535](https://github.com/ghostty-org/ghostty/issues/3535)
+
+### Linux (GTK)
+
+- GTK: Support for server-side decorations (SSD) has been added.
+  This utilizes the existing `window-decoration` configuration option.
+  The new value is `auto` which will use SSD if the compositor supports
+  it and preferes it. A value of `server` will force SSD (if available).
+  A value of `client` will force client-side decorations. And a value
+  of `none` will disable decorations entirely.
+  See [Server Side Decorations (SSD) on Linux](#server-side-decorations-(ssd)-on-linux).
+  [#4630](https://github.com/ghostty-org/ghostty/pull/4630)
+- GTK(X11): `background-blur` is now supported for any window manager
+  that respects the `_KDE_NET_WM_BLUR_BEHIND_REGION` atom.
+  [#4403](https://github.com/ghostty-org/ghostty/issues/4403)
+- GTK(Wayland): `background-blur` is now supported for any compositor
+  supporting the `org_kde_kwin_blur_manager` protocol (namely, KDE).
+  [#4403](https://github.com/ghostty-org/ghostty/issues/4403)
+- GTK: Add new configuration `app-notifications` to control what toasts
+  are shown.
+  [#4460](https://github.com/ghostty-org/ghostty/pull/4460)
+- GTK: Multiple `custom-shader` values are now supported (matching macOS)
+  [#5037](https://github.com/ghostty-org/ghostty/pull/5037)
+- GTK: A new configuration option `gtk-titlebar-hide-when-maximized`
+  (default false) added to hide the titlebar when the window is maximized
+  (not fullscreen).
+  [#3381](https://github.com/ghostty-org/ghostty/pull/3381)
+- GTK: Ghostty can now be pinned in the dock or task manager for
+  supported desktop environments.
+  [#4930](https://github.com/ghostty-org/ghostty/pull/4930)
+- GTK: Dropping files and selected text now works and matches
+  macOS.
+  [#4211](https://github.com/ghostty-org/ghostty/pull/4211)
+- "Open in Ghostty" shortcut for Nautilus is now available
+  [#4816](https://github.com/ghostty-org/ghostty/pull/4816)
+
+- GTK: Fix adwaita tab bars appearing above the titlebar in some
+  older versions of libadwaita.
+  [#5410](https://github.com/ghostty-org/ghostty/issues/5410)
+- GTK: Fix slow startup times when XDG desktop portal is not available.
+  [#5064](https://github.com/ghostty-org/ghostty/pull/5064)
+- GTK: `fcitx` and `ibus` under both X11 and Wayland work.
+  [#4332](https://github.com/ghostty-org/ghostty/pull/4332)
+- GTK: Workaround bug in `ibus` 1.5.29 that caused deadkey input to
+  become "stuck."
+  [#3567](https://github.com/ghostty-org/ghostty/pull/3567)
+- GTK(X11): When a new window is initially maximized, the `_NET_WM_STATE`
+  atom is properly set so the titlebar properly reflects the maximized
+  state.
+  [#4646](https://github.com/ghostty-org/ghostty/pull/4646)
+- GTK: `last_tab` keybind action works
+  [#5004](https://github.com/ghostty-org/ghostty/pull/5004)
+- GTK: The titlebar is automatically hidden when the window is fullscreen
+  (and restored when the window exits fullscreen).
+  [#5008](https://github.com/ghostty-org/ghostty/pull/5008)
+- GTK: Mouse no longer appears when the title changes and
+  `mouse-hide-while-typing` is set.
+  [#3345](https://github.com/ghostty-org/ghostty/pull/3345)
+- GTK: Fix segfault that would happen with older libadwaita versions
+  when `ctrl+d` was used to exit a window.
+  [#4971](https://github.com/ghostty-org/ghostty/pull/4971)
+- GTK: Ensure close confirmation appears in more scenarios such as
+  pressing the "X" in the tab bar.
+  [#4234](https://github.com/ghostty-org/ghostty/pull/4234)
+- GTK: OpenGL debug logging is now disabled by default for release
+  builds but can be configured to be turned back on.
+  [#4662](https://github.com/ghostty-org/ghostty/pull/4662)
+- GTK: Windows with libadwaita enabled can now be sized smaller than
+  482x322.
+  [#4836](https://github.com/ghostty-org/ghostty/pull/4836)
+- GTK: Fix a handful of cases where compile-time version checks were
+  done instead of runtime, disabling behavior when we shouldn't have.
+  [#4783](https://github.com/ghostty-org/ghostty/issues/4783)
+- GTK: `window-title-font-family` now works (previously this was macOS-only)
+  [#4560](https://github.com/ghostty-org/ghostty/issues/4560)
+- GTK: Menu separator colors now match the system theme.
+  [#4421](https://github.com/ghostty-org/ghostty/issues/4421)
+- GTK: Fix issues with fractional scaling. The terminal should now appear
+  crisp on GTK displays with fractional scaling.
+  [#4255](https://github.com/ghostty-org/ghostty/issues/4255)
+- GTK: A new configuration `gtk-custom-css` allows loading custom CSS
+  to theme GTK elements.
+  [#4200](https://github.com/ghostty-org/ghostty/issues/4200)
+- GTK: `focus-follows-mouse` works properly with `goto_split` keybindings.
+  [#3229](https://github.com/ghostty-org/ghostty/issues/3229)
+- GTK: Use `gtk-xft-dpi` for font scaling on Wayland (previously
+  we only used the value for X11). This allows the GNOME "Large Text"
+  setting to work properly.
+  [#4424](https://github.com/ghostty-org/ghostty/pull/4424)
+- GTK: `ctrl+insert` and `shift+insert` bindings have been added as
+  secondary defaults for `copy` and `paste`, respectively.
+  [#2870](https://github.com/ghostty-org/ghostty/pull/2870)
+- GTK: Paste preview text is now monospace.
+  [#4227](https://github.com/ghostty-org/ghostty/pull/4227)
+
+### Changes for Package Maintainers
+
+<Note>
+All of the build changes are minor and should not impact previously
+functional builds. Feel free to ignore these changes unless you're
+simply curious about them.
+</Note>
+
+- Build: `-Dstrip` can be used to control binary stripping. Previously,
+  we automatically stripped release binaries. This can now be configured.
+  [#3945](https://github.com/ghostty-org/ghostty/issues/3945)
+- Build: `-Dsentry` can be used to explicitly enable or disable Sentry.
+  Linux builds by default have Sentry disabled. macOS builds by default
+  have Sentry enabled. Sentry only collects crash logs locally, it does
+  not transmit them via the network.
+  [#3934](https://github.com/ghostty-org/ghostty/issues/3934)
+- Build: Terminfo/Termcap sources are no longer installed by default.
+  Note the _compiled_ version is still properly installed so the terminfo
+  is available. Build flags `-Demit-terminfo` and `-Demit-termcap` can be
+  used to emit the source files.
+  [#5311](https://github.com/ghostty-org/ghostty/pull/5311)
+- Build: Fix incorrect libadwaita pkg-config name.
+  [#4818](https://github.com/ghostty-org/ghostty/pull/4818)
+
+## Roadmap
+
+We plan to release a version 1.1.1 to address some additional bugs that
+didn't quite make the 1.1.0 release. We don't expect this release to happen
+quickly unless any critical issues or regressions are raised. Therefore,
+we recommend all package managers to upgrade to 1.1.0 as quickly as possible.
+
+The focus for the next release will be to continue to resolve some issues
+with certain keyboard layouts along with some fundamental issues with
+`window-step-resize` on macOS. Additional unplanned functionality may
+be introduced if unexpected contributors appear (thank you!).
+
+We're reaching general wide-scale stability since our initial 1.0 release.
+I expect soon we'll move to even longer release cycles (months long) to
+allow the development team to focus on larger, more impactful features.
+
+### GTK: Forcing a Dependency on libadwaita
+
+Starting with Ghostty 1.2, we plan to remove the `gtk-adwaita` option
+and force a dependency on libadwaita. libadwaita is defaulted to on
+already so unless you've explicitly disabled it, this change should
+not affect you.
+
+<Important>
+**I expect for some this will be a controversial decision**,
+so please read this section carefully to understand
+our motivation and the diligence we've done in making this decision. If you
+still have concerns, please reach out to us on GitHub or Discord.
+</Important>
+
+The primary use case for `gtk-adwaita = false` in earlier versions of Ghostty
+was to use it in concert with `window-decoration = none` to force some
+compositors to use server-side decorations (SSD). Note this didn't work
+in all cases and was never an explicit configuration goal; it just happened
+to work in some cases. With the introduction of
+[explicit SSD support](#server-side-decorations-(ssd)-on-linux)
+in Ghostty 1.1, _this workaround is no longer necessary_.
+
+Another use case for `gtk-adwaita = false` was in relation to theming.
+Ghostty 1.1 introduces a
+[`gtk-custom-css` option](https://github.com/ghostty-org/ghostty/issues/4200)
+to easily inject custom CSS to theme GTK elements. We also introduced
+more easily targetable class names across our GTK widgets. You could always
+use system-wide CSS to theme Ghostty, but this new option makes it easier
+to test and apply custom CSS specific to Ghostty.
+
+For Ghostty maintainers, maintaining "classic GTK" and "libadwaita" code
+paths is a significant burden, especially in addition to differences in
+behavior across GTK and Adwaita versions and the complex interactions
+of various Ghostty configurations (all the `gtk-` and `adw-` prefixed
+options). This has led to a number of bugs and regressions that are
+difficult to fix and test without expensive and complex CI setups.
+
+With the SSD support in Ghostty 1.1 and the primary use case for
+`gtk-adwaita = false` no longer necessary, we believe now is a good
+time to make this change. We believe this will result in a more stable,
+more maintainable, and more feature-rich Ghostty in the future (the last
+point because we can go all-in on libadwaita features).
+
+To better feel confident in this decision, we've also reached out directly
+to non-GNOME users of Ghostty as well as non-Ghostty users who complained
+about the look and feel of Ghostty (namely: bloggers, streamers, and
+YouTubers). The feedback was unanimously supportive of this change,
+understanding the reasoning and the benefits it would bring and acknowleding
+that explicit SSD support addresses the major concerns.
+
+If you have strong opinions on this change, please reach out to us
+on Discord or GitHub. Please justify your argument with specific use cases
+and scenarios where this change would negatively impact you. Please do not
+just say "I don't like it" without providing a reason; it's not helpful.
+We are open to feedback and will consider it carefully. Thank you!
