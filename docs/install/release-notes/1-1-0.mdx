@@ -100,24 +100,42 @@ PR:
 [#4913](https://github.com/ghostty-org/ghostty/pull/4913),
 [#5401](https://github.com/ghostty-org/ghostty/pull/5401)
 
-Alpha blending is the process of combining a foreground color with a
-background color to produce a new color. This is particularly important
-around the edges of text in a terminal, where the text color and the
-background color meet.
+Alpha blending is the process of determining the result when a semi-transparent
+foreground color is placed in front of a background color. This affects the
+edges of text, and any images (displayed with Kitty Graphic Protocol) which
+have transparency in them.
 
-Improper or subpar alpha blending can lead to text that is hard to read
-or appears thinner, thicker, or blurrier than it should (depending on
-the foreground/background color combination).
+Before, this was performed by blending colors in the sRGB color space, which
+causes darkening around the edges of text when the foreground and background
+colors are different highly saturated colors. With Ghostty 1.1 on macOS, alpha
+blending is now performed in the P3 color space by default, which reduces the
+darkening issue thanks to the wider gamut and matches the appearance of native
+macOS applications like Terminal.app and TextEdit.
 
-Ghostty 1.1 on macOS now uses an alpha blending algorithm that matches
-Apple's own algorithm for alpha blending. This results in text consistently
-matching the appearance of other macOS applications such as TextEdit or
-Terminal.app.
+Additionally, a configuration, `alpha-blending`, has been added to control this.
+The default is `native`, which has been described, but two more options are
+available:
 
-Alpha blending can be controlled via the `alpha-blending` configuration
-option. The default is `native` to match the native platform style, but
-there is also a `linear` and experimental `linear-corrected` mode that we
-believe produces better results than Apple's typical style.
+- `linear` performs blending in a linear color space, which is technically
+correct but has downsides like dark text seeming too thin and light text
+seeming too thick.
+- `linear-corrected` is like `linear` but applies a correction step to text
+which makes it appear extremely close to `native`, but without _any_ darkening
+problems.
+
+Below you can compare (from left to right) the old blending, the new `native`
+blending, `linear` blending, and `linear-corrected` blending. You may have to
+zoom in to see the differences correctly.
+
+<p align="center">
+  <img src="/1-1-0-release-notes/srgb_blending.png" width="180" style={{maxWidth: "20%", marginInline: "5px"}} />
+  <img src="/1-1-0-release-notes/p3_blending.png"  width="180" style={{maxWidth: "20%", marginInline: "5px"}} />
+  <img src="/1-1-0-release-notes/linear_blending.png" width="180" style={{maxWidth: "20%", marginInline: "5px"}} />
+  <img src="/1-1-0-release-notes/linear-corrected_blending.png" width="180" style={{maxWidth: "20%", marginInline: "5px"}} />
+</p>
+
+This is currently only available on macOS, but work is underway which should
+bring it to Linux as well in the future.
 
 ### macOS: Quick Terminal Improvements
 
