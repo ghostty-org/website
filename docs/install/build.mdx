@@ -92,7 +92,7 @@ to track this GTK bug. You can workaround this issue by running ghostty with
 `GDK_DEBUG=gl-disable-gles ghostty`.
 </Warning>
 
-### Alpine
+#### Alpine
 
 ```sh
 doas apk add gtk4.0-dev libadwaita-dev pkgconf ncurses
@@ -167,9 +167,9 @@ sudo eopkg install libgtk-4-devel libadwaita-devel pkgconf zig
 sudo xbps-install gtk4-devel libadwaita-devel pkg-config zig
 ```
 
-#### Broken Dependencies
+### Broken Dependencies
 
-##### Pango
+#### Pango
 
 If you are experiencing a segfault in `cairo_scaled_font_get_font_options`
 when running Ghostty, your Pango version may have a bug. See
