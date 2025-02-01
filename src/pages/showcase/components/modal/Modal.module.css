@@ -19,14 +19,30 @@
     margin: 0 auto;
     max-width: 700px;
 
-    & .closeButton {
+    &:hover .closeContainer {
+      display: flex;
+    }
+
+    & .closeContainer {
       position: absolute;
-      cursor: pointer;
-      background: none;
-      border: none;
-      top: 12px;
-      right: 12px;
-      color: var(--black);
+      top: 0;
+      right: 0;
+      padding: 12px;
+      height: 80px;
+      width: 80px;
+      background: black;
+      clip-path: polygon(0% 0%, 100% 0%, 100% 100%);
+      align-items: flex-start;
+      justify-content: flex-end;
+      display: none;
+
+      & button {
+        cursor: pointer;
+        color: white;
+        background: none;
+        border: none;
+
+      }
     }
 
     & img {

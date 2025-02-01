@@ -20,9 +20,11 @@ export default function Modal({ onClose, content }: ModalProps) {
   return (
     <section className={s.modal}>
       <dialog className={s.dialog} open>
-        <button className={s.closeButton} onClick={onClose}>
-          <CircleX />
-        </button>
+        <div className={s.closeContainer}>
+          <button className={s.closeButton} onClick={onClose}>
+            <CircleX color="white" />
+          </button>
+        </div>
         <Image
           src={images[0].src}
           alt={images[0].alt}
