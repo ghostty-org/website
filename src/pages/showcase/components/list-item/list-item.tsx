@@ -2,16 +2,18 @@ import s from "./ListItem.module.css";
 import Button from "@/components/button";
 import Image, { ImageProps } from "next/image";
 import { H3, P } from "@/components/text";
+import TagList from "@/components/tag-list";
+import { ShowcaseContent } from "@/types/showcase";
 
-interface ListItemProps {
+interface ListItemProps
+  extends Pick<ShowcaseContent, "title" | "description" | "tags"> {
   image: ImageProps;
-  title: string;
-  description: string;
   onClick: () => void;
 }
 export default function ListItem({
   image,
   title,
+  tags,
   description,
   onClick,
 }: ListItemProps) {
@@ -24,6 +26,10 @@ export default function ListItem({
         <Button theme="brand" onClick={onClick}>
           View config
         </Button>
+        <TagList
+          className={s.tagList}
+          tags={tags.map((tag) => ({ name: tag, color: "white" }))}
+        />
       </section>
     </li>
   );

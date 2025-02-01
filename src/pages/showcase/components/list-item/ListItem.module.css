@@ -9,15 +9,19 @@
   }
 
   & .content {
-    padding: 12px 12px 24px;
+    padding: 12px 12px 16px;
 
     & .title {
       margin-bottom: 8px;
     }
 
     & .description {
-      margin-bottom: 16px;
+      margin-bottom: 8px;
     }
 
+  }
+
+  & .tagList {
+    padding: 16px 0 0;
   }
 }

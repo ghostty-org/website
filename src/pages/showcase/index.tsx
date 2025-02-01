@@ -55,6 +55,7 @@ export default function Showcase({
                 key={showcase.id}
                 title={showcase.title}
                 description={showcase.description}
+                tags={showcase.tags}
                 image={{
                   src: showcase.images[0].src,
                   alt: showcase.images[0].alt,
