@@ -1,7 +1,6 @@
-"use client";
 import Button from "@/components/button";
 import Image from "next/image";
-import s from "./Modal.module.css";
+import s from "./ShowcaseModal.module.css";
 import { H3, H5, P } from "@/components/text";
 import { useState } from "react";
 import CodeBlock from "@/components/codeblock";

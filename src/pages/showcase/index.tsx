@@ -7,9 +7,9 @@ import { DOCS_DIRECTORY } from "../docs/[...path]";
 import { loadDocsNavTreeData } from "@/lib/fetch-nav";
 import SectionWrapper from "@/components/section-wrapper";
 import s from "./ShowcasePage.module.css";
-import ListItem from "./components/list-item/list-item";
+import ListItem from "@/components/showcase-list-item";
 import { useState } from "react";
-import Modal from "./components/modal";
+import Modal from "@/components/showcase-modal";
 import { loadShowcaseContent } from "@/lib/fetch-showcase-content";
 import { ShowcaseContent } from "@/types/showcase";
 

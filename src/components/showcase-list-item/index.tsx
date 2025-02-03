@@ -1,4 +1,5 @@
-import s from "./ListItem.module.css";
+"use client";
+import s from "./ShowcaseListItem.module.css";
 import Button from "@/components/button";
 import Image, { ImageProps } from "next/image";
 import { H3, P } from "@/components/text";
