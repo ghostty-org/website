@@ -15,10 +15,11 @@ features.
 ### Server Side Decorations (SSD) on Linux X11
 
 PR:
-[#5533](https://github.com/ghostty-org/ghostty/pull/5533),
+[#5533](https://github.com/ghostty-org/ghostty/pull/5533)
 
-Ghostty 1.1.0 introduced support for server-side decorations (SSD) on
-Linux for Wayland compositors. This allowed Ghostty to look and feel
+Ghostty 1.1.0 introduced support for
+[server-side decorations (SSD) on Linux for Wayland compositors](/docs/install/release-notes/1-1-0#server-side-decorations-(ssd)-on-linux).
+This allows Ghostty to look and feel
 more like a native application on a wider variety of desktop environments.
 Notably, however, this did not work on X11.
 
@@ -51,8 +52,8 @@ PR:
 [#5652](https://github.com/ghostty-org/ghostty/pull/5652)
 
 It turns out Ghostty was triggering undefined behavior on macOS
-when using a discrete GPUs. Practically, this only affected Intel Macs because
-all Apple Silicon Macs have integrated GPUs and Ghostty will always use
+when using discrete GPUs. Practically, this only affected Intel Macs because
+all Apple Silicon Macs have integrated GPUs and Ghostty will always prefer
 an integrated GPU if available for power efficiency.
 
 The undefined behavior would sometimes work but sometimes result in rendering
