@@ -21,8 +21,12 @@ Send a CSI sequence. The value should be the CSI sequence without the
 CSI header (`ESC [` or `\x1b[`).
 
 ## `esc`
-## `text`
 Send an `ESC` sequence.
+
+## `text`
+Send the given text. Uses Zig string literal syntax. This is currently
+not validated. If the text is invalid (i.e. contains an invalid escape
+sequence), the error will currently only show up in logs.
 
 ## `cursor_key`
 Send data to the pty depending on whether cursor key mode is enabled
@@ -90,7 +94,6 @@ determines what to do with the filepath. Valid values are:
   - "open": Open the file in the default OS editor for text files.
     The default OS editor is determined by using `open` on macOS
     and `xdg-open` on Linux.
-
 
 ## `write_screen_file`
 Same as write_scrollback_file but writes the full screen contents.
@@ -254,9 +257,24 @@ Show/hide all windows. If all windows become shown, we also ensure
 Ghostty becomes focused. When hiding all windows, focus is yielded
 to the next application as determined by the OS.
 
+Note: When the focused surface is fullscreen, this method does nothing.
+
 This currently only works on macOS.
 
 ## `quit`
 Quit ghostty.
 
 ## `crash`
+Crash ghostty in the desired thread for the focused surface.
+
+WARNING: This is a hard crash (panic) and data can be lost.
+
+The purpose of this action is to test crash handling. For some
+users, it may be useful to test crash reporting functionality in
+order to determine if it all works as expected.
+
+The value determines the crash location:
+
+  - "main" - crash on the main (GUI) thread.
+  - "io" - crash on the IO thread for the focused surface.
+  - "render" - crash on the render thread for the focused surface.
