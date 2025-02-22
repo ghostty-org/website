@@ -224,14 +224,10 @@ rpm-ostree update --install ghostty
 
 ### Ubuntu
 
-An Ubuntu package (.deb) is available from
-[ghostty-ubuntu](https://github.com/mkasberg/ghostty-ubuntu) on GitHub. After
-downloading the .deb for your Ubuntu version from the
-[Releases](https://github.com/mkasberg/ghostty-ubuntu/releases) page, install it
-as below:
+An Ubuntu installation script is available from [ghostty-ubuntu](https://github.com/mkasberg/ghostty-ubuntu) on GitHub.
 
 ```sh
-sudo apt install ./ghostty_*.deb
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/mkasberg/ghostty-ubuntu/HEAD/install.sh)"
 ```
 
 <Warning>
