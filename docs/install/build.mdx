@@ -95,19 +95,19 @@ to track this GTK bug. You can workaround this issue by running ghostty with
 #### Alpine
 
 ```sh
-doas apk add gtk4.0-dev libadwaita-dev pkgconf ncurses
+doas apk add gtk4.0-dev libadwaita-dev pkgconf ncurses blueprint-compiler
 ```
 
 #### Arch Linux
 
 ```sh
-sudo pacman -S gtk4 libadwaita
+sudo pacman -S gtk4 libadwaita blueprint-compiler
 ```
 
 #### Debian and Ubuntu
 
 ```sh
-sudo apt install libgtk-4-dev libadwaita-1-dev git
+sudo apt install libgtk-4-dev libadwaita-1-dev git blueprint-compiler
 ```
 
 On Debian unstable/testing, the `gcc-multilib` package is also required
@@ -128,43 +128,43 @@ Ubuntu 23.10 is 6.5.0 which has a bug which
 On Fedora variants, use
 
 ```sh
-sudo dnf install gtk4-devel zig libadwaita-devel
+sudo dnf install gtk4-devel zig libadwaita-devel blueprint-compiler
 ```
 
 On Fedora Atomic variants, use
 
 ```sh
-rpm-ostree install gtk4-devel zig libadwaita-devel
+rpm-ostree install gtk4-devel zig libadwaita-devel blueprint-compiler
 ```
 
 #### Gentoo
 
 ```sh
-emerge -av libadwaita gtk
+emerge -av libadwaita gtk blueprint-compiler
 ```
 
 #### openSUSE Tumbleweed
 
 ```sh
-sudo zypper install gtk4-devel libadwaita-devel pkgconf ncurses-devel zig
+sudo zypper install gtk4-devel libadwaita-devel pkgconf ncurses-devel zig blueprint-compiler
 ```
 
 #### openSUSE Leap
 
 ```sh
-sudo zypper install gtk4-devel libadwaita-devel pkgconf ncurses-devel
+sudo zypper install gtk4-devel libadwaita-devel pkgconf ncurses-devel blueprint-compiler
 ```
 
 #### Solus
 
 ```sh
-sudo eopkg install libgtk-4-devel libadwaita-devel pkgconf zig
+sudo eopkg install libgtk-4-devel libadwaita-devel pkgconf zig blueprint-compiler
 ```
 
 #### Void
 
 ```sh
-sudo xbps-install gtk4-devel libadwaita-devel pkg-config zig
+sudo xbps-install gtk4-devel libadwaita-devel pkg-config zig blueprint-compiler
 ```
 
 ### Broken Dependencies
