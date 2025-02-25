@@ -44,8 +44,8 @@ export function navTreeToBreadcrumbs(
         breadcrumbs.push({
           text: name, // Use segment (file name) as the breadcrumb title
           href: docsRootPath + accumulatedPath, // Link to the full slug path
-         });
-      })
+        });
+      });
 
       break;
     }
