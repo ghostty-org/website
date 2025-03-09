@@ -89,7 +89,7 @@ generate_frame_images() {
     # We need to squish the image, as the terminal "pixels" will not be 1:1,
     local squished_image_file="$(echo "$f" | sed 's/\.png$/_squished\.png/g')"
     local image_height="$(magick identify -ping -format '%h' "$f")"
-    local new_height=$(echo "$FONT_RATIO * $image_height" | awk '{print int($1 + 0.9999999999999999)}')
+    local new_height=$(echo "$FONT_RATIO * $image_height" | bc | jq '.|ceil')
 
     magick "$f" -resize "x$new_height"'!' "$squished_image_file"
     rm "$f"
