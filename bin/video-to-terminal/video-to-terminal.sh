@@ -40,7 +40,6 @@ color_distance_from() {
 # @param $1: The r,g,b Pixel
 #
 pixel_for() {
-  printf "." >&2
   local r="$(echo "$1" | cut -f1 -d ',')"
   local g="$(echo "$1" | cut -f2 -d ',')"
   local b="$(echo "$1" | cut -f3 -d ',')"
