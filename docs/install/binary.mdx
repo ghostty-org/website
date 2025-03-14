@@ -210,15 +210,12 @@ Ghostty is also available in [Terra](https://terra.fyralabs.com/).
 These are user-maintained packages and not official Fedora packages.
 </Warning>
 
-#### Silverblue (and other immutable variants)
+#### Silverblue (and other Atomic Desktops)
 
 Add the copr repository to your system:
 
 ```sh
-sudo $EDITOR /etc/yum.repos.d/_copr:copr.fedorainfracloud.org:pgdev:ghostty.repo
-```
-
-```ini
+echo -e "
 [copr:copr.fedorainfracloud.org:pgdev:ghostty]
 name=Copr repo for Ghostty owned by pgdev
 baseurl=https://download.copr.fedorainfracloud.org/results/pgdev/ghostty/fedora-$releasever-$basearch/
@@ -228,7 +225,7 @@ gpgcheck=1
 gpgkey=https://download.copr.fedorainfracloud.org/results/pgdev/ghostty/pubkey.gpg
 repo_gpgcheck=0
 enabled=1
-enabled_metadata=1
+enabled_metadata=1" | sudo tee /etc/yum.repos.d/_copr:copr.fedorainfracloud.org:pgdev:ghostty.repo > /dev/null
 ```
 
 After adding the repository, install Ghostty:
