@@ -225,7 +225,7 @@ gpgcheck=1
 gpgkey=https://download.copr.fedorainfracloud.org/results/pgdev/ghostty/pubkey.gpg
 repo_gpgcheck=0
 enabled=1
-enabled_metadata=1" | sudo tee /etc/yum.repos.d/vscode.repo > /dev/null
+enabled_metadata=1" | sudo tee /etc/yum.repos.d/_copr:copr.fedorainfracloud.org:pgdev:ghostty.repo > /dev/null
 ```
 
 After adding the repository, install Ghostty:
