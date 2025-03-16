@@ -27,7 +27,7 @@ variable to `xterm-ghostty` so long as it detects that the terminfo entry
 is available.
 
 <Important>
-**Ghostty's terminfo entry has been merged into ncurses.** As distros
+**Ghostty's terminfo entry is available in ncurses 6.5-20241228 and above.** As distros
 update their ncurses packages, Ghostty's terminfo entry will be available
 by default system-wide. This will take time to propagate.
 </Important>
@@ -48,7 +48,7 @@ this for you. To enable the shell-integration feature specify
 
 If you use SSH to connect to other machines that do not have Ghostty's
 terminfo entry, you will see error messages like `missing or unsuitable
-terminal: xterm-ghostty`, `Error opening terminal: xterm-ghostty.` or 
+terminal: xterm-ghostty`, `Error opening terminal: xterm-ghostty.` or
 `WARNING: terminal is not fully functional`.
 
 Hopefully someday Ghostty will have terminfo entries pre-distributed
@@ -83,8 +83,8 @@ exists.  `man tic` for details.
 The bundled version of `ncurses` is too old to emit a terminfo entry that can be
 read by more recent versions of `tic`, and the command will fail with a bunch
 of `Illegal character` messages. You can fix this by using Homebrew to install
-a recent version of `ncurses` with `brew install ncurses` and replacing 
-`infocmp` above with the full path `/opt/homebrew/opt/ncurses/bin/infocmp` or 
+a recent version of `ncurses` with `brew install ncurses` and replacing
+`infocmp` above with the full path `/opt/homebrew/opt/ncurses/bin/infocmp` or
 `/usr/local/opt/ncurses/bin/infocmp`.
 </Note>
 
