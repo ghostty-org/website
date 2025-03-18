@@ -117,11 +117,11 @@ Below is an example:
   }: {
     nixosConfigurations.mysystem = nixpkgs.lib.nixosSystem {
       modules = [
-        {
+        ({ pkgs, ... }: {
           environment.systemPackages = [
-            ghostty.packages.x86_64-linux.default
+            ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default
           ];
-        }
+        })
       ];
     };
   };
