@@ -13,11 +13,11 @@ instead. See [the binaries and packages page](/docs/install/binary) to
 see if a prebuilt binary or package is available for your platform.
 </Tip>
 
-To build Ghostty, you need [Zig 0.13](https://ziglang.org/) installed.
+To build Ghostty, you need [Zig 0.14](https://ziglang.org/) installed.
 
 <Important>
-**Zig 0.13 is required.** Ghostty only guarantees that it can build
-against 0.13. Zig is still a fast-moving project so it is likely newer
+**Zig 0.14 is required.** Ghostty only guarantees that it can build
+against 0.14. Zig is still a fast-moving project so it is likely newer
 versions will not be able to build Ghostty yet. You can find binary
 releases of Zig release builds on the
 [Zig downloads page](https://ziglang.org/download/).
@@ -43,6 +43,12 @@ cd ghostty
 
 To build a stable release, check out the associated tag. If you skip this
 step you'll build the [tip version](/docs/install/pre).
+
+<Important>
+**Version 1.1.2 and under requires Zig version 0.13 to build**. When building
+from tip you will however need Zig version 0.14 due to build system changes and
+other updates to the tooling used.
+</Important>
 
 ```
 git checkout <tag>
@@ -82,7 +88,9 @@ Required dependencies:
 
   * `gtk4`
   * `libadwaita` (unless using `-Dgtk-adwaita=false`)
+  * `blueprint-compiler`
   * `pkg-config`
+  * `gettext`
 
 <Warning>
 GTK 4.14 on Wayland has a bug which may cause an immediate crash.
@@ -95,19 +103,19 @@ to track this GTK bug. You can workaround this issue by running ghostty with
 #### Alpine
 
 ```sh
-doas apk add gtk4.0-dev libadwaita-dev pkgconf ncurses blueprint-compiler
+doas apk add gtk4.0-dev libadwaita-dev pkgconf ncurses blueprint-compiler gettext
 ```
 
 #### Arch Linux
 
 ```sh
-sudo pacman -S gtk4 libadwaita blueprint-compiler
+sudo pacman -S gtk4 libadwaita blueprint-compiler gettext
 ```
 
 #### Debian and Ubuntu
 
 ```sh
-sudo apt install libgtk-4-dev libadwaita-1-dev git blueprint-compiler
+sudo apt install libgtk-4-dev libadwaita-1-dev git blueprint-compiler gettext
 ```
 
 On Debian unstable/testing, the `gcc-multilib` package is also required
@@ -128,43 +136,43 @@ Ubuntu 23.10 is 6.5.0 which has a bug which
 On Fedora variants, use
 
 ```sh
-sudo dnf install gtk4-devel zig libadwaita-devel blueprint-compiler
+sudo dnf install gtk4-devel zig libadwaita-devel blueprint-compiler gettext
 ```
 
 On Fedora Atomic variants, use
 
 ```sh
-rpm-ostree install gtk4-devel zig libadwaita-devel blueprint-compiler
+rpm-ostree install gtk4-devel zig libadwaita-devel blueprint-compiler gettext
 ```
 
 #### Gentoo
 
 ```sh
-emerge -av libadwaita gtk blueprint-compiler
+emerge -av libadwaita gtk blueprint-compiler gettext
 ```
 
 #### openSUSE Tumbleweed
 
 ```sh
-sudo zypper install gtk4-devel libadwaita-devel pkgconf ncurses-devel zig blueprint-compiler
+sudo zypper install gtk4-devel libadwaita-devel pkgconf ncurses-devel zig blueprint-compiler gettext
 ```
 
 #### openSUSE Leap
 
 ```sh
-sudo zypper install gtk4-devel libadwaita-devel pkgconf ncurses-devel blueprint-compiler
+sudo zypper install gtk4-devel libadwaita-devel pkgconf ncurses-devel blueprint-compiler gettext
 ```
 
 #### Solus
 
 ```sh
-sudo eopkg install libgtk-4-devel libadwaita-devel pkgconf zig blueprint-compiler
+sudo eopkg install libgtk-4-devel libadwaita-devel pkgconf zig blueprint-compiler gettext
 ```
 
 #### Void
 
 ```sh
-sudo xbps-install gtk4-devel libadwaita-devel pkg-config zig blueprint-compiler
+sudo xbps-install gtk4-devel libadwaita-devel pkg-config zig blueprint-compiler gettext
 ```
 
 ### Broken Dependencies
