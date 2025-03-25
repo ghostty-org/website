@@ -3,7 +3,7 @@ title: Set Cursor Style (DECSCUSR)
 description: Set the cursor style.
 ---
 
-<VTSequence sequence={["ESC", "Pn", " ", "q"]} />
+<VTSequence sequence={["CSI", "Pn", " ", "q"]} />
 
 If `n` is omitted, `n` defaults to `0`. `n` must be an integer between
 0 and 6 (inclusive). The mapping of `n` to cursor style is below:
