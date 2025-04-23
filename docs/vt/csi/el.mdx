@@ -17,14 +17,14 @@ If [Select Character Selection Attribute (DECSCA)](#TODO) is enabled
 or was the most recently enabled protection mode on the currently active screen,
 protected attributes are ignored. Otherwise, protected attributes will be
 respected. For more details on this specific logic for protected attribute
-handling, see [Erase Character (ECH)](/vt/ech).
+handling, see [Erase Character (ECH)](/docs/vt/csi/ech).
 
 For all operations, if a multi-cell character would be split, erase the full multi-cell
 character. For example, if "橋" is printed and the erase would only erase the
 first or second cell of the two-cell character, both cells should be erased.
 
 If `n` is `0`, perform an **erase line right** operation. Erase line right
-is equivalent to [Erase Character (ECH)](/vt/ech) with `n` set to the total
+is equivalent to [Erase Character (ECH)](/docs/vt/csi/ech) with `n` set to the total
 remaining columns from the cursor to the end of the line (and including
 the cursor). If the line is softwrapped, only the single row is erased;
 it does not erase through the wrap. Further, the wrap state of the row is
