@@ -231,11 +231,6 @@
             },
             {
               "type": "link",
-              "path": "/decscusr",
-              "title": "Set Cursor Style (DECSCUSR)"
-            },
-            {
-              "type": "link",
               "path": "/ind",
               "title": "Index (IND)"
             },
@@ -305,6 +300,11 @@
               "type": "link",
               "path": "/dch",
               "title": "Delete Character (DCH)"
+            },
+            {
+              "type": "link",
+              "path": "/decscusr",
+              "title": "Set Cursor Style (DECSCUSR)"
             },
             {
               "type": "link",
