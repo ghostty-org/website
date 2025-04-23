@@ -260,22 +260,19 @@ This is a user-maintained package. It is not an official Ubuntu package.
 
 ### Universal AppImage
 
-Ghostty is available as a Universal AppImage from
-[ghostty-appimage](https://github.com/psadi/ghostty-appimage) on GitHub.
-Upon downloading the `.appimage` file from the
-[Releases](https://github.com/psadi/ghostty-appimage/releases) page, follow the
-below instructions:
+Ghostty is available as a Universal AppImage which is compatible with any Linux distribution (Including musl based).
+You can access the AppImage at [ghostty-appimage](https://github.com/pkgforge-dev/ghostty-appimage) on GitHub.
+
+To begin, download the appropriate `.appimage` file from the [Releases](https://github.com/pkgforge-dev/ghostty-appimage/releases) page
+and follow the instructions below:
 
 ```bash
-chmod +x Ghostty-x86_64.AppImage
-./Ghostty-x86_64.AppImage
+chmod a+x Ghostty-${VERSION}-${ARCH}.appimage
+./Ghostty-${VERSION}-${ARCH}.appimage
 ```
 
-Alternatively, setup can be done graphically by right-clicking
-the `Ghostty-x86_64.AppImage` file, selecting **Properties**, navigating to
-the **Permissions** tab and checking the box that says **Executable as
-Program**.
+For comprehensive installation instructions, please refer the [installation guide](https://github.com/pkgforge-dev/ghostty-appimage#%EF%B8%8F-installation).
 
 <Warning>
-This is a user-maintained AppImage. It is not an official AppImage.
+This is a community-maintained AppImage. It is not an official AppImage.
 </Warning>
