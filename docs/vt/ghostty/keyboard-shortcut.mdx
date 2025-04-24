@@ -1,0 +1,604 @@
+---
+title: Keyboard Shortcuts
+description: |-
+  Advertise the set of actions that can be bound to keyboard shortcuts and
+  receive a notification when an action is triggered.
+---
+
+<VTSequence sequence={["OSC", "👻", ";", "KS", ";", "..." ]} />
+
+The keyboard shortcut protocol allows programs to advertise the set of
+actions that can be bound to keyboard shortcuts and to receive a notification
+when an action is triggered.
+
+<Caution>
+**This is an incomplete, unimplemented specification in draft form.**
+We're currently soliciting feedback, and it isn't guaranteed to be
+implemented in Ghostty. To submit feedback, please currently discuss
+it in [Discord](https://discord.gg/ghostty).
+</Caution>
+
+## Background
+
+It is extremely common for terminal programs to be keyboard driven.
+
+Going further, many terminal programs absolutely require keyboard shortcuts to
+be usable. For example, programs like editors (e.g. `nvim`) and multiplexers
+(e.g. `tmux`) would arguably be unusable without keyboard shortcuts.
+Even shells (e.g. `fish`) or REPL environments (e.g. `python`) are much
+more usable thanks to keyboard shortcuts such as arrow keys for history,
+`ctrl+r` for reverse search, `ctrl+a/e` for beginning/end of line, etc.
+
+Modern GUI frameworks such as
+[GTK](https://www.gtk.org/),
+[AppKit](https://developer.apple.com/documentation/appkit),
+[Qt](https://www.qt.io/), etc.
+have a dedicated API to register keyboard shortcuts with associate them
+with actions.
+GTK has [`Gtk.Shortcut`](https://docs.gtk.org/gtk4/class.Shortcut.html),
+AppKit has [`KeyboardShortcut`](https://developer.apple.com/documentation/swiftui/keyboardshortcut),
+and Qt has [`QShortcut`](https://doc.qt.io/qt-6/qshortcut.html).
+
+Terminal programs, however, rely on raw keyboard input events and are forced
+to do the decoding and mapping of input events to keyboard shortcuts manually.
+This may be based on legacy encoding,
+[fixterms](https://www.leonerd.org.uk/hacks/fixterms/), or
+[Kitty Keyboard Protocol](https://sw.kovidgoyal.net/kitty/keyboard-protocol/).
+
+### Shortcomings of the Existing Protocols
+
+The existing protocols can all be considered low-level key input protocols.
+"Low-level" in this context means that they are minimally packaging OS
+key events to provide some cross-platform consistency and allow terminal
+programs the most flexibility for handling keyboard input.
+
+This has pros and cons. For pros, they're very flexible: they can be
+triggered by any key event, differentiate between key presses,
+releases, and repeats, and contain as much information about the
+key event as possible, such as Unicode characters produced by the
+key event.
+
+For cons, this flexibility and low-level behavior comes at a cost.
+The first cost is implementation complexity. Terminal programs have
+to parse the raw key events and map them to keyboard shortcuts. This
+seems simple on the surface but implementing numerous TUI programs
+has shown that this is a non-trivial task. There is also arguably a
+performance cost because every key event has to be encoded and decoded
+when only a small subset of key events are actually used.
+
+Additionally, keyboard shortcuts are completely invisible to the
+terminal emulator. This means that terminal emulators cannot
+provide any UI for keyboard shortcuts, a common feature in GUI
+applications. And, given the number and importance of keyboard
+shortcuts in terminal programs, this is a significant drawback for
+user experience. This is only one example of what a terminal
+emulator might be able to do with this information, many
+other possibilities exist.
+
+### Benefits of a Dedicated API
+
+All major modern GUI APIs have dedicated APIs for keyboard shortcuts.
+This is surely not a coincidence, and is likely due to the benefits
+a dedicated API provides.
+
+**"Cheat sheet" UI.** Being aware of keyboard shortcuts allows GUI
+programs to provide "cheat sheet" style UIs. For example on iPad, holding
+the `command` key will show a list of all keyboard shortcuts the app
+supports. This is a very useful feature for discoverability.
+
+**Conflict awareness.** Terminal programs such as Neovim have to share
+the keyboard with the terminal emulator and the operating system.
+GUI programs can make users aware of conflicts between keyboard shortcuts
+across different layers. For example, in Ghostty, a very common question
+is asking why a keyboard shortcut in a shell or editor doesn't work, only
+to find out its bound to Ghostty or the operating system itself.
+
+**Keyboard layout mapping.** A high-level description of a keyboard
+shortcut such as `ctrl+a` lets the GUI framework handle alternate keyboard
+layouts and potentially highlight
+[impossible key combinations](https://doc.qt.io/qt-6/qkeysequence.html#keyboard-layout-issues).
+
+**Remapping.** Some GUI frameworks allow users to remap keyboard shortcuts
+to different key combinations at a lower level. For example, macOS allows
+users to remap keyboard shortcuts in the system preferences. This has
+a few direct benefits. First, this is very accessibility friendly. Second,
+app developers can avoid spending time implementing their own remapping
+mechanism. Third, the lower level takes advantage of storing and syncing
+keyboard shortcuts across devices.
+
+**Additional UI.** There are more UI features that can be built on top of
+keyboard shortcuts. For example, for Ghostty, I'd love to integrate keyboard
+shortcuts directly into the
+[command palette](https://x.com/mitchellh/status/1914380359107797146)
+for discoverability and ease of use.
+
+## Protocol
+
+A new OSC sequence is introduced to allow terminal programs to advertise
+the set of keyboard shortcuts they support. The OSC sequence is formatted[^1]:
+
+```
+OSC 👻 ; KS ; <op> ; <params> ST
+```
+
+The `👻` is UTF-8 encoded as `0xF0 0x9F 0x91 0xBB`.
+
+The `op` is the operation to perform and the `params` are the parameters
+for that operation. The parameters are separated by `;` characters unless
+otherwise specified.
+
+All sequences are one-way unless otherwise specified, except for errors. This
+means that the terminal program sends the sequence to the terminal emulator
+and the terminal emulator does not send a response unless there is an error.
+If there is an error, the [`!` (error)](#!:-error) operation is sent back
+to the terminal program. Errors can be quieted by suffixing the operation
+with the `!` character (e.g. `+!` instead of `+` for the register operation).
+
+### Feature Detection
+
+For feature detection, we rely on [`XTGETTCAP`](https://invisible-island.net/xterm/ctlseqs/ctlseqs.html)
+with the `gsks` capability. This is a boolean capability that indicates
+whether the terminal emulator supports the keyboard shortcut protocol.
+
+The exact sequence is:
+
+```
+ESC P + q 67736B73 ESC \
+```
+
+The `67736B73` is the `gsks` hex-encoded. This is the format required by `XTGETTCAP`.
+
+The terminal emulator will respond with the following if it is supported:
+
+```
+ESC P 1 + r 67736B73 ESC \
+```
+
+If it is not supported, the terminal emulator will respond with:
+
+```
+ESC P 0 + r 67736B73 ESC \
+```
+
+Ghostty extensions use `XTGETTCAP` because it is a widely supported
+feature in terminal emulators and importantly provides _negative_
+responses. This lets terminal programs quickly detect whether a feature
+is supported without resorting to timeouts or other hacks.
+
+<Important>
+This specification very specifically uses `XTGETTCAP` for feature
+detection and not general terminfo files. This is because terminfo files
+propagate very slowly. If the terminal emulator doesn't support `XTGETTCAP`,
+then it can be assumed that it doesn't support the keyboard shortcut protocol.
+</Important>
+
+## Functional Overview
+
+A program with keyboard shortcuts will send a sequence of
+[`+` (register)](#+:-register) operations to register the actions it
+supports, followed by a sequence of [`B+` (bind)](#b+:-bind) operations to
+bind the actions to keyboard shortcuts. The terminal emulator will
+then send [`X` (trigger)](#x:-trigger) operations to the program when the
+actions are triggered.
+
+Keyboard shortcuts are triggered on **key press** events. This matches
+the behavior of all major GUI frameworks. If a program wants to
+trigger an action on any other event, it must use a lower level
+input protocol such as [Kitty Keyboard Protocol](https://sw.kovidgoyal.net/kitty/keyboard-protocol/).
+
+If the program might subprocess another program that also uses keyboard
+shortcuts, it can use the [`>` (save)](#greater:-save) and
+[`<` (restore)](#less:-restore) operations to efficiently restore
+the keyboard shortcuts when the subprocess exits.
+
+### Limitations
+
+#### Key Sequences
+
+The protocol does not support key sequences such as `ctrl+a` followed by
+`ctrl+b` (e.g. in tmux), or a leader key such as `space` followed by a key (e.g.
+`<leader>ff` in Vim syntax).
+
+These types of keyboard shortcuts aren't particularly common but they
+are used by some of the largest terminal programs such as tmux, vim, emacs,
+and others. Therefore, I'd like to explore adding support for them in the
+future, but wanted to limit the complexity of the initial version of this
+protocol.
+
+#### Key Tables
+
+The protocol does not support key tables. Key tables are a way to
+define a namespace of keyboard shortcuts that are only valid when
+the key table is activated (by another keyboard shortcut or any external
+event). It is similar to a
+[key sequence](#key-sequences)
+but a key table has more configurability in how it is activated
+and deactivated.
+
+For example, a key table may remain activated until an explicit
+binding is pressed to deactivate it. Or, it may be activated until
+an idle period of some time. A key table may become activated by an
+external event such as going from insert mode to normal mode in Vim.
+And so on.
+
+An example of a key table in a real program is Vim's modal bindings
+where some shortcuts are only valid in certain modes (e.g. normal, insert,
+visual, etc.). Switching modes also switches the active set of keyboard
+shortcuts. Another example of a key table is
+[the implementation within WezTerm](https://wezterm.org/config/key-tables.html).
+
+Key tables are relatively uncommon in terminal programs. As such, there
+aren't plans to add support for them in this protocol. Terminal programs
+can implement their own key tables using the APIs provided by this
+protocol. I may explore adding additional APIs to simplify the implementation
+of key tables, however.
+
+### Interactions with Other Features
+
+#### Key-encoding Protocols
+
+If a keyboard event matches a keyboard shortcut, the terminal emulator will
+consume the event and not encode it. This means that the event will not be
+visible to the terminal program outside of the trigger event sent by
+this protocol.
+
+This behavior matches the behavior of other program-level keyboard
+bindings as well as the behavior of all GUI framework APIs.
+
+The key release event may or may not be sent to the terminal program
+depending on the terminal emulator. This behavior is left unspecified because
+it is inconsistent across operating systems and the complexity to "remember"
+the state of the key event may not be worth the effort. Further, key release
+events are not commonly used in terminal programs.
+
+#### Primary and Alternate Screen
+
+The keyboard shortcut state is screen-specific. The primary and alternate
+screen have separate keyboard shortcut states.
+
+When a screen is cleared on entry (e.g. DEC mode 1049), the keyboard shortcut
+state is cleared as well. Likewise, when a screen is cleared on exit (e.g.
+DEC mode 1047), the keyboard shortcut state is also cleared. To be explicit,
+"clearing" in this context means the equivalent of the
+[`💣` (clear)](#:-clear) operation.
+
+#### Erase Display
+
+The keyboard shortcut state is not cleared for any erase display
+operations. The keyboard shortcut state is not cleared for any of the
+erase-style operations such as erase line, erase character, etc.
+
+#### Reset (`ESC c`)
+
+The keyboard shortcut state is cleared on reset.
+
+## Operations
+
+This section describes the set of operations supported for the `<op>`
+field in the OSC sequence.
+
+All operations may be suffixed with `!` to quiet errors. Otherwise,
+any errors will be sent back to the program using the
+[`!` (error)](#!:-error) response. Errors are always sent back in the
+same order as the operations that were sent, but note there are no
+success responses (unless otherwise specified by the operation).
+
+### `>`: Save
+
+```
+OSC 👻 ; KS ; > ST
+```
+
+The `>` (save) operation saves the current state of keyboard shortcuts
+so they can later be restored with the `<` (restore) operation.
+
+The saved state contains the set of keyboard shortcuts as well as
+the set of saved states. This means that restoring a saved state will
+invalidate any subsequent saved states. This is similar to stack behavior.
+
+This is useful for programs that are subprocessing another program that
+may also use keyboard shortcuts, such as shells. For example, a program
+could save the current state of keyboard shortcuts, execute the subprocess,
+and then restore the keyboard shortcuts after the process exits.
+
+The terminal emulator will respond with the same sequence with an ID
+that is used to identify the level the saved state. The ID can be used with
+the restore operation to restore back to the state at the time of the
+save operation.
+
+Receive:
+
+```
+OSC 👻 ; KS ; > ; <id> ST
+```
+
+Where `<id>` is a unique identifier for the save operation. The ID is
+an 8-bit unsigned integer. All IDs are valid, including zero.
+
+The protocol uses an ID rather than a balanced stack so that poorly behaved
+programs that don't restore their keyboard shortcuts can't mess up the
+stack balance. Parents have full control over the keyboard shortcut state.
+This is particularly useful because programs that die unexpectedly (e.g.
+bugs, crashes, etc.) and don't clean up can still be cleaned up by the
+parent.
+
+### `<`: Restore
+
+```
+OSC 👻 ; KS ; < ; <id> ST
+```
+
+The restore operation restores the keyboard shortcuts to the state at the
+time of the save operation with the given ID. Invalid IDs will be ignored.
+
+Once an ID is restored, the saved state is invalidated. This means that
+the ID can no longer be used to restore that state. Further, the ID can
+be reclaimed by the terminal emulator for future save operations. For example,
+a program can't save state, make changes, restore it, make changes, and then
+restore it again. The program would have to save the state again to get
+a new ID after initially restoring the state.
+
+The zero ID is not special; it will not clear all keyboard shortcuts. The
+zero ID is just a normal ID like any other and it will only restore state
+if there was a save operation with that ID.
+
+See the [save operation](#greater:-save) for details including why
+an ID is required.
+
+### `+`: Register
+
+```
+OSC 👻 ; KS ; + ; <id>[ ; <options>] ST
+```
+
+Register an action that can be bound to a keyboard shortcut.
+
+**Parameter: `<id>`**
+
+The ID is a string that uniquely identifies the action. The ID is
+used as a parameter for any subsequent operations, including the trigger
+the terminal emulator sends to the program when the action is invoked.
+
+The ID is not encoded in any way, so it is up to the calling program to
+ensure it doesn't include special characters that would break the terminal
+encoding (e.g. `;` or `ST`). The safest way to do this is to base64 encode
+the ID. The terminal emulator will not validate the ID and will hand it
+back to the program as-is, so any encoding or escaping is the
+responsibility of the program.
+
+If the ID already exists, the terminal emulator will replace the existing
+action with this one. If the `b` (binding) option is specified,
+all existing bindings will be removed and replaced with this one. If the
+`b` option is not specified, the existing bindings will be preserved.
+
+Only the ID is required.
+
+**Option: `l=<label>`**
+
+The label is a human-friendly label for the action. This is used for display
+purposes only and it is up to the terminal emulator to decide how it is used.
+It is up to the terminal program to localize it appropriately.
+
+The label must be valid UTF-8 and it must be base64 encoded.
+
+Ghostty uses the label to display the action in the command palette.
+Future versions of Ghostty may include other features such as a "cheat sheet"
+UI that displays keyboard shortcuts with their labels, putting actions in the
+menu bar, etc.
+
+**Option: `b=<binding>`**
+
+A binding to uniquely associate with the action. The format of the value is
+the same as the `B+` (bind) operation.
+
+This is a convenience option that is equivalent to registering
+the action, then using the `Bx` operation to clear previous bindings,
+and then using the `B+` operation to add the binding.
+
+Bindings are optional because unbound actions can still be used by
+the terminal emulator in other ways. For example, they may be triggered
+by some other means such as a command palette or a menu item.
+
+It is up to the terminal emulator to decide how to handle unbound actions.
+It is entirely permissible for the terminal emulator to ignore them
+completely. This is the same behavior as a terminal emulator who handles
+them but the user hasn't bound them to anything.
+
+### `-`: Unregister
+
+```
+OSC 👻 ; KS ; - ; <id> ST
+```
+
+Remove an action and all bindings associated with it.
+If the ID doesn't exist, this does nothing.
+
+If you want to remove many actions, you must use the `-` multiple times.
+A more efficient mechanism is to use the `>` (save) operation to save the
+state prior to adding the actions, then use the `<` (restore) operation to
+restore the state. This will remove all actions and bindings added
+after the save operation.
+
+### `B+`: Bind
+
+```
+OSC 👻 ; KS ; B+ ; <binding> ; <id> ST
+```
+
+Bind a keyboard sequence to a registered action.
+
+If the ID doesn't exist, this will do nothing.
+
+This will add the binding to the existing set of bindings for the
+action. This allows multiple bindings to be registered for the same action.
+If the binding was previously mapped to another action, it will be removed
+from that action and added to this one.
+
+Keyboard bindings are triggered on **key press** events. This matches
+the behavior of all major GUI frameworks. If a program wants to
+trigger an action on any other event, it must use a lower level
+input protocol such as [Kitty Keyboard Protocol](https://sw.kovidgoyal.net/kitty/keyboard-protocol/).
+
+#### Binding Format
+
+The binding is a human-readable string (UTF-8 encoded) that describes the
+key sequence in the format `[<modifiers>]<key>`.
+
+The `<key>` is the key that must be pressed. If this is a printable
+character, then it maps to the character produced by pressing a key
+(i.e. the character associated with the current keyboard layout). Printable
+characters must be exactly one Unicode codepoint. Otherwise,
+it can be any of the keys specified by the
+[W3C KeyboardEvent codes](https://www.w3.org/TR/uievents-code/)[^2]
+with the exception of "Unidentified"[^3].
+
+The `<modifiers>` can be any of the following:
+
+- `C`: Control
+- `S`: Shift
+- `A`: Alt (Option on macOS)
+- `M`: Meta (Command on macOS)
+
+Keys and modifiers are separated by `-` characters. The order of the
+modifiers is not important, but they must precede the key. For example,
+`C-S-a` is equivalent to `S-C-a`.
+
+Examples:
+
+- `C-a`: Control + a
+- `C-S-a`: Control + Shift + a
+- `M-x`: Meta + x
+- `PrintScreen`
+
+<Warning>
+It is possible for key sequences to be impossible to type on some
+keyboard layouts. For example `C-S-=` is impossible to type on a
+Norwegian keyboard layout because the `=` key requires shift itself,
+so the key sequence is effectively `C-S-S-=` which is impossible. This
+is not a bug in the protocol, but rather a limitation of all keyboard
+shortcuts. For more details, see
+[Qt's excellent documentation on the subject](https://doc.qt.io/qt-6/qkeysequence.html#keyboard-layout-issues).
+</Warning>
+
+### `B-`: Unbind by Binding
+
+```
+OSC 👻 ; KS ; B- ; <binding> ST
+```
+
+Unbind a keyboard sequence from any action. If the binding doesn't
+exist, this does nothing.
+
+The format of `<binding>` is the same as the `B+` (bind) operation,
+but the strings only have to be semantically equivalent, not byte-equivalent.
+For example, `ctrl+alt+a` and `alt+ctrl+a` are equivalent and will
+unmap the same binding.
+
+### `Bx`: Unbind by Action
+
+```
+OSC 👻 ; KS ; Bx ; <id> ST
+```
+
+Same as `B-` but removes all bindings for the action with the given ID.
+If the ID doesn't exist, this does nothing.
+
+### `💣`: Clear
+
+```
+OSC 👻 ; KS ; 💣 ST
+```
+
+Clear all keyboard shortcut state. This will remove all actions,
+bindings, and saved states.
+
+`💣` is UTF-8 encoded, the byte sequence is `0xF0 0x9F 0x92 0xA3`.
+We use this character because visually it explains the action and
+it is difficult to send by accident. The extra bytes are acceptable
+because this isn't an operation that would be frequently sent.
+
+## Responses
+
+### `X`: Trigger
+
+```
+OSC 👻 ; KS ; X ; <id> ST
+```
+
+This is sent by the terminal emulator to the program when an action
+is triggered. The ID is the same ID used in the `+` (register) operation.
+
+### `!`: Error
+
+```
+OSC 👻 ; KS ; ! ; <code> ; <error> ST
+```
+
+This is sent in response to an invalid or failed operation.
+
+The `<code>` value is a numeric error that indicates the type of error.
+The code is a 16-bit unsigned integer and the leading digit must be
+one of the following to indicate who is at fault. The remaining digits
+are free for the terminal emulator to use to uniquely identify certain
+errors.
+
+| Digit | Description      |
+|-------|------------------|
+| 2     | Success |
+| 4     | Program Problem |        |
+| 5     | Terminal Emulator Problem |
+
+<Note>
+The digits are chosen to be consistent with the pattern of HTTP
+status codes, so they should be familiar to many developers. However,
+the codes are not HTTP status codes and can be any 16-bit integer value.
+</Note>
+
+The `<error>` value is a human-readable description of the error. The error
+must be UTF-8 encoded and base64 encoded. The error message is not a standard
+error code and the error messages are not dictated by the protocol.
+
+Implementations of this protocol must error in the following scenarios,
+unless otherwise specified by a specific operation:
+
+- The operation is not recognized. e.g. `OSC 👻 ; KS ; HUH ST`
+- A parameter to an operation is missing or invalid.
+- The request could not be completed for any reason.
+
+## Limits
+
+The following limits are strongly recommended.
+
+These limits are not mandated by
+the specification, because we understand that certain environments may be
+constrained and not be able to support the full limits. If possible, the
+following limits should be used to improve interoperability and
+compatibility with other implementations.
+
+- Saved states: 255
+- Actions: 4096
+- Action ID length: 32 bytes
+- Action label length: 1024 bytes
+- Bindings: 4096
+
+If a limit is not specified then it is up to the implementation to decide
+what the limit is.
+
+## Appendix
+
+### Versions
+
+- 2025-04-27: Clarify error handling, UTF-8 encoding where necessary,
+  add sections about interactions with other features.
+- 2025-04-24: First draft
+
+[^1]: The OSC identifier `👻` is a prefix used for all proprietary
+Ghostty sequences.
+
+[^2]: The W3C KeyboardEvent codes are a well-adopted cross-platform
+standard for keyboard events. We've chosen to adopt this as our standard
+because it is widely supported, well understood, and well justified in
+its own right.
+
+[^3]: The "Unidentified" key is a special key that is used when the
+key event is not recognized. This is not a valid key for bindings.
