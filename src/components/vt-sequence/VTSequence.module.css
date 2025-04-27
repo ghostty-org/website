@@ -5,11 +5,12 @@
   display: inline-flex;
   flex-direction: column;
   align-items: flex-start;
+  font-size: 14px;
 
   & .unimplemented {
     /* Fix for https://github.com/ghostty-org/website/issues/312
   * In the case a user has custom fonts disabled, this ensures
-  * that the code block is still readable. 
+  * that the code block is still readable.
   */
     font-family: var(--jetbrains-mono), monospace;
     font-size: 14px;
