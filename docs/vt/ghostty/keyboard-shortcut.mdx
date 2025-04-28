@@ -115,7 +115,7 @@ for discoverability and ease of use.
 ## Protocol
 
 A new OSC sequence is introduced to allow terminal programs to advertise
-the set of keyboard shortcuts they support. The OSC sequence is formatted[^1]:
+the set of keyboard shortcuts they support. The OSC[^1] sequence is formatted[^2]:
 
 ```
 OSC 👻 ; KS ; <op> ; <params> ST
@@ -133,6 +133,17 @@ and the terminal emulator does not send a response unless there is an error.
 If there is an error, the [`!` (error)](#!:-error) operation is sent back
 to the terminal program. Errors can be quieted by suffixing the operation
 with the `!` character (e.g. `+!` instead of `+` for the register operation).
+
+**This protocol is not a replacement for existing input protocols.**
+This protocol is a high-level API for actions that can be bound
+to keyboard shortcuts. It is not a replacement for low-level key or
+text input protocols such as
+[Kitty Keyboard Protocol](https://sw.kovidgoyal.net/kitty/keyboard-protocol/).
+While many applications may be able to use this protocol exclusively,
+it is not a replacement for all the functionality that low-level input
+protocols provide, much in the same way that GUI frameworks provide
+both high-level APIs for keyboard shortcuts and low-level APIs for
+keyboard input.
 
 ### Feature Detection
 
@@ -337,6 +348,23 @@ to avoid repeating the program name for every operation. For terminal
 programs with many actions, this can be a significant amount of
 bytes saved.
 
+**Option: `r=<1|0>`**
+
+If `1`, output the response ID directly with no OSC wrapping.
+Any other values are ignored.
+
+This is useful for scripting environments where it may be
+difficult or impossible to capture and parse an OSC sequence,
+such as from a shell script.
+
+When raw mode is enabled, the response will be sent as `<id>\n`.
+The single trailing newline is so that the script can easily
+detect the end of the response (in case a read results in a
+partial read). The newline is not part of the ID and should be stripped.
+
+If an error occurs with raw mode enabled, the error will be suppressed
+and a blank ID will be sent instead (`\n`).
+
 ### `<`: Restore
 
 ```
@@ -513,8 +541,8 @@ character, then it maps to the character produced by pressing a key
 (i.e. the character associated with the current keyboard layout). Printable
 characters must be exactly one Unicode codepoint. Otherwise,
 it can be any of the keys specified by the
-[W3C KeyboardEvent codes](https://www.w3.org/TR/uievents-code/)[^2]
-with the exception of "Unidentified"[^3].
+[W3C KeyboardEvent codes](https://www.w3.org/TR/uievents-code/)[^3]
+with the exception of "Unidentified"[^4].
 
 The keys being bound can be any printable character or W3C key codes.
 The key doesn't have to be a key that is normally available via the
@@ -697,13 +725,17 @@ what the limit is.
   add sections about interactions with other features.
 - 2025-04-24: First draft
 
-[^1]: The OSC identifier `👻` is a prefix used for all proprietary
+[^1]: OSC is used because it supports strings and is well-supported
+by terminal emulators. DCS/APC sequences are less well supported and
+dump data to the terminal in Terminal.app.
+
+[^2]: The OSC identifier `👻` is a prefix used for all proprietary
 Ghostty sequences.
 
-[^2]: The W3C KeyboardEvent codes are a well-adopted cross-platform
+[^3]: The W3C KeyboardEvent codes are a well-adopted cross-platform
 standard for keyboard events. We've chosen to adopt this as our standard
 because it is widely supported, well understood, and well justified in
 its own right.
 
-[^3]: The "Unidentified" key is a special key that is used when the
+[^4]: The "Unidentified" key is a special key that is used when the
 key event is not recognized. This is not a valid key for bindings.
