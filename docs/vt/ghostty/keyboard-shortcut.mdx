@@ -286,11 +286,13 @@ success responses (unless otherwise specified by the operation).
 ### `>`: Save
 
 ```
-OSC 👻 ; KS ; > ST
+OSC 👻 ; KS ; > [; <options>] ST
 ```
 
 The `>` (save) operation saves the current state of keyboard shortcuts
 so they can later be restored with the `<` (restore) operation.
+It can also set a number of scoped options such as program name so
+that they don't have to be repeated for every operation.
 
 The saved state contains the set of keyboard shortcuts as well as
 the set of saved states. This means that restoring a saved state will
@@ -321,6 +323,19 @@ stack balance. Parents have full control over the keyboard shortcut state.
 This is particularly useful because programs that die unexpectedly (e.g.
 bugs, crashes, etc.) and don't clean up can still be cleaned up by the
 parent.
+
+**Option: `p=<program>`**
+
+The program name as used in the
+[`+` (register)](#+:-register)
+operation.
+
+This program name will be used by default for all subsequent
+register operations unless overridden by the `p` option explicitly
+in the register option or another save operation. This is useful
+to avoid repeating the program name for every operation. For terminal
+programs with many actions, this can be a significant amount of
+bytes saved.
 
 ### `<`: Restore
 
@@ -354,7 +369,7 @@ an ID is required.
 ### `+`: Register
 
 ```
-OSC 👻 ; KS ; + ; <id>[ ; <options>] ST
+OSC 👻 ; KS ; + ; <id> [; <options>] ST
 ```
 
 Register an action that can be bound to a keyboard shortcut.
@@ -379,18 +394,8 @@ all existing bindings will be removed and replaced with this one. If the
 
 Only the ID is required.
 
-**Option: `l=<label>`**
-
-The label is a human-friendly label for the action. This is used for display
-purposes only and it is up to the terminal emulator to decide how it is used.
-It is up to the terminal program to localize it appropriately.
-
-The label must be valid UTF-8 and it must be base64 encoded.
-
-Ghostty uses the label to display the action in the command palette.
-Future versions of Ghostty may include other features such as a "cheat sheet"
-UI that displays keyboard shortcuts with their labels, putting actions in the
-menu bar, etc.
+The `l` (label) and `p` (program) options are highly recommended
+to aid UI presenations.
 
 **Option: `b=<binding>`**
 
@@ -409,6 +414,59 @@ It is up to the terminal emulator to decide how to handle unbound actions.
 It is entirely permissible for the terminal emulator to ignore them
 completely. This is the same behavior as a terminal emulator who handles
 them but the user hasn't bound them to anything.
+
+**Option: `g=<group>`**
+
+The group is a human-friendly name categorizing the action.
+This is used for display purposes only and it is up to the terminal
+emulator to decide how it is used. It is up to the terminal program
+to localize it appropriately.
+
+The group must be valid UTF-8 and it must be base64 encoded.
+
+Ghostty uses the group as a prefix for the action in the command
+palette. For example, all text related actions might be in a
+`text` group and would show up as `text: <label>` in the command
+palette. Alternate UIs may separate shortcuts by group under
+tabs or other UI elements.
+
+**Option: `l=<label>`**
+
+The label is a human-friendly label for the action. This is used for display
+purposes only and it is up to the terminal emulator to decide how it is used.
+It is up to the terminal program to localize it appropriately.
+
+The label must be valid UTF-8 and it must be base64 encoded.
+
+Ghostty uses the label to display the action in the command palette.
+Future versions of Ghostty may include other features such as a "cheat sheet"
+UI that displays keyboard shortcuts with their labels, putting actions in the
+menu bar, etc.
+
+**Option: `p=<program>`**
+
+The program name is a human-friendly name for the program that is
+associated with the action. This is used for display purposes only and
+it is up to the terminal emulator to decide how it is used. It
+is up to the terminal program to localize it appropriately.
+
+The program name must be valid UTF-8 and it must be base64 encoded.
+
+Having a dedicated field for program name avoids the need to prefix
+every action label with the program name manually. And the structured
+data can be used to provide a better UI experience.
+
+Ghostty uses the program name visually to distinguish between
+built-in actions from program-specific actions. For example, the command
+palette shows the program name in a different style next to the action
+label.
+
+<Tip>
+If a program has many actions, consider specifying the `p` option
+as part of the [`>` (save)](#greater:-save) operation. This will
+avoid repeating the program name for every operation and can
+significantly reduce the number of bytes sent.
+</Tip>
 
 ### `-`: Unregister
 
@@ -624,6 +682,7 @@ compatibility with other implementations.
 - Action ID length: 32 bytes
 - Action label length: 1024 bytes
 - Bindings: 4096
+- Program name length (`p` option): 256 bytes
 
 If a limit is not specified then it is up to the implementation to decide
 what the limit is.
@@ -632,7 +691,8 @@ what the limit is.
 
 ### Versions
 
-- 2025-04-28: Clarify case folding behavior, physical keys
+- 2025-04-28: Clarify case folding behavior, physical keys, added
+  the `p` and `g` options
 - 2025-04-27: Clarify error handling, UTF-8 encoding where necessary,
   add sections about interactions with other features.
 - 2025-04-24: First draft
