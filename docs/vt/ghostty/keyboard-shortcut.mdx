@@ -338,6 +338,12 @@ a program can't save state, make changes, restore it, make changes, and then
 restore it again. The program would have to save the state again to get
 a new ID after initially restoring the state.
 
+Restoring a saved state will also invalidate any saved states that were
+created after the save operation being restored. This is similar to
+stack behavior. This allows outer "scopes" to clean up inner scopes
+that may have not cleaned up properly (due to being poorly behaved
+or dying unexpectedly).
+
 The zero ID is not special; it will not clear all keyboard shortcuts. The
 zero ID is just a normal ID like any other and it will only restore state
 if there was a save operation with that ID.
@@ -452,16 +458,36 @@ it can be any of the keys specified by the
 [W3C KeyboardEvent codes](https://www.w3.org/TR/uievents-code/)[^2]
 with the exception of "Unidentified"[^3].
 
+The keys being bound can be any printable character or W3C key codes.
+The key doesn't have to be a key that is normally available via the
+encodings supported by the terminal. For example, it is possible to bind
+`Numpad9` without using Kitty Keyboard Protocol (a key that is not
+otherwise distinguishable via any other encoding). The keyboard shortcut
+protocol doesn't rely on any specific key encoding protocol.
+
 The `<modifiers>` can be any of the following:
 
 - `C`: Control
 - `S`: Shift
 - `A`: Alt (Option on macOS)
-- `M`: Meta (Command on macOS)
+- `M`: Meta (Command on macOS, Windows key on Windows)
 
 Keys and modifiers are separated by `-` characters. The order of the
 modifiers is not important, but they must precede the key. For example,
 `C-S-a` is equivalent to `S-C-a`.
+
+Modifiers and keys are both case-insensitive. This means that
+`C-j`, `c-j`, and `C-J` are all equivalent. For case-insensitivity comparisons,
+implementations should follow
+[Unicode case folding](https://www.w3.org/TR/charmod-norm/#definitionCaseFolding)
+rules. Comparison should only use case folding and not full Unicode
+normalization.
+
+To go further on case-insensitivity, `C-J` and `C-S-j` would conflict
+on a US standard keyboard layout. The exact behavior in this scenario
+for which binding is triggered is unspecified, and behavior differs across
+GUI frameworks as well. See the [Qt documentation](https://doc.qt.io/qt-6/qkeysequence.html#keyboard-layout-issues)
+on keyboard layout issues for more details.
 
 Examples:
 
@@ -479,6 +505,24 @@ is not a bug in the protocol, but rather a limitation of all keyboard
 shortcuts. For more details, see
 [Qt's excellent documentation on the subject](https://doc.qt.io/qt-6/qkeysequence.html#keyboard-layout-issues).
 </Warning>
+
+#### Mapping Physical Keys
+
+As noted above, any key that is a single-codepoint printable character
+will be matched to the character produced by pressing the key. This means that
+keyboard layouts are automatically taken into account. For example, for
+a binding `C-o`, the key `o` will map to the physical `s` key on a US
+standard keyboard with a Dvorak layout.
+
+If you want to bind a key to a specific physical key, you must use
+the [W3C KeyboardEvent codes](https://www.w3.org/TR/uievents-code/).
+To continue the example above, to map to the physical `o` key the
+binding would be `C-KeyO`.
+
+Also note that since printable characters take keyboard layout into
+account, some key sequences may be impossible to type on some keyboard layouts.
+See the [Qt documentation](https://doc.qt.io/qt-6/qkeysequence.html#keyboard-layout-issues)
+for more details.
 
 ### `B-`: Unbind by Binding
 
@@ -588,6 +632,7 @@ what the limit is.
 
 ### Versions
 
+- 2025-04-28: Clarify case folding behavior, physical keys
 - 2025-04-27: Clarify error handling, UTF-8 encoding where necessary,
   add sections about interactions with other features.
 - 2025-04-24: First draft
