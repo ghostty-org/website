@@ -11,6 +11,12 @@ The keyboard shortcut protocol allows programs to advertise the set of
 actions that can be bound to keyboard shortcuts and to receive a notification
 when an action is triggered.
 
+While not a general replacement, this protocol can often be used in place
+of feature-rich but more complex input protocols such as
+[Kitty Keyboard Protocol](https://sw.kovidgoyal.net/kitty/keyboard-protocol/),
+if the terminal application only needs to support keyboard shortcuts
+and raw text input.
+
 <Caution>
 **This is an incomplete, unimplemented specification in draft form.**
 We're currently soliciting feedback, and it isn't guaranteed to be
@@ -58,22 +64,21 @@ releases, and repeats, and contain as much information about the
 key event as possible, such as Unicode characters produced by the
 key event.
 
-For cons, this flexibility and low-level behavior comes at a cost.
-The first cost is implementation complexity. Terminal programs have
-to parse the raw key events and map them to keyboard shortcuts. This
-seems simple on the surface but implementing numerous TUI programs
-has shown that this is a non-trivial task. There is also arguably a
-performance cost because every key event has to be encoded and decoded
-when only a small subset of key events are actually used.
+The primary con is that keyboard shortcuts are completely invisible
+to the terminal emulator. This means that terminal emulators cannot
+provide any UI for keyboard shortcuts, can't detect conflicts with
+application or system shortcuts, can't remap keyboard shortcuts
+(possibly extremely important for accessibility), etc.
 
-Additionally, keyboard shortcuts are completely invisible to the
-terminal emulator. This means that terminal emulators cannot
-provide any UI for keyboard shortcuts, a common feature in GUI
-applications. And, given the number and importance of keyboard
-shortcuts in terminal programs, this is a significant drawback for
-user experience. This is only one example of what a terminal
-emulator might be able to do with this information, many
-other possibilities exist.
+An additional con is added implementation complexity for terminal
+programs. Terminal programs have to parse the raw key events and map
+them to keyboard shortcuts. They're forced to implement their own
+"help" UIs. They have to implement their own configuration mechanisms.
+
+There are also minor cons such as the fact that unnecessary key events
+have to be encoded. This is a minor cost but is wasteful CPU cycles
+and IO bandwidth. These costs are usually negligible, but they're
+wasteful nonetheless.
 
 ### Benefits of a Dedicated API
 
@@ -81,10 +86,17 @@ All major modern GUI APIs have dedicated APIs for keyboard shortcuts.
 This is surely not a coincidence, and is likely due to the benefits
 a dedicated API provides.
 
+The most important themes throughout the more detailed list below
+are shifting implementation complexity from terminal programs to terminal
+emulators, providing a more consistent user experience (that may match
+other native applications), and improving accessibility.
+
 **"Cheat sheet" UI.** Being aware of keyboard shortcuts allows GUI
 programs to provide "cheat sheet" style UIs. For example on iPad, holding
 the `command` key will show a list of all keyboard shortcuts the app
-supports. This is a very useful feature for discoverability.
+supports. This is a very useful feature for discoverability. These
+UIs are also usually visible to accessibility tools, making terminal
+programs more accessible.
 
 **Conflict awareness.** Terminal programs such as Neovim have to share
 the keyboard with the terminal emulator and the operating system.
@@ -100,17 +112,17 @@ layouts and potentially highlight
 
 **Remapping.** Some GUI frameworks allow users to remap keyboard shortcuts
 to different key combinations at a lower level. For example, macOS allows
-users to remap keyboard shortcuts in the system preferences. This has
-a few direct benefits. First, this is very accessibility friendly. Second,
-app developers can avoid spending time implementing their own remapping
-mechanism. Third, the lower level takes advantage of storing and syncing
-keyboard shortcuts across devices.
+users to remap keyboard shortcuts in the system preferences. Note these
+are remappings _for specific actions in a specific application_, not
+globally. In addition to this utility, the remapping UI is generally
+accessible to accessibility tools. And the operating system can often
+provide additional features such as automatic syncing across devices.
 
 **Additional UI.** There are more UI features that can be built on top of
 keyboard shortcuts. For example, for Ghostty, I'd love to integrate keyboard
 shortcuts directly into the
 [command palette](https://x.com/mitchellh/status/1914380359107797146)
-for discoverability and ease of use.
+and menu bar for discoverability and ease of use.
 
 ## Protocol
 
@@ -171,8 +183,8 @@ If it is not supported, the terminal emulator will respond with:
 ESC P 0 + r 67736B73 ESC \
 ```
 
-Ghostty extensions use `XTGETTCAP` because it is a widely supported
-feature in terminal emulators and importantly provides _negative_
+Ghostty extensions use `XTGETTCAP` because it is a well-supported[^5]
+feature in modern terminal emulators and importantly provides _negative_
 responses. This lets terminal programs quickly detect whether a feature
 is supported without resorting to timeouts or other hacks.
 
@@ -719,6 +731,8 @@ what the limit is.
 
 ### Versions
 
+- 2025-04-29: Reword, reorder the shortcomings and benefits background
+  section to have less subjectivity.
 - 2025-04-28: Clarify case folding behavior, physical keys, added
   the `p` and `g` options
 - 2025-04-27: Clarify error handling, UTF-8 encoding where necessary,
@@ -739,3 +753,6 @@ its own right.
 
 [^4]: The "Unidentified" key is a special key that is used when the
 key event is not recognized. This is not a valid key for bindings.
+
+[^5]: xterm, foot, Ghostty, iTerm2, Kitty, WezTerm support it at the
+time of writing.
