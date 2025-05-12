@@ -575,17 +575,12 @@ modifiers is not important, but they must precede the key. For example,
 `C-S-a` is equivalent to `S-C-a`.
 
 Modifiers and keys are both case-insensitive. This means that
-`C-j`, `c-j`, and `C-J` are all equivalent. For case-insensitivity comparisons,
-implementations should follow
+`C-j`, `c-j`, and `C-J` are all equivalent, but see the
+[section on matching bindings](#matching-bindings) for more information.
+For case-insensitivity comparisons, implementations should follow
 [Unicode case folding](https://www.w3.org/TR/charmod-norm/#definitionCaseFolding)
 rules. Comparison should only use case folding and not full Unicode
 normalization.
-
-To go further on case-insensitivity, `C-J` and `C-S-j` would conflict
-on a US standard keyboard layout. The exact behavior in this scenario
-for which binding is triggered is unspecified, and behavior differs across
-GUI frameworks as well. See the [Qt documentation](https://doc.qt.io/qt-6/qkeysequence.html#keyboard-layout-issues)
-on keyboard layout issues for more details.
 
 Examples:
 
@@ -621,6 +616,36 @@ Also note that since printable characters take keyboard layout into
 account, some key sequences may be impossible to type on some keyboard layouts.
 See the [Qt documentation](https://doc.qt.io/qt-6/qkeysequence.html#keyboard-layout-issues)
 for more details.
+
+#### Matching Bindings
+
+A binding is matched to a key event by:
+
+1. Comparing the modifiers pressed to the modifiers in the binding.
+2. For physical keys, comparing the key pressed to the key in the binding.
+3. For printable characters, comparing the _character ignoring modifiers_
+   to the character in the binding using Unicode case folding rules.
+
+An important consequence of the above is that while binding formats
+and character comparison is case-insensitive, the modifiers required
+to produce the key event may make certain bindings impossible depending
+in on the keyboard layout.
+
+For example, `C-_` is impossible to type on a US layout keyboard because
+the `_` key requires shift, and pressing shift will cause check 1 above to
+fail in the matching algorithm. The equivalent would be `C-S--` on
+a US layout keyboard.
+
+Likewise, `C-J` will match `C-j` (lowercase `j`) on a US layout keyboard,
+but will not match `C-S-j` (required to produce the uppercase `J` character
+on a US layout keyboard). This is because the `C-S-j` key event will
+also fail check 1 above. Therefore, despite printable characters being
+case-insensitive, modifiers need to be taken into account.
+
+The Qt framework has written
+[excellent documentation on keyboard layout issues](https://doc.qt.io/qt-6/qkeysequence.html#keyboard-layout-issues)
+as they relate to keyboard shortcuts.
+
 
 ### `B-`: Unbind by Binding
 
@@ -731,6 +756,7 @@ what the limit is.
 
 ### Versions
 
+- 2025-05-12: Clarify more behavior around case-insensitivity.
 - 2025-04-29: Reword, reorder the shortcomings and benefits background
   section to have less subjectivity.
 - 2025-04-28: Clarify case folding behavior, physical keys, added
