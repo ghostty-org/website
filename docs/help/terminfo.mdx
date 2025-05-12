@@ -63,7 +63,7 @@ The following one-liner will export the terminfo entry from your host and
 import it on the remote machine:
 
 ```sh
-infocmp -x ghostty | ssh YOUR-SERVER -- tic -x -
+infocmp -x xterm-ghostty | ssh YOUR-SERVER -- tic -x -
 ```
 
 The `tic` command on the server may give the warning `"<stdin>", line 2,
