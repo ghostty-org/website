@@ -15,7 +15,7 @@ While not a general replacement, this protocol can often be used in place
 of feature-rich but more complex input protocols such as
 [Kitty Keyboard Protocol](https://sw.kovidgoyal.net/kitty/keyboard-protocol/),
 if the terminal application only needs to support keyboard shortcuts
-and raw text input.
+and raw text input[^6].
 
 <Caution>
 **This is an incomplete, unimplemented specification in draft form.**
@@ -782,3 +782,7 @@ key event is not recognized. This is not a valid key for bindings.
 
 [^5]: xterm, foot, Ghostty, iTerm2, Kitty, WezTerm, Contour are
 a list of terminals that support it at the time of writing.
+
+[^6]: Terminal applications can use this protocol for keyboard shortcuts
+and rely on the bare legacy protocol for chracter input (where characters
+are sent as-is on the pty).
