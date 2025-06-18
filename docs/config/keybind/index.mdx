@@ -88,14 +88,14 @@ Make the keybind apply to all terminal surfaces. By default,
 keybinds only apply to the focused terminal surface. If this is true,
 then the keybind will be sent to all terminal surfaces. This only
 applies to actions that are surface-specific. For actions that
-are already global (i.e. `quit`), this prefix has no effect.
+are already global (e.g. `quit`), this prefix has no effect.
 
 #### `global:`
 
 Make the keybind global. By default, keybinds only work
 within Ghostty and under the right conditions (application focused,
 sometimes terminal focused, etc.). If you want a keybind to work
-globally across your system (i.e. even when Ghostty is not focused),
+globally across your system (. even when Ghostty is not focused),
 specify this prefix. This prefix implies `all:`. Note: this does not
 work in all environments; see the additional notes below for more
 information.
@@ -160,6 +160,6 @@ for a complete list. Ghostty supports dozens of actions.
 |--------|-------------|
 | `ignore` | Do nothing, ignore the key input. This can be used to black hole certain inputs to have no effect and no encoding. |
 | `unbind` | Remove the binding. This makes it so the previous action is removed, and the key will be sent through to the child command if it is printable. |
-| `text:text` | Send a string. Uses Zig string literal syntax. i.e. `text:\x15` sends Ctrl-U. By using a prefix of `\x1b[` you can send control sequences but the convenience actions `csi:` and `esc:` are recommended instead. |
-| `csi:text` | Send a CSI sequence. i.e. `csi:A` sends "cursor up". |
-| `esc:text` | Send an escape sequence. i.e. `esc:d` deletes to the end of the word to the right. |
+| `text:text` | Send a string. Uses Zig string literal syntax. e.g. `text:\x15` sends Ctrl-U. By using a prefix of `\x1b[` you can send control sequences but the convenience actions `csi:` and `esc:` are recommended instead. |
+| `csi:text` | Send a CSI sequence. e.g. `csi:A` sends "cursor up". |
+| `esc:text` | Send an escape sequence. e.g. `esc:d` deletes to the end of the word to the right. |
