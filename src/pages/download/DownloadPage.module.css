@@ -64,5 +64,14 @@
         flex-direction: column;
       }
     }
+
+    & .tipLinks {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      @media(max-width: 660px) {
+        flex-direction: column;
+      }
+    }
   }
 }
