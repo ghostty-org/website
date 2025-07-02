@@ -43,6 +43,12 @@ export default function RootLayout({
         <meta property="og:image:height" content="3200" />
 
         <link
+          rel="alternate"
+          type="application/feed+json"
+          title="Ghostty Release Notes"
+          href="/docs/install/release-notes/feed.json"
+        />
+        <link
           rel="icon"
           type="image/png"
           sizes="32x32"
