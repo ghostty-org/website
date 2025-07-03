@@ -120,7 +120,7 @@
       "children": [
         {
           "type": "link",
-          "path": "/running/linux",
+          "path": "/linux",
           "title": "Linux"
         }
       ]
