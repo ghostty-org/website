@@ -3,7 +3,7 @@ title: Bell (BEL)
 description: Raise the attention of the user.
 ---
 
-<VTSequence sequence="BEL" unimplemented />
+<VTSequence sequence="BEL" />
 
 The purpose of the bell sequence is to raise the attention
 of the user.
@@ -29,13 +29,14 @@ also terminate with the `BEL` character.[^1]
 
 ## Ghostty Status
 
-This control character is not currently implemented in Ghostty,
-but can be used as an OSC terminator. If it is used as an OSC
+This control character is implemented in Ghostty, although by default
+most behaviors that Ghostty implements are disabled. See the documentation
+for the [`bell-features`](/docs/config/reference#bell-features) configuration
+option for more information.
+
+The BEL character can be used as an OSC terminator. If it is used as an OSC
 terminator, Ghostty will terminate any responses with the
 `BEL` character.
 
-There is an [open discussion](https://github.com/ghostty-org/ghostty/discussions/2710)
-about implementing the bell character in Ghostty and what
-that will look like.
 
 [^1]: https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
