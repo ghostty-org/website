@@ -115,6 +115,18 @@
     },
     {
       "type": "folder",
+      "path": "/running",
+      "title": "Running",
+      "children": [
+        {
+          "type": "link",
+          "path": "/running/linux",
+          "title": "Linux"
+        }
+      ]
+    },
+    {
+      "type": "folder",
       "path": "/features",
       "title": "Features",
       "children": [
