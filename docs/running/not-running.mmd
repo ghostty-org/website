@@ -1,0 +1,13 @@
+sequenceDiagram
+  actor Launcher
+  participant D-Bus
+  participant systemd
+  Launcher->>D-Bus: Start a Ghostty window
+  D-Bus->>systemd: Start Ghostty service
+  create participant Ghostty
+  systemd->>Ghostty: Start Ghostty service
+  Ghostty->>systemd: Started
+  Ghostty->>D-Bus: I'm here!
+  D-Bus->>Ghostty: Create a new window
+  Ghostty->>D-Bus: OK
+
