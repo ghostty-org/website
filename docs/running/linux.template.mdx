@@ -78,7 +78,15 @@ be running.
 If Ghostty is already running, the broker will send a D-Bus signal directly to
 Ghostty asking it to create a new window.
 
-![Ghostty Already Running](./running.svg)
+```mermaid
+sequenceDiagram
+  actor Launcher
+  participant D-Bus
+  participant Ghostty
+  Launcher->>D-Bus: Start a Ghostty window
+  D-Bus->>Ghostty: Create a new window
+  Ghostty->>D-Bus: OK
+```
 
 ### If Ghostty is Not Running
 
@@ -86,7 +94,20 @@ If Ghostty is not running, the D-Bus session broker will ask `systemd` to start
 Ghostty in a user service, and then will send Ghostty a D-Bus signal to create a
 new window.
 
-![Ghostty Is Not Running](./not-running.svg)
+```mermaid
+sequenceDiagram
+  actor Launcher
+  participant D-Bus
+  participant systemd
+  Launcher->>D-Bus: Start a Ghostty window
+  D-Bus->>systemd: Start Ghostty service
+  create participant Ghostty
+  systemd->>Ghostty: Start Ghostty service
+  Ghostty->>systemd: Started
+  Ghostty->>D-Bus: I'm here!
+  D-Bus->>Ghostty: Create a new window
+  Ghostty->>D-Bus: OK
+```
 
 This ensures that any startup delay caused by GTK (or any other initialization) is
 only incurred once per login.
