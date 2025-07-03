@@ -5,3 +5,172 @@ description: |-
 ---
 
 Coming soon.
+
+## Highlights
+
+### Update to Nix 25.05 and Zig 0.14.1
+
+PRs: [#6699](https://github.com/ghostty-org/ghostty/pull/6699) [#7447](https://github.com/ghostty-org/ghostty/pull/7447) [#6736](https://github.com/ghostty-org/pull/6736)
+
+Zig 0.14 (and 0.14.1) brings many language and stability improvements over
+Zig 0.13. For more information on the changes in Zig 0.14 see the [release notes](https://ziglang.org/download/0.14.0/release-notes.html).
+
+Ghostty uses Nix extensively in CI, and many developers use Nix development
+environments. Updating Nix to 25.05 from 24.11 give us access to the latest
+versions of our dependencies (especially Gnome 48).
+
+### Preliminary Support for Localization (GTK only)
+
+PRs: [#6601](https://github.com/ghostty-org/ghostty/pull/6601) [#6731](https://github.com/ghostty-org/ghostty/pull/6731) [#6759](https://github.com/ghostty-org/ghostty/pull/6759) [#6771](https://github.com/ghostty-org/ghostty/pull/6771) [#6836](https://github.com/ghostty-org/ghostty/pull/6836) [#6841](https://github.com/ghostty-org/ghostty/pull/6841) [#6866](https://github.com/ghostty-org/ghostty/pull/6866) [#6868](https://github.com/ghostty-org/ghostty/pull/6868) [#6885](https://github.com/ghostty-org/ghostty/pull/6885) [#6889](https://github.com/ghostty-org/ghostty/pull/6889) [#6894](https://github.com/ghostty-org/ghostty/pull/6894) [#6898](https://github.com/ghostty-org/ghostty/pull/6898) [#6902](https://github.com/ghostty-org/ghostty/pull/6902) [#6940](https://github.com/ghostty-org/ghostty/pull/6940) [#6963](https://github.com/ghostty-org/ghostty/pull/6963) [#6966](https://github.com/ghostty-org/ghostty/pull/6966) [#7085](https://github.com/ghostty-org/ghostty/pull/7085) [#7122](https://github.com/ghostty-org/ghostty/pull/7122) [#7397](https://github.com/ghostty-org/ghostty/pull/7397) [#7408](https://github.com/ghostty-org/ghostty/pull/7408) [#7423](https://github.com/ghostty-org/ghostty/pull/7423) [#7632](https://github.com/ghostty-org/ghostty/pull/7632) [#7650](https://github.com/ghostty-org/ghostty/pull/7650) [#7701](https://github.com/ghostty-org/ghostty/pull/7701) [#7094](https://github.com/ghostty-org/ghostty/pull/7094) [#7053](https://github.com/ghostty-org/ghostty/pull/7053) [#6704](https://github.com/ghostty-org/ghostty/pull/6704) [#6004](https://github.com/ghostty-org/ghostty/pull/6004) [#7390](https://github.com/ghostty-org/ghostty/pull/7390)
+
+Preliminary support for localization of the GTK application has been added.
+Currently, only GTK GUI elements can be translated. Work on localizing the
+macOS application and other parts of Ghostty will arrive in releases after 1.2.
+So far, translators have added translations for the following locales:
+
+- bg_BG
+- ca_ES
+- de_DE
+- es_AR
+- es_BO
+- fr_FR
+- ga_IE
+- id_ID
+- ja_JP
+- ko_KR
+- mk_MK
+- nb_NO
+- nl_NL
+- pl_PL
+- pt_BR
+- ru_RU
+- tr_TR
+- uk_UA
+- zh_CN
+
+### Require `libadwaita`
+
+PRs: [#5749](https://github.com/ghostty-org/ghostty/pull/5749) [#7274](https://github.com/ghostty-org/ghostty/pull/7274) [#6797](https://github.com/ghostty-org/ghostty/pull/6797)
+
+Requiring libadwaita was done primarily to reduce maintainer burden as
+certain GUI objects had to be developed twice, once for libadwaita and once
+for non-libadwaita. This also means that it's easier to take advantage of
+the advanced widgets provided by libadwaita as well as make the Ghostty GTK
+application conform more closely to the Gnome Human Interface Guidelines.
+
+### Switch to Zig-GObject
+
+PRs: [#6767](https://github.com/ghostty-org/ghostty/pull/6767) [#6775](https://github.com/ghostty-org/ghostty/pull/6775) [#6729](https://github.com/ghostty-org/ghostty/pull/6729) [#6634](https://github.com/ghostty-org/ghostty/pull/6634) [#6042](https://github.com/ghostty-org/ghostty/pull/6042) [#6012](https://github.com/ghostty-org/ghostty/pull/6012) [#6009](https://github.com/ghostty-org/ghostty/pull/6009) [#5996](https://github.com/ghostty-org/ghostty/pull/5996) [#5978](https://github.com/ghostty-org/ghostty/pull/5978) [#5968](https://github.com/ghostty-org/ghostty/pull/5968) [#5941](https://github.com/ghostty-org/ghostty/pull/5941) [#5795](https://github.com/ghostty-org/ghostty/pull/5795) [#7039](https://github.com/ghostty-org/ghostty/pull/7039)
+
+Zig-GObject uses GObject introspection to generate bindings to GTK4 and related
+libraries. Zig has _great_ C interoperability and the GTK headers generally
+worked well, but Zig-GObject allows more idomatic Zig code as well as better
+type checking. This doesn't result in any user-visible changes but it speeds up
+development, allowing changes to the GTK runtime to be developed faster and with
+more confidence.
+
+### Use GTK Blueprints
+
+PRs: [#6827](https://github.com/ghostty-org/ghostty/pull/6827) [#6822](https://github.com/ghostty-org/ghostty/pull/6822) [#6801](https://github.com/ghostty-org/ghostty/pull/6801) [#5970](https://github.com/ghostty-org/ghostty/pull/5970) [#5968](https://github.com/ghostty-org/ghostty/pull/5968) [#5944](https://github.com/ghostty-org/ghostty/pull/5944)
+
+Blueprints is the new language for designing Gnome UI elements like windows,
+menus, and dialogs. Ghostty takes advantage of Blueprints to design many UI
+elements. This allows easier creation, editing, and localization of UI elements
+that would have been difficult to do if we generated all the elements using
+procedural API calls.
+
+The Blueprint compiler is only required if you are building from a git checkout.
+Building from a generated source tarball does not require the Blueprint compiler
+because we precompile the Blueprints and include the output in the generated
+tarball. This is done so that distributions that don't include the Blueprint
+compiler (or have one that is too old) can continue to package Ghostty.
+
+### Terminal Bell
+
+PRs: [#7533](https://github.com/ghostty-org/ghostty/pull/7533) [#7521](https://github.com/ghostty-org/ghostty/pull/7521) [#7842](https://github.com/ghostty-org/ghostty/pull/7842) [#7148](https://github.com/ghostty-org/ghostty/pull/7148) [#7118](https://github.com/ghostty-org/ghostty/pull/7118) [#7101](https://github.com/ghostty-org/ghostty/pull/7101) [#7087](https://github.com/ghostty-org/ghostty/pull/7087) [#5326](https://github.com/ghostty-org/ghostty/pull/5326)
+
+Support has been added for the terminal bell (ASCII `BEL` or `0x07`).
+Ghostty's behavior when encountering a `BEL` character is customizable with
+the `bell-features` and related configuration entries. It is possible to use a
+custom audio file as a terminal bell. If you find the right audio file Ghostty
+can sound like an Apple ][ now!
+
+### D-Bus Activation and `systemd` User Services. (Linux Only)
+
+PRs: [#7757](https://github.com/ghostty-org/ghostty/pull/7757) [#7754](https://github.com/ghostty-org/ghostty/pull/7754) [#7679](https://github.com/ghostty-org/ghostty/pull/7679) [#7433](https://github.com/ghostty-org/ghostty/pull/7433)
+
+To ensure that users have the best Ghostty experience possible on Linux, we
+install configuration files that enable Ghostty to be launched using D-Bus
+activation and `systemd` user services. This ensures that launching Ghostty is
+(relatively) slow only on the first launch. Ghostty can also optionally start up
+at login so that initialization time is completely invisible from the user.
+
+### Allow multiple OSC color set/reset/report operations per OSC
+
+PRs: [#7429](https://github.com/ghostty-org/ghostty/pull/7429)
+
+The public release of Microsoft's new editor `edit` revealed a deficiency in the
+way that we were parsing several OSC sequences that `edit` was using. This PR
+fixes those deficiences and improves compatibility. OSCs 4, 10, 11, 12, 104,
+110, 111, and 112 were affected.
+
+### Debian 12 (and Other Older Distribution) Build Improvements
+
+PRs: [#6776](https://github.com/ghostty-org/ghostty/pull/6776) [#6825](https://github.com/ghostty-org/ghostty/pull/6825) [#5791](https://github.com/ghostty-org/ghostty/pull/5791) [#6822](https://github.com/ghostty-org/ghostty/pull/6822) [#6800](https://github.com/ghostty-org/ghostty/pull/6800) [#6827](https://github.com/ghostty-org/ghostty/pull/6827) [#6831](https://github.com/ghostty-org/ghostty/pull/6831)
+
+In order to keep Ghostty building on Debian 12 (which has some of the oldest
+dependencies that Ghostty still supports) we have added CI checks as well
+as modified the build system. As part of the CI build chain, we generate GTK
+resource files with `blueprint-compiler` and `glib-compile-resources` using Nix
+and add them to a source tarball that is archived. Distributions that do not
+have up-to-date versions of `blueprint-compiler` or `glib-compile-resources` can
+use the source tarballs to build Ghostty.
+
+### Snap Packaging
+
+PRs: [#7623](https://github.com/ghostty-org/ghostty/pull/7623) [#7341](https://github.com/ghostty-org/ghostty/pull/7341) [#7267](https://github.com/ghostty-org/ghostty/pull/7267) [#6831](https://github.com/ghostty-org/ghostty/pull/6831) [#6827](https://github.com/ghostty-org/ghostty/pull/6827) [#5987](https://github.com/ghostty-org/ghostty/pull/5987) [#5820](https://github.com/ghostty-org/ghostty/pull/5820) [#3931](https://github.com/ghostty-org/ghostty/pull/3931)
+
+Many improvements to the Snap build process have been made, with the ultimate
+goal of having Snap being an officially supported distribution format (much like
+the macOS binaries).
+
+### Hide Sensitive Data in Paste Confirmation Dialogs (GTK)
+
+PRs: [#6054](https://github.com/ghostty-org/ghostty/pull/6054)
+
+If secure input is enabled, data in a paste confirmation dialog is blurred so
+that potentially sensitive data is not inadvertently revealed.
+
+### Keybind Action to Show the GTK Inspector
+
+PRs: [#7468](https://github.com/ghostty-org/ghostty/pull/7468)
+
+A keybind action has been added to launch the GTK inspector. The GTK inspector
+is useful for those wishing to customize Ghostty with the `gtk-custom-css`
+configuration entry.
+
+### Only Allow One Config Error Dialog at a Time
+
+PRs: [#7293](https://github.com/ghostty-org/ghostty/pull/7293)
+
+In certain cases it was possible to get multiple config error dialogs showing. This
+fixes that so only at most one will show at a time.
+
+### `env` Config Option
+
+PRs: [#5309](https://github.com/ghostty-org/ghostty/pull/5309)
+
+Add a config option to set arbitrary environment variables in launched processes.
+
+### Enable Context Menu Key
+
+PRs: [#5162](https://github.com/ghostty-org/ghostty/pull/5162)
+
+Add support for the context menu key available on some keyboards.
+
+### Change the Title of a Surface
+
+PRs: [#4127](https://github.com/ghostty-org/ghostty/pull/4127) [#5769](https://github.com/ghostty-org/ghostty/pull/5769) [#4217](https://github.com/ghostty-org/ghostty/pull/4217)
+
+Added the ability to change the title of a surface (which affects tab and window
+titles), overriding the title set using OSC sequences by your shell.
