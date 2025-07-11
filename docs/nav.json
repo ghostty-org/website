@@ -115,6 +115,18 @@
     },
     {
       "type": "folder",
+      "path": "/linux",
+      "title": "Linux",
+      "children": [
+        {
+          "type": "link",
+          "path": "/",
+          "title": "Overview"
+        }
+      ]
+    },
+    {
+      "type": "folder",
       "path": "/features",
       "title": "Features",
       "children": [
