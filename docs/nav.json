@@ -122,6 +122,11 @@
           "type": "link",
           "path": "/",
           "title": "Overview"
+        },
+        {
+          "type": "link",
+          "path": "/running",
+          "title": "Running"
         }
       ]
     },
