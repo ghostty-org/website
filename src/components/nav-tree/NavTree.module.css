@@ -23,6 +23,7 @@ ul.nodesList {
         background: none;
         width: 100%;
         text-align: left;
+        font-family: inherit;
         font-weight: 500;
         color: var(--gray-6);
         font-size: var(--node-font-size);
