@@ -8,105 +8,203 @@ This is a reference of all Ghostty keybinding actions.
 
 
 ## `ignore`
-Ignore this key combination, don't send it to the child process, just
-black hole it.
+Ignore this key combination.
+
+Ghostty will not process this combination nor forward it to the child
+process within the terminal, but it may still be processed by the OS or
+other applications.
 
 ## `unbind`
-This action is used to flag that the binding should be removed from
-the set. This should never exist in an active set and `set.put` has an
-assertion to verify this.
+Unbind a previously bound key binding.
+
+This cannot unbind bindings that were not bound by Ghostty or the user
+(e.g. bindings set by the OS or some other application).
 
 ## `csi`
-Send a CSI sequence. The value should be the CSI sequence without the
-CSI header (`ESC [` or `\x1b[`).
+Send a CSI sequence.
+
+The value should be the CSI sequence without the CSI header (`ESC [` or
+`\x1b[`).
+
+For example, `csi:0m` can be sent to reset all styles of the current text.
 
 ## `esc`
 Send an `ESC` sequence.
 
 ## `text`
-Send the given text. Uses Zig string literal syntax. This is currently
-not validated. If the text is invalid (i.e. contains an invalid escape
-sequence), the error will currently only show up in logs.
+Send the specified text.
+
+Uses Zig string literal syntax. This is currently not validated.
+If the text is invalid (i.e. contains an invalid escape sequence),
+the error will currently only show up in logs.
 
 ## `cursor_key`
 Send data to the pty depending on whether cursor key mode is enabled
 (`application`) or disabled (`normal`).
 
 ## `reset`
-Reset the terminal. This can fix a lot of issues when a running
-program puts the terminal into a broken state. This is equivalent to
-when you type "reset" and press enter.
+Reset the terminal.
+
+This can fix a lot of issues when a running program puts the terminal
+into a broken state, equivalent to running the `reset` command.
 
 If you do this while in a TUI program such as vim, this may break
 the program. If you do this while in a shell, you may have to press
 enter after to get a new prompt.
 
 ## `copy_to_clipboard`
+Copy the selected text to the clipboard.
+
 ## `paste_from_clipboard`
+Paste the contents of the default clipboard.
+
 ## `paste_from_selection`
-Copy and paste.
+Paste the contents of the selection clipboard.
 
 ## `copy_url_to_clipboard`
-Copy the URL under the cursor to the clipboard. If there is no
-URL under the cursor, this does nothing.
+If there is a URL under the cursor, copy it to the default clipboard.
+
+## `copy_title_to_clipboard`
+Copy the terminal title to the clipboard. If the terminal title is not
+set or is empty this has no effect.
 
 ## `increase_font_size`
+Increase the font size by the specified amount in points (pt).
+
+For example, `increase_font_size:1.5` will increase the font size
+by 1.5 points.
+
 ## `decrease_font_size`
-Increase/decrease the font size by a certain amount.
+Decrease the font size by the specified amount in points (pt).
+
+For example, `decrease_font_size:1.5` will decrease the font size
+by 1.5 points.
 
 ## `reset_font_size`
 Reset the font size to the original configured size.
 
+## `set_font_size`
+Set the font size to the specified size in points (pt).
+
+For example, `set_font_size:14.5` will set the font size
+to 14.5 points.
+
 ## `clear_screen`
-Clear the screen. This also clears all scrollback.
+Clear the screen and all scrollback.
 
 ## `select_all`
 Select all text on the screen.
 
 ## `scroll_to_top`
+Scroll to the top of the screen.
+
 ## `scroll_to_bottom`
+Scroll to the bottom of the screen.
+
+## `scroll_to_selection`
+Scroll to the selected text.
+
 ## `scroll_page_up`
+Scroll the screen up by one page.
+
 ## `scroll_page_down`
+Scroll the screen down by one page.
+
 ## `scroll_page_fractional`
+Scroll the screen by the specified fraction of a page.
+
+Positive values scroll downwards, and negative values scroll upwards.
+
+For example, `scroll_page_fractional:0.5` would scroll the screen
+downwards by half a page, while `scroll_page_fractional:-1.5` would
+scroll it upwards by one and a half pages.
+
 ## `scroll_page_lines`
-Scroll the screen varying amounts.
+Scroll the screen by the specified amount of lines.
+
+Positive values scroll downwards, and negative values scroll upwards.
+
+For example, `scroll_page_lines:3` would scroll the screen downwards
+by 3 lines, while `scroll_page_lines:-10` would scroll it upwards by 10
+lines.
 
 ## `adjust_selection`
-Adjust the current selection in a given direction. Does nothing if no
-selection exists.
+Adjust the current selection in the given direction or position,
+relative to the cursor.
 
-Arguments:
-  - left, right, up, down, page_up, page_down, home, end,
-    beginning_of_line, end_of_line
+WARNING: This does not create a new selection, and does nothing when
+there currently isn't one.
 
-Example: Extend selection to the right
-  keybind = shift+right=adjust_selection:right
+Valid arguments are:
+
+  - `left`, `right`
+
+    Adjust the selection one cell to the left or right respectively.
+
+  - `up`, `down`
+
+    Adjust the selection one line upwards or downwards respectively.
+
+  - `page_up`, `page_down`
+
+    Adjust the selection one page upwards or downwards respectively.
+
+  - `home`, `end`
+
+    Adjust the selection to the top-left or the bottom-right corner
+    of the screen respectively.
+
+  - `beginning_of_line`, `end_of_line`
+
+    Adjust the selection to the beginning or the end of the line
+    respectively.
 
 ## `jump_to_prompt`
-Jump the viewport forward or back by prompt. Positive number is the
-number of prompts to jump forward, negative is backwards.
+Jump the viewport forward or back by the given number of prompts.
+
+Requires shell integration.
+
+Positive values scroll downwards, and negative values scroll upwards.
 
 ## `write_scrollback_file`
-Write the entire scrollback into a temporary file. The action
-determines what to do with the filepath. Valid values are:
+Write the entire scrollback into a temporary file with the specified
+action. The action determines what to do with the filepath.
 
-  - "paste": Paste the file path into the terminal.
-  - "open": Open the file in the default OS editor for text files.
+Valid actions are:
+
+  - `copy`
+
+    Copy the file path into the clipboard.
+
+  - `paste`
+
+    Paste the file path into the terminal.
+
+  - `open`
+
+    Open the file in the default OS editor for text files.
+
     The default OS editor is determined by using `open` on macOS
     and `xdg-open` on Linux.
 
 ## `write_screen_file`
-Same as write_scrollback_file but writes the full screen contents.
-See write_scrollback_file for available values.
+Write the contents of the screen into a temporary file with the
+specified action.
+
+See `write_scrollback_file` for possible actions.
 
 ## `write_selection_file`
-Same as write_scrollback_file but writes the selected text.
-If there is no selected text this does nothing (it doesn't
-even create an empty file). See write_scrollback_file for
-available values.
+Write the currently selected text into a temporary file with the
+specified action.
+
+See `write_scrollback_file` for possible actions.
+
+Does nothing when no text is selected.
 
 ## `new_window`
-Open a new window. If the application isn't currently focused,
+Open a new window.
+
+If the application isn't currently focused,
 this will bring it to the front.
 
 ## `new_tab`
@@ -119,153 +217,274 @@ Go to the previous tab.
 Go to the next tab.
 
 ## `last_tab`
-Go to the last tab (the one with the highest index)
+Go to the last tab.
 
 ## `goto_tab`
-Go to the tab with the specific number, 1-indexed. If the tab number
-is higher than the number of tabs, this will go to the last tab.
+Go to the tab with the specific index, starting from 1.
+
+If the tab number is higher than the number of tabs,
+this will go to the last tab.
 
 ## `move_tab`
 Moves a tab by a relative offset.
-Adjusts the tab position based on `offset`. For example `move_tab:-1` for left, `move_tab:1` for right.
-If the new position is out of bounds, it wraps around cyclically within the tab range.
+
+Positive values move the tab forwards, and negative values move it
+backwards. If the new position is out of bounds, it is wrapped around
+cyclically within the tab list.
+
+For example, `move_tab:1` moves the tab one position forwards, and if
+it was already the last tab in the list, it wraps around and becomes
+the first tab in the list. Likewise, `move_tab:-1` moves the tab one
+position backwards, and if it was the first tab, then it will become
+the last tab.
 
 ## `toggle_tab_overview`
 Toggle the tab overview.
-This only works with libadwaita enabled currently.
+
+This is only supported on Linux and when the system's libadwaita
+version is 1.4 or newer. The current libadwaita version can be
+found by running `ghostty +version`.
+
+## `prompt_surface_title`
+Change the title of the current focused surface via a pop-up prompt.
+
+This requires libadwaita 1.5 or newer on Linux. The current libadwaita
+version can be found by running `ghostty +version`.
 
 ## `new_split`
-Create a new split in the given direction.
+Create a new split in the specified direction.
 
-Arguments:
-  - right, down, left, up, auto (splits along the larger direction)
+Valid arguments:
 
-Example: Create split on the right
-  keybind = cmd+shift+d=new_split:right
+  - `right`, `down`, `left`, `up`
+
+    Creates a new split in the corresponding direction.
+
+  - `auto`
+
+    Creates a new split along the larger direction.
+    For example, if the parent split is currently wider than it is tall,
+    then a left-right split would be created, and vice versa.
 
 ## `goto_split`
-Focus on a split in a given direction. For example `goto_split:up`.
-Valid values are left, right, up, down, previous and next.
+Focus on a split either in the specified direction (`right`, `down`,
+`left` and `up`), or in the adjacent split in the order of creation
+(`previous` and `next`).
 
 ## `toggle_split_zoom`
-zoom/unzoom the current split.
+Zoom in or out of the current split.
+
+When a split is zoomed into, it will take up the entire space in
+the current tab, hiding other splits. The tab or tab bar would also
+reflect this by displaying an icon indicating the zoomed state.
 
 ## `resize_split`
-Resize the current split in a given direction.
-
-Arguments:
-  - up, down, left, right
-  - the number of pixels to resize the split by
-
-Example: Move divider up 10 pixels
-  keybind = cmd+shift+up=resize_split:up,10
+Resize the current split in the specified direction and amount in
+pixels. The two arguments should be joined with a comma (`,`),
+like in `resize_split:up,10`.
 
 ## `equalize_splits`
-Equalize all splits in the current window
+Equalize the size of all splits in the current window.
+
+## `reset_window_size`
+Reset the window to the default size. The "default size" is the
+size that a new window would be created with. This has no effect
+if the window is fullscreen.
+
+Only implemented on macOS.
 
 ## `inspector`
-Control the terminal inspector visibility.
+Control the visibility of the terminal inspector.
 
-Arguments:
-  - toggle, show, hide
+Valid arguments: `toggle`, `show`, `hide`.
 
-Example: Toggle inspector visibility
-  keybind = cmd+i=inspector:toggle
+## `show_gtk_inspector`
+Show the GTK inspector.
+
+Has no effect on macOS.
 
 ## `open_config`
-Open the configuration file in the default OS editor. If your default OS
-editor isn't configured then this will fail. Currently, any failures to
-open the configuration will show up only in the logs.
+Open the configuration file in the default OS editor.
+
+If your default OS editor isn't configured then this will fail.
+Currently, any failures to open the configuration will show up only in
+the logs.
 
 ## `reload_config`
-Reload the configuration. The exact meaning depends on the app runtime
-in use but this usually involves re-reading the configuration file
-and applying any changes. Note that not all changes can be applied at
-runtime.
+Reload the configuration.
+
+The exact meaning depends on the app runtime in use, but this usually
+involves re-reading the configuration file and applying any changes
+Note that not all changes can be applied at runtime.
 
 ## `close_surface`
 Close the current "surface", whether that is a window, tab, split, etc.
-This only closes ONE surface. This will trigger close confirmation as
-configured.
+
+This might trigger a close confirmation popup, depending on the value
+of the `confirm-close-surface` configuration setting.
 
 ## `close_tab`
-Close the current tab, regardless of how many splits there may be.
-This will trigger close confirmation as configured.
+Close the current tab and all splits therein.
+
+This might trigger a close confirmation popup, depending on the value
+of the `confirm-close-surface` configuration setting.
 
 ## `close_window`
-Close the window, regardless of how many tabs or splits there may be.
-This will trigger close confirmation as configured.
+Close the current window and all tabs and splits therein.
+
+This might trigger a close confirmation popup, depending on the value
+of the `confirm-close-surface` configuration setting.
 
 ## `close_all_windows`
-Close all windows. This will trigger close confirmation as configured.
-This only works for macOS currently.
+Close all windows.
+
+WARNING: This action has been deprecated and has no effect on either
+Linux or macOS. Users are instead encouraged to use `all:close_window`
+instead.
 
 ## `toggle_maximize`
-Toggle maximized window state. This only works on Linux.
+Maximize or unmaximize the current window.
+
+This has no effect on macOS as it does not have the concept of
+maximized windows.
 
 ## `toggle_fullscreen`
-Toggle fullscreen mode of window.
+Fullscreen or unfullscreen the current window.
 
 ## `toggle_window_decorations`
-Toggle window decorations on and off. This only works on Linux.
+Toggle window decorations (titlebar, buttons, etc.) for the current window.
+
+Only implemented on Linux.
+
+## `toggle_window_float_on_top`
+Toggle whether the terminal window should always float on top of other
+windows even when unfocused.
+
+Terminal windows always start as normal (not float-on-top) windows.
+
+Only implemented on macOS.
 
 ## `toggle_secure_input`
-Toggle secure input mode on or off. This is used to prevent apps
-that monitor input from seeing what you type. This is useful for
-entering passwords or other sensitive information.
+Toggle secure input mode.
 
-This applies to the entire application, not just the focused
-terminal. You must toggle it off to disable it, or quit Ghostty.
+This is used to prevent apps from monitoring your keyboard input
+when entering passwords or other sensitive information.
 
-This only works on macOS, since this is a system API on macOS.
+This applies to the entire application, not just the focused terminal.
+You must manually untoggle it or quit Ghostty entirely to disable it.
+
+Only implemented on macOS, as this uses a built-in system API.
+
+## `toggle_command_palette`
+Toggle the command palette.
+
+The command palette is a popup that lets you see what actions
+you can perform, their associated keybindings (if any), a search bar
+to filter the actions, and the ability to then execute the action.
+
+This requires libadwaita 1.5 or newer on Linux. The current libadwaita
+version can be found by running `ghostty +version`.
 
 ## `toggle_quick_terminal`
-Toggle the "quick" terminal. The quick terminal is a terminal that
-appears on demand from a keybinding, often sliding in from a screen
-edge such as the top. This is useful for quick access to a terminal
-without having to open a new window or tab.
+Toggle the quick terminal.
 
-When the quick terminal loses focus, it disappears. The terminal state
-is preserved between appearances, so you can always press the keybinding
-to bring it back up.
+The quick terminal, also known as the "Quake-style" or drop-down
+terminal, is a terminal window that appears on demand from a keybinding,
+often sliding in from a screen edge such as the top. This is useful for
+quick access to a terminal without having to open a new window or tab.
 
-To enable the quick terminal globally so that Ghostty doesn't
-have to be focused, prefix your keybind with `global`. Example:
+The terminal state is preserved between appearances, so showing the
+quick terminal after it was already hidden would display the same
+window instead of creating a new one.
+
+As quick terminals are often useful when other windows are currently
+focused, they are best used with *global* keybinds. For example, one
+can define the following key bind to toggle the quick terminal from
+anywhere within the system by pressing `` Cmd+` ``:
 
 ```ini
-keybind = global:cmd+grave_accent=toggle_quick_terminal
+keybind = global:cmd+backquote=toggle_quick_terminal
 ```
 
 The quick terminal has some limitations:
 
-  - It is a singleton; only one instance can exist at a time.
-  - It does not support tabs, but it does support splits.
-  - It will not be restored when the application is restarted
-    (for systems that support window restoration).
-  - It supports fullscreen, but fullscreen will always be a non-native
-    fullscreen (macos-non-native-fullscreen = true). This only applies
-    to the quick terminal window. This is a requirement due to how
-    the quick terminal is rendered.
+  - Only one quick terminal instance can exist at a time.
+
+  - Unlike normal terminal windows, the quick terminal will not be
+    restored when the application is restarted on systems that support
+    window restoration like macOS.
+
+  - On Linux, the quick terminal is only supported on Wayland and not
+    X11, and only on Wayland compositors that support the `wlr-layer-shell-v1`
+    protocol. In practice, this means that only GNOME users would not be
+    able to use this feature.
+
+  - On Linux, slide-in animations are only supported on KDE, and when
+    the "Sliding Popups" KWin plugin is enabled.
+
+    If you do not have this plugin enabled, open System Settings > Apps
+    & Windows > Window Management > Desktop Effects, and enable the
+    plugin in the plugin list. Ghostty would then need to be restarted
+    fully for this to take effect.
+
+  - Quick terminal tabs are only supported on Linux and not on macOS.
+    This is because tabs on macOS require a title bar.
+
+  - On macOS, a fullscreened quick terminal will always be in non-native
+    fullscreen mode. This is a requirement due to how the quick terminal
+    is rendered.
 
 See the various configurations for the quick terminal in the
 configuration file to customize its behavior.
 
-This currently only works on macOS.
-
 ## `toggle_visibility`
-Show/hide all windows. If all windows become shown, we also ensure
+Show or hide all windows. If all windows become shown, we also ensure
 Ghostty becomes focused. When hiding all windows, focus is yielded
 to the next application as determined by the OS.
 
 Note: When the focused surface is fullscreen, this method does nothing.
 
-This currently only works on macOS.
+Only implemented on macOS.
+
+## `check_for_updates`
+Check for updates.
+
+Only implemented on macOS.
+
+## `undo`
+Undo the last undoable action for the focused surface or terminal,
+if possible. This can undo actions such as closing tabs or
+windows.
+
+Not every action in Ghostty can be undone or redone. The list
+of actions support undo/redo is currently limited to:
+
+  - New window, close window
+  - New tab, close tab
+  - New split, close split
+
+All actions are only undoable/redoable for a limited time.
+For example, restoring a closed split can only be done for
+some number of seconds since the split was closed. The exact
+amount is configured with `TODO`.
+
+The undo/redo actions being limited ensures that there is
+bounded memory usage over time, closed surfaces don't continue running
+in the background indefinitely, and the keybinds become available
+for terminal applications to use.
+
+Only implemented on macOS.
+
+## `redo`
+Redo the last undoable action for the focused surface or terminal,
+if possible. See "undo" for more details on what can and cannot
+be undone or redone.
 
 ## `quit`
-Quit ghostty.
+Quit Ghostty.
 
 ## `crash`
-Crash ghostty in the desired thread for the focused surface.
+Crash Ghostty in the desired thread for the focused surface.
 
 WARNING: This is a hard crash (panic) and data can be lost.
 
@@ -275,6 +494,14 @@ order to determine if it all works as expected.
 
 The value determines the crash location:
 
-  - "main" - crash on the main (GUI) thread.
-  - "io" - crash on the IO thread for the focused surface.
-  - "render" - crash on the render thread for the focused surface.
+  - `main`
+
+    Crash on the main (GUI) thread.
+
+  - `io`
+
+    Crash on the IO thread for the focused surface.
+
+  - `render`
+
+    Crash on the render thread for the focused surface.
