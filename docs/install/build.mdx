@@ -29,10 +29,9 @@ environment which runs CI tests and builds release artifacts, so it is the most
 reliable way to build Ghostty. See the [Building with Nix](#building-with-nix)
 section to see how to set up the Nix environment.
 
-On Linux, you may need to install additional dependencies. See
-[Linux Installation Tips](#linux-installation-tips). On macOS, you
-need Xcode installed with both the macOS and iOS SDKs enabled. See
-[Mac `.app`](#mac-.app).
+Depending on your platform, you may also need to install additional
+dependencies to build Ghostty. For Linux, see [Linux](#linux). For macOS,
+see [macOS](#macos).
 
 Begin by cloning the Ghostty repository and changing into the directory:
 
@@ -62,8 +61,7 @@ zig build -Doptimize=ReleaseFast
 ```
 
 On Linux, this will build a ready-to-use binary at `zig-out/bin/ghostty`.
-On macOS, this will build the Xcode framework but additional steps are
-required to build the `.app` bundle. See [Mac `.app`](#mac-.app).
+On macOS, this will build the app bundle at `zig-out/Ghostty.app`.
 
 <Tip>
 For Linux users: To install system-wide or on your user account, see
@@ -76,7 +74,7 @@ are **extremely slow** (over 100x slower) than release builds, so only
 use them for development.
 </Tip>
 
-## Linux Installation Tips
+## Linux
 
 ### Dependencies
 
@@ -245,7 +243,11 @@ Building with Nix should yield the same result as building it with Zig,
 but with higher reproducibility guarantees that ensure every part of
 Ghostty can be built reliably.
 
-## Mac `.app`
+## macOS
+
+### Dependencies
+
+#### Xcode
 
 To build the macOS application, you must build on a macOS machine with
 Xcode installed and the active developer directory pointing to it. If
@@ -265,23 +267,32 @@ The above can happen if you install the Xcode Command Line Tools _after_ Xcode
 is installed.
 
 Next, make sure you have both the macOS and iOS SDKs installed (from
-inside Xcode → Settings → Components). Finally, build Ghostty and the
-app:
+inside Xcode → Settings → Components).
+
+#### Other Dependencies
+
+Ghostty also requires some additional library dependencies to be 
+installed. You can choose to install them however you'd like, but 
+the easiest way is via Homebrew:
 
 ```sh
-zig build -Doptimize=ReleaseFast
-cd macos && xcodebuild
+brew install gettext
 ```
 
 <Note>
-If you're using the Nix environment on macOS, `xcodebuild` will
-fail due to the linker environment variables Nix sets. You must
-run the `xcodebuild` command specifically outside of the Nix
-environment.
+If you're using the **Nix development environment**, these dependencies
+are handled for you and you do not need to install them manually.
 </Note>
 
-This will output the app to `macos/build/ReleaseLocal/Ghostty.app`.
+### Mac `.app`
 
+```sh
+zig build -Doptimize=ReleaseFast
+```
+
+This will output the app to `zig-out/Ghostty.app`.
+
+The app created will use the "ReleaseLocal" Xcode build configuration.
 The "ReleaseLocal" build configuration is specifically for local release
 builds and disables some security features (such as "Library Validation")
 to make it easier to run without having to have a code signing identity
