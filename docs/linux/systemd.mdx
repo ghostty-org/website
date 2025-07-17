@@ -7,21 +7,21 @@ description: |-
 ---
 
 If properly installed[^1], Ghostty comes with several systemd units.
-Running Ghostty via these systemd units is the recommended way to
-run Ghostty. The two most important benefits provided by Ghostty's
-systemd integrations are: instantaneous launching[^2] and centralized
+Running Ghostty via these systemd units is the recommended way to 
+run Ghostty. The two most important benefits provided by Ghostty's 
+systemd integrations are: instantaneous launching[^2] and centralized 
 logging.
 
 If you are on a system with `systemd` and you installed Ghostty
 via a system package or [as documented](/docs/install/build),
-then Ghostty should _just work_. You don't have to read this
+then Ghostty should _just work_. You don't have to read this 
 documentation unless you want to understand how this all works or
 if you're troubleshooting.
 
 <Important>
-  Ghostty **does not require systemd** to run. You can run the `ghostty` binary
-  directly on any system without systemd and Ghostty will still work. However,
-  you'll lose out on the benefits documented on this page.
+Ghostty **does not require systemd** to run. You can run the `ghostty`
+binary directly on any system without systemd and Ghostty will still
+work. However, you'll lose out on the benefits documented on this page.
 </Important>
 
 ## Starting Ghostty at Login
@@ -34,19 +34,19 @@ This is done via `systemd` by enabling the Ghostty user service:
 systemctl enable --user com.mitchell.ghostty.service
 ```
 
-This will configure your system to start Ghostty when you log in,
-but not create any windows. Any startup delay will be "hidden" by
-the time that your system needs to finish setting up everything
+This will configure your system to start Ghostty when you log in, 
+but not create any windows. Any startup delay will be "hidden" by 
+the time that your system needs to finish setting up everything 
 after logging in.
 
 ## Scripting New Windows
 
 Typically, new windows in Ghostty can be created by using the
-`ghostty` CLI directly. This will force a new Ghostty process to
+`ghostty` CLI directly. This will force a new Ghostty process to 
 be created, which is slower and doesn't benefit from everything
 documented on this page.
 
-The following command can be used to send a D-Bus signal to
+The following command can be used to send a D-Bus signal to 
 Ghostty to create a new window:
 
 ```sh
@@ -57,14 +57,14 @@ This will create a new window even if Ghostty is not already running,
 because D-Bus activation will cause Ghostty to be launched.
 
 <Note>
-  The `gdbus` command above can be intimidating to look at and is mostly
-  impossible to remember. We plan on introducing a `ghostty +new-window` CLI
-  command that automates this based on the runtime environment, such as the OS,
-  if systemd is available, etc.
+The `gdbus` command above can be intimidating to look at and is mostly
+impossible to remember. We plan on introducing a `ghostty +new-window`
+CLI command that automates this based on the runtime environment,
+such as the OS, if systemd is available, etc.
 </Note>
 
 This command is very useful in particular for window managers such as
-i3, Hyperland, or River.
+i3, Hyperland, or River. 
 
 ### Hyprland
 
@@ -81,7 +81,7 @@ bind = SUPER, return, exec, gdbus call --session --dest com.mitchellh.ghostty --
 On systems with `systemd` and D-Bus, Ghostty will launch via D-Bus
 activation by default.
 
-Instead of executing Ghostty directly, the application launcher will
+Instead of executing Ghostty directly, the application launcher will 
 send a signal to the D-Bus session broker asking it to open a Ghostty
 window. The D-Bus session broker knows if Ghostty is running or not,
 because Ghostty will claim a specific bus name (`com.mitchellh.ghostty`).
@@ -98,41 +98,28 @@ default).
 
 ### Ghostty is Already Running
 
-If Ghostty is already running, the broker will send a D-Bus signal
+If Ghostty is already running, the broker will send a D-Bus signal 
 directly to Ghostty asking it to create a new window. Ghostty listens
 for this signal and opens a new window. This is very fast, and very
 cheap.
 
-```mermaid
-sequenceDiagram
-  actor Launcher
-  participant D-Bus
-  participant Ghostty
-  Launcher->>D-Bus: Start a Ghostty window
-  D-Bus->>Ghostty: Create a new window
-  Ghostty->>D-Bus: OK
-```
+<p align="center">
+  <a href="/images/linux/running.svg" target="_blank">
+    <img src="/images/linux/running.svg" />
+  </a>
+</p>
 
 ### Ghostty is Not Running
 
-If Ghostty is not running, the D-Bus session broker will ask `systemd`
-to start Ghostty in a user service, and then will send Ghostty a D-Bus
+If Ghostty is not running, the D-Bus session broker will ask `systemd` 
+to start Ghostty in a user service, and then will send Ghostty a D-Bus 
 signal to create a new window after it starts.
 
-```mermaid
-sequenceDiagram
-  actor Launcher
-  participant D-Bus
-  participant systemd
-  Launcher->>D-Bus: Start a Ghostty window
-  D-Bus->>systemd: Start Ghostty service
-  create participant Ghostty
-  systemd->>Ghostty: Start Ghostty service
-  Ghostty->>systemd: Started
-  Ghostty->>D-Bus: I'm here!
-  D-Bus->>Ghostty: Create a new window
-  Ghostty->>D-Bus: OK
-```
+<p align="center">
+  <a href="/images/linux/not-running.svg" target="_blank">
+    <img src="/images/linux/not-running.svg" />
+  </a>
+</p>
 
 ## Other
 
@@ -188,15 +175,15 @@ systemctl stop --user com.mitchellh.ghostty.service
 ```
 
 <Caution>
-  This will gracefully stop Ghostty, but Ghostty will close any windows and kill
-  their running processes _without asking for confirmation_. This may cause data
-  or state loss.
+This will gracefully stop Ghostty, but Ghostty will close any windows
+and kill their running processes _without asking for confirmation_.
+This may cause data or state loss.
 </Caution>
 
 ### Relevant Files
 
 If properly installed [^1], Ghostty will come with several configuration
-files to launch Ghostty.
+files to launch Ghostty. 
 
 If installed as a user (e.g. at `$HOME/.local`), the following files
 will be created:
@@ -216,11 +203,11 @@ $PREFiX/lib/systemd/user/com.mitchellh.ghostty.service
 ```
 
 <Warning>
-  If these files are not installed in the proper locations and configured
-  correctly **Ghostty may fail to launch**. If they are installed in the proper
-  location and Ghostty is still not launching, log out and log back in. If that
-  doesn't work, try restarting your system. This should rarely be necessary, but
-  it can happen depending on system configuration.
+If these files are not installed in the proper locations and configured
+correctly **Ghostty may fail to launch**. If they are installed in the
+proper location and Ghostty is still not launching, log out and log
+back in. If that doesn't work, try restarting your system. This should
+rarely be necessary, but it can happen depending on system configuration.
 </Warning>
 
 ### Dev Builds
@@ -252,12 +239,10 @@ $PREFIX/share/dbus-1/services/com.mitchellh.ghostty-debug.service
 $PREFiX/lib/systemd/user/com.mitchellh.ghostty-debug.service
 ```
 
-[^1]:
-    "Properly installed" means via a package that followed our
-    packaging guidelines or from source in `$HOME/.local`.
+[^1]: "Properly installed" means via a package that followed our
+packaging guidelines or from source in `$HOME/.local`.
 
-[^2]:
-    "Instantaneous" is hyperbolic, of course. Practically speaking,
-    launching a new Ghostty window goes from somewhere around 300ms on
-    a modern system to around 20ms. These numbers will vary based on hardware,
-    but the relative increase should be noticeable on all systems.
+[^2]: "Instantaneous" is hyperbolic, of course. Practically speaking,
+launching a new Ghostty window goes from somewhere around 300ms on
+a modern system to around 20ms. These numbers will vary based on hardware,
+but the relative increase should be noticeable on all systems.
