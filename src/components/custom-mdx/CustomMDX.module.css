@@ -2,7 +2,8 @@
   & > p {
     margin: 0.8em 0;
   }
-  & > ul, & > ol {
+  & > ul,
+  & > ol {
     padding-left: 42px;
     margin: 16px 0;
   }
@@ -12,13 +13,11 @@
     margin: 32px auto;
     display: block;
   }
-
   & hr {
     border: none;
     border-bottom: 1px solid var(--gray-2);
     margin: 42px 0;
   }
-
   & sup {
     vertical-align: top;
     font-size: 0.65em;
@@ -31,7 +30,6 @@
       }
     }
   }
-
   & :global(.footnotes) {
     & > ol > li {
       &:target {
@@ -43,6 +41,26 @@
         font-size: 0.8em;
       }
     }
+  }
+  & :global(.mermaid-container) {
+    margin: 32px auto;
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--gray-1);
+    border: 1px solid var(--gray-5);
+    display: block;
+  }
+  & :global(.mermaid-diagram *[fill]) {
+    fill: var(--brand-color) !important;
+  }
+  & :global(.mermaid-diagram *[color]) {
+    color: var(--brand-color) !important;
+  }
+  & :global(.mermaid-diagram) * {
+    color: white !important;
+  }
+  & :global(.mermaid-diagram svg) * {
+    fill: white !important;
   }
 }
 
