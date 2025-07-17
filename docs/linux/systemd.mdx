@@ -25,9 +25,9 @@ if you're troubleshooting.
 </Important>
 
 <Important>
-  Using `gtk-single-instance` or `class` in your configuration file can interfere
-  with the proper operation of the `systemd` unit files or D-Bus activation. We
-  recommend that you remove them from your configuration file.
+  Using `gtk-single-instance` or `class` in your configuration file can
+  interfere with the proper operation of the `systemd` unit files or D-Bus
+  activation. We recommend that you remove them from your configuration file.
 </Important>
 
 ## Starting Ghostty at Login
@@ -133,11 +133,15 @@ directly to Ghostty asking it to create a new window. Ghostty listens
 for this signal and opens a new window. This is very fast, and very
 cheap.
 
-<p align="center">
-  <a href="/images/linux/running.svg" target="_blank">
-    <img src="/images/linux/running.svg" />
-  </a>
-</p>
+```mermaid
+sequenceDiagram
+  actor Launcher
+  participant D-Bus
+  participant Ghostty
+  Launcher->>D-Bus: Start a Ghostty window
+  D-Bus->>Ghostty: Create a new window
+  Ghostty->>D-Bus: OK
+```
 
 ### Ghostty is Not Running
 
@@ -145,11 +149,20 @@ If Ghostty is not running, the D-Bus session broker will ask `systemd`
 to start Ghostty in a user service, and then will send Ghostty a D-Bus
 signal to create a new window after it starts.
 
-<p align="center">
-  <a href="/images/linux/not-running.svg" target="_blank">
-    <img src="/images/linux/not-running.svg" />
-  </a>
-</p>
+```mermaid
+sequenceDiagram
+  actor Launcher
+  participant D-Bus
+  participant systemd
+  Launcher->>D-Bus: Start a Ghostty window
+  D-Bus->>systemd: Start Ghostty service
+  create participant Ghostty
+  systemd->>Ghostty: Start Ghostty service
+  Ghostty->>systemd: Started
+  Ghostty->>D-Bus: I'm here!
+  D-Bus->>Ghostty: Create a new window
+  Ghostty->>D-Bus: OK
+```
 
 ## Other
 
