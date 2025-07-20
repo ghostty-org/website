@@ -127,6 +127,11 @@
           "type": "link",
           "path": "/systemd",
           "title": "Systemd and D-Bus"
+        },
+        {
+          "type": "link",
+          "path": "/custom-systemd",
+          "title": "Custom Ghostty Instances"
         }
       ]
     },
