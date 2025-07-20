@@ -1,0 +1,189 @@
+---
+title: Custom Systemd and D-Bus Integration
+description: |-
+  How to set up custom `systemd` and D-Bus integrations to run
+  custom commands.
+---
+
+With a little bit of work (which can be easily automated with a little scripting or something like Nix), you
+can create a set of configuration files that will run a customized version of Ghostty.
+
+## Class Name
+
+Each instance of Ghostty uses a "class name" to distinguish each instance from other instances. This class name
+must follow the rules for a [D-Bus bus name](https://dbus.freedesktop.org/doc/dbus-specification.html#message-protocol-names-bus):
+
+- Application identifiers are composed of 1 or more elements separated by a
+  period (`.`) character. All elements must contain at least one character.
+
+- Each element must only contain the ASCII characters `[A-Z][a-z][0-9]_`. Each
+  element must not begin with a digit.
+
+- Application identifiers must contain at least one `.` (period) character
+  (and thus at least two elements).
+
+- Application identifiers must not begin with a `.` (period) character.
+
+- Application identifiers must not exceed 255 characters.
+
+Generally, class names look like reversed domain names, but they can be anything
+as long as they follow the above rules and are unique.
+
+We will refer to this class name as `${class}` in the following config files.
+
+## Path to Ghostty
+
+In the following files, we need the absolute path to the Ghostty binary. It will
+vary depending on how you installed Ghostty, but having the the absolute path is
+_vital_. Relying on the `PATH` environment variable can lead to Ghostty failing
+to launch because the `PATH` environment variable that you use in your shell is
+_not_ necessarily the same `PATH` used by the service that ultimately launches
+Ghostty. `systemd` in particular _never_ uses `PATH` and requires an absolute
+pathname.
+
+We will refer to the absolute path to the Ghostty binary as `${ghostty}`.
+
+## Command
+
+`${command}` can be any valid command. For example, you could use `btop` as the
+command to get quick access to a system monitor. The command can be whatever you
+like though. Note however that each window that you create using this process,
+while using a single instance of Ghostty, will be a separate process. So if
+you set the command to start Neovim each window will be a separate instance
+of Neovim and will not have access to the open buffers etc. that the other
+instances of Neovim have.
+
+## Ghostty Config file
+
+Create a file at `~/.config/ghostty/config-${class}` with the following
+contents. Substitute a custom command to run for `${command}`. You can add
+additional configuration entries to this file, but it's important that the
+`class` and `x11-instance-name` settings appear as below.
+
+```
+class = ${class}
+x11-instance-name = ${class}
+command = ${command}
+```
+
+Substitute the full path to this configuration file wherever you see `${config}`
+below.
+
+<Note>
+  Ghostty will load your main configuration file (`~/.config/ghostty-config`)
+  before reading this configuration file so it's only necessary to put additions
+  or changes in this configuration file. For, example if you set a theme in the
+  main configuration file, it will be set in this custom instance as well.
+</Note>
+
+## Desktop File
+
+Create a file at `~/.local/share/applications/${class}.desktop` with the following text:
+
+```
+[Desktop Entry]
+Version=1.0
+Name=${name}
+Type=Application
+Comment=${comment}
+TryExec=${ghostty}
+Exec=${ghostty} --launched-from=desktop --config=${config}
+Icon=com.mitchellh.ghostty
+Categories=System;TerminalEmulator;
+Keywords=terminal;tty;pty;
+StartupNotify=true
+StartupWMClass=${class}
+Terminal=false
+Actions=new-window;
+X-GNOME-UsesNotifications=true
+DBusActivatable=true
+
+[Desktop Action new-window]
+Name=New Window
+Exec=${ghostty} --launched-from=desktop  --config=${config}
+```
+
+- `${name}` is a short name used to distingush this desktop file from
+  others when being displayed by application launchers.
+- `${comment}` is any additional information you'd like to add.
+
+<Important>The naming of this file _must not_ vary.</Important>
+
+## D-Bus Service
+
+Create a file at `~/.local/share/dbus-1/services/${class}.service` containing the following text:
+
+```
+[D-BUS Service]
+Name=${class}
+SystemdService=app-${class}.service
+Exec=${ghostty} --launched-from=dbus --config-file=${config}
+```
+
+<Important>The naming of this file _must not_ vary.</Important>
+
+## `systemd` User Service
+
+Create a file at `~/.local/systemd/user/app-${class}.service` containing the following text:
+
+```
+[Unit]
+Description=${description}
+After=graphical-session.target
+After=dbus.socket
+Requires=dbus.socket
+
+[Service]
+Type=notify-reload
+ReloadSignal=SIGUSR2
+BusName=${class}
+ExecStart=${ghostty} --launched-from=systemd --config=${config}
+
+[Install]
+WantedBy=graphical-session.target
+```
+
+- `${description}` is a short descriptive summary that gets displayed by various
+  `systemd` utilities.
+
+<Important>The naming of this file _must not_ vary.</Important>
+
+## Load the Configuration
+
+Running `systemd daemon-reload --user` should be all that is necessary to tell
+the system to load the configuration. However in some rare circumstances it may
+be necessary to log out and log back in to clear any old configuration out of
+caches, particularily if you are editing the configuration files.
+
+## Using Your Custom Configuration
+
+### Application Launcher
+
+Your custom Ghostty instance should now appear in your application launcher.
+Open your application launcher and search for whatver you used for the `${name}`
+in the desktop file. Clicking on the icon should then create a new window
+running your command.
+
+### From A Command Line
+
+Running `ghostty +new-window --class=${class}` should cause a new window running
+your command to appear.
+
+### From A Keybind
+
+Use your window manager to create a global keybind that runs `${ghostty}
++new-window --class=${class}`. It's important to use the full path to the
+Ghostty binary in the command. Not using the full path may work some of the time
+but results may be inconsistent.
+
+## Debugging
+
+The following commands can be used to check the status of your custom Ghostty
+instance and get any logs.
+
+```sh
+systemctl status --user app-${class}.service
+systemctl stop --user app-${class}.service
+systemctl reload --user app-${class}.service
+journalctl -a -f --user -u app-${class}.service
+```
