@@ -196,9 +196,8 @@ all work.
 
 For local, unprivileged installs, we recommend `$HOME/.local`:
 
-```
-zig build -p $HOME/.local -Doptimize=ReleaseFast
-...
+```sh
+zig build install -p $HOME/.local -Doptimize=ReleaseFast
 ```
 
 With a typical Freedesktop-compatible desktop environment (i.e. Gnome,
@@ -213,8 +212,8 @@ environment and distribution to learn how to do that.
 
 For system-wide installs, we recommend `/usr` (likely requires `sudo`):
 
-```shell-session
-zig build -p /usr -Doptimize=ReleaseFast
+```sh
+zig build install -p /usr -Doptimize=ReleaseFast
 ```
 
 ### Building with Nix
