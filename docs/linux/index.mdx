@@ -4,7 +4,6 @@ description: |-
   Ghostty works great on Linux, with support for both Wayland 
   and X11 and packages across a variety of distributions and
   formats.
-hideSidecar: true
 ---
 
 Ghostty works really hard to "just work" on Linux, with detection
@@ -17,9 +16,9 @@ features of Ghostty, documentation on integrating Ghostty with specific
 Linux distributions and environments, etc.
 
 <Note>
-This section is dedicated to Linux for Linux users but Ghostty is 
-just as first-class on macOS, as well, with a native application
-written in Swift and built with Xcode.
+  This section is dedicated to Linux for Linux users but Ghostty is just as
+  first-class on macOS, as well, with a native application written in Swift and
+  built with Xcode.
 </Note>
 
 ## Installing on Linux
@@ -28,17 +27,68 @@ Options for installing Ghostty on Linux include pre-built packages
 on most popular distributions or building from source. Both of these
 options are well documented at the links below.
 
-<CardLinks cards={
-  [
+<CardLinks
+  cards={[
     {
       title: "Binaries and Packages",
       href: "/docs/install/binary",
-      description: "Pre-built packages for quick setup on most popular Linux distributions.",
+      description:
+        "Pre-built packages for quick setup on most popular Linux distributions.",
     },
     {
       title: "Build from Source",
       href: "/docs/install/build",
-      description: "Download a source tarball and build Ghostty from source."
-    }
+      description: "Download a source tarball and build Ghostty from source.",
+    },
   ]}
 />
+
+## Supported GTK/Adwaita Versions
+
+The table below shows the minimum required GTK and Adwaita versions
+for specific Ghostty versions.
+
+| Ghostty Version | GTK Version | Adwaita Version |
+| --------------- | ----------- | --------------- |
+| 1.2.x           | 4.18        | 1.7             |
+| 1.1.x           | 4.8         | 1.2             |
+
+### Policy
+
+The minimum required GTK and Adwaita versions for Ghostty is the
+minimum version that is available in the most recent LTS releases of
+Debian, Fedora, and Ubuntu at the time of a Ghostty minor release.
+In a Ghostty version number `X.Y.Z`, the `Y` is a minor release.
+
+Patch releases will never bump dependency requirements, so users can always
+safely and confidently update to the latest patch release within the same
+minor release. In a Ghostty version number `X.Y.Z`, the `Z` is a patch release.
+
+Ghostty supports many more distributions, but we explicitly specify Debian,
+Fedora, and Ubuntu since they tend to have the most conservative package
+repository practices that typically contain the oldest versions of any
+other popular distributions.
+
+<Note>
+  **Why not continue to support older GTK/Adwaita versions?** Backporting
+  feature support to older GTK/Adwaita versions is impractical from a
+  maintenance perspective. Beyond a certain point, it overcomplicates the widget
+  tree and the version sprawl becomes harder and harder to test against. We
+  don't currently have a robust system for testing GUI interactions on older
+  GTK/Adwaita versions beyond manual testing.
+</Note>
+
+<Note>
+  **So if I have an older version of GTK/Adwaita, I can't use Ghostty?** Not
+  necessarily. You can continue to use the specified Ghostty versions in the
+  table above that match your GTK/Adwaita versions. If your GTK/Adwaita versions
+  are older than the minimum required versions in the table, then unfortunately
+  you will not be able to use Ghostty. Sorry.
+</Note>
+
+### Other Dependencies
+
+Our other dependencies are typically much more API-stable so we tend to
+support a wider range of versions than GTK and Adwaita. As a matter of policy,
+we follow the same policy as stated above for all dependencies, but we're
+more likely to be flexible with other dependencies.
