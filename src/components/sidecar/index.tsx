@@ -21,6 +21,10 @@ interface SidecarProps {
 // it does not make sense to have a single item in the sidecar.
 const MIN_SIDECAR_ITEMS = 2;
 
+// If there are less items than this, the search bar will not render
+// as it is not useful to have a search bar for less than 12 items.
+const MIN_SIDECAR_SEARCH_ITEMS = 12;
+
 // H4s and below will only display in the sidecar
 const MAX_SIDECAR_HEADER_DEPTH = 4;
 
@@ -72,13 +76,15 @@ export default function Sidecar({
 
   return (
     <div className={classNames(s.sidecarWrapper, className)}>
-      <input
-        type="text"
-        placeholder="🔎 Search..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        className={s.searchBar}
-      />
+      {items.length > MIN_SIDECAR_SEARCH_ITEMS && !hidden && (
+        <input
+          type="text"
+          placeholder="🔎 Search..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className={s.searchBar}
+        />
+      )}
       <div ref={sidecarRef} className={classNames(s.sidecar, className)}>
         {items.length > MIN_SIDECAR_ITEMS && !hidden && (
           <ul>
