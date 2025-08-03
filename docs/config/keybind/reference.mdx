@@ -18,11 +18,15 @@ assertion to verify this.
 
 ## `csi`
 Send a CSI sequence. The value should be the CSI sequence without the
-CSI header (`ESC ]` or `\x1b]`).
+CSI header (`ESC [` or `\x1b[`).
 
 ## `esc`
-## `text`
 Send an `ESC` sequence.
+
+## `text`
+Send the given text. Uses Zig string literal syntax. This is currently
+not validated. If the text is invalid (i.e. contains an invalid escape
+sequence), the error will currently only show up in logs.
 
 ## `cursor_key`
 Send data to the pty depending on whether cursor key mode is enabled
@@ -41,6 +45,10 @@ enter after to get a new prompt.
 ## `paste_from_clipboard`
 ## `paste_from_selection`
 Copy and paste.
+
+## `copy_url_to_clipboard`
+Copy the URL under the cursor to the clipboard. If there is no
+URL under the cursor, this does nothing.
 
 ## `increase_font_size`
 ## `decrease_font_size`
@@ -64,8 +72,15 @@ Select all text on the screen.
 Scroll the screen varying amounts.
 
 ## `adjust_selection`
-Adjust an existing selection in a given direction. This action
-does nothing if there is no active selection.
+Adjust the current selection in a given direction. Does nothing if no
+selection exists.
+
+Arguments:
+  - left, right, up, down, page_up, page_down, home, end,
+    beginning_of_line, end_of_line
+
+Example: Extend selection to the right
+  keybind = shift+right=adjust_selection:right
 
 ## `jump_to_prompt`
 Jump the viewport forward or back by prompt. Positive number is the
@@ -79,7 +94,6 @@ determines what to do with the filepath. Valid values are:
   - "open": Open the file in the default OS editor for text files.
     The default OS editor is determined by using `open` on macOS
     and `xdg-open` on Linux.
-
 
 ## `write_screen_file`
 Same as write_scrollback_file but writes the full screen contents.
@@ -113,7 +127,7 @@ is higher than the number of tabs, this will go to the last tab.
 
 ## `move_tab`
 Moves a tab by a relative offset.
-Adjusts the tab position based on `offset` (e.g., -1 for left, +1 for right).
+Adjusts the tab position based on `offset`. For example `move_tab:-1` for left, `move_tab:1` for right.
 If the new position is out of bounds, it wraps around cyclically within the tab range.
 
 ## `toggle_tab_overview`
@@ -121,25 +135,42 @@ Toggle the tab overview.
 This only works with libadwaita enabled currently.
 
 ## `new_split`
-Create a new split in the given direction. The new split will appear in
-the direction given.
+Create a new split in the given direction.
+
+Arguments:
+  - right, down, left, up, auto (splits along the larger direction)
+
+Example: Create split on the right
+  keybind = cmd+shift+d=new_split:right
 
 ## `goto_split`
-Focus on a split in a given direction.
+Focus on a split in a given direction. For example `goto_split:up`.
+Valid values are left, right, up, down, previous and next.
 
 ## `toggle_split_zoom`
 zoom/unzoom the current split.
 
 ## `resize_split`
-Resize the current split by moving the split divider in the given
-direction
+Resize the current split in a given direction.
+
+Arguments:
+  - up, down, left, right
+  - the number of pixels to resize the split by
+
+Example: Move divider up 10 pixels
+  keybind = cmd+shift+up=resize_split:up,10
 
 ## `equalize_splits`
 Equalize all splits in the current window
 
 ## `inspector`
-Show, hide, or toggle the terminal inspector for the currently focused
-terminal.
+Control the terminal inspector visibility.
+
+Arguments:
+  - toggle, show, hide
+
+Example: Toggle inspector visibility
+  keybind = cmd+i=inspector:toggle
 
 ## `open_config`
 Open the configuration file in the default OS editor. If your default OS
@@ -157,6 +188,10 @@ Close the current "surface", whether that is a window, tab, split, etc.
 This only closes ONE surface. This will trigger close confirmation as
 configured.
 
+## `close_tab`
+Close the current tab, regardless of how many splits there may be.
+This will trigger close confirmation as configured.
+
 ## `close_window`
 Close the window, regardless of how many tabs or splits there may be.
 This will trigger close confirmation as configured.
@@ -164,6 +199,9 @@ This will trigger close confirmation as configured.
 ## `close_all_windows`
 Close all windows. This will trigger close confirmation as configured.
 This only works for macOS currently.
+
+## `toggle_maximize`
+Toggle maximized window state. This only works on Linux.
 
 ## `toggle_fullscreen`
 Toggle fullscreen mode of window.
@@ -191,7 +229,7 @@ When the quick terminal loses focus, it disappears. The terminal state
 is preserved between appearances, so you can always press the keybinding
 to bring it back up.
 
-To enable the quick terminally globally so that Ghostty doesn't
+To enable the quick terminal globally so that Ghostty doesn't
 have to be focused, prefix your keybind with `global`. Example:
 
 ```ini
@@ -216,12 +254,27 @@ This currently only works on macOS.
 
 ## `toggle_visibility`
 Show/hide all windows. If all windows become shown, we also ensure
-Ghostty is focused.
+Ghostty becomes focused. When hiding all windows, focus is yielded
+to the next application as determined by the OS.
 
-This currently only works on macOS. When hiding all windows, we do
-not yield focus to the previous application.
+Note: When the focused surface is fullscreen, this method does nothing.
+
+This currently only works on macOS.
 
 ## `quit`
 Quit ghostty.
 
 ## `crash`
+Crash ghostty in the desired thread for the focused surface.
+
+WARNING: This is a hard crash (panic) and data can be lost.
+
+The purpose of this action is to test crash handling. For some
+users, it may be useful to test crash reporting functionality in
+order to determine if it all works as expected.
+
+The value determines the crash location:
+
+  - "main" - crash on the main (GUI) thread.
+  - "io" - crash on the IO thread for the focused surface.
+  - "render" - crash on the render thread for the focused surface.

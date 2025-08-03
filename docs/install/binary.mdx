@@ -47,6 +47,14 @@ If your platform isn't available, you must
   a pull request to add it to this page!
 </Tip>
 
+### Alpine Linux
+
+Ghostty is available in the official Alpine Linux [testing repository](https://pkgs.alpinelinux.org/package/edge/testing/x86_64/ghostty).
+
+```sh
+apk add ghostty
+```
+
 ### Arch Linux
 
 The latest tagged release of Ghostty is available as
@@ -74,6 +82,16 @@ Ghostty is available in the official Gentoo repository.
 
 ```sh
 emerge -av ghostty
+```
+
+### NixOS
+
+Ghostty is available in [nixpkgs](https://search.nixos.org/packages?from=0&size=50&sort=relevance&type=packages&query=ghostty).
+
+```
+environment.systemPackages = [
+  pkgs.ghostty
+];
 ```
 
 ### Nix Flake
@@ -107,11 +125,11 @@ Below is an example:
   }: {
     nixosConfigurations.mysystem = nixpkgs.lib.nixosSystem {
       modules = [
-        {
+        ({ pkgs, ... }: {
           environment.systemPackages = [
-            ghostty.packages.x86_64-linux.default
+            ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default
           ];
-        }
+        })
       ];
     };
   };
@@ -122,6 +140,38 @@ Below is an example:
 This isn't an official package in Nixpkgs but it is officially maintained
 by the Ghostty project so we put it in the "official" section.
 </Note>
+
+
+### openSUSE
+
+Ghostty is available as [`ghostty`](https://software.opensuse.org/package/ghostty) in the official openSUSE Tumbleweed repository.
+
+```sh
+zypper install ghostty
+```
+
+### Snap
+
+Ghostty is available as [`ghostty`](https://snapcraft.io/ghostty) in the Snap Store.
+
+```sh
+snap install ghostty --classic
+```
+
+<Note>
+The Snap package at Snapcraft has an external maintainer but the build
+process is triggered by official scripts in the Ghostty repository and
+the package will be transferred to the Ghostty organization in the future,
+probably coinciding with future Ghostty 1.2 release.
+</Note>
+
+### Solus
+
+Ghostty is available in the official package repository.
+
+```sh
+eopkg install ghostty
+```
 
 ### Void Linux
 
@@ -138,12 +188,22 @@ are not official packages within the associated distributions. These
 packages are maintained by community members and as such a higher level
 of caution should be taken when installing them.
 
+### Debian
+
+Ghostty is available in [this community-maintained repository](https://github.com/clayrisser/debian-ghostty/).
+
+Instructions for each version are available in the README of the repository.
+
+<Warning>
+These are user-maintained packages and not official Debian packages.
+</Warning>
+
 ### Fedora
 
-Ghostty is available in [Fedora COPR](https://copr.fedorainfracloud.org/coprs/pgdev/ghostty/).
+Ghostty is available in [Fedora COPR](https://copr.fedorainfracloud.org/coprs/scottames/ghostty/).
 
 ```sh
-dnf copr enable pgdev/ghostty
+dnf copr enable scottames/ghostty
 dnf install ghostty
 ```
 
@@ -158,29 +218,53 @@ Ghostty is also available in [Terra](https://terra.fyralabs.com/).
 These are user-maintained packages and not official Fedora packages.
 </Warning>
 
-#### Silverblue (and other immutable variants)
+#### Atomic Desktops (Silverblue)
 
 Add the copr repository to your system:
 
 ```sh
-sudo $EDITOR /etc/yum.repos.d/_copr:copr.fedorainfracloud.org:pgdev:ghostty.repo
-```
-
-```ini
-[copr:copr.fedorainfracloud.org:pgdev:ghostty]
-name=Copr repo for Ghostty owned by pgdev
-baseurl=https://download.copr.fedorainfracloud.org/results/pgdev/ghostty/fedora-$releasever-$basearch/
-type=rpm-md
-skip_if_unavailable=True
-gpgcheck=1
-gpgkey=https://download.copr.fedorainfracloud.org/results/pgdev/ghostty/pubkey.gpg
-repo_gpgcheck=0
-enabled=1
-enabled_metadata=1
+. /etc/os-release
+curl -fsSL "https://copr.fedorainfracloud.org/coprs/scottames/ghostty/repo/fedora-${VERSION_ID}/scottames-ghostty-fedora-${VERSION_ID}.repo" | sudo tee /etc/yum.repos.d/_copr:copr.fedorainfracloud.org:scottames:ghostty.repo > /dev/null
 ```
 
 After adding the repository, install Ghostty:
 
 ```sh
-rpm-ostree update --install ghostty
+rpm-ostree refresh-md && \
+rpm-ostree install ghostty
 ```
+
+### Ubuntu
+
+An Ubuntu package (.deb) is available from
+[ghostty-ubuntu](https://github.com/mkasberg/ghostty-ubuntu) on GitHub. After
+downloading the .deb for your Ubuntu version from the
+[Releases](https://github.com/mkasberg/ghostty-ubuntu/releases) page, install it
+as below:
+
+```sh
+sudo apt install ./ghostty_*.deb
+```
+
+<Warning>
+This is a user-maintained package. It is not an official Ubuntu package.
+</Warning>
+
+### Universal AppImage
+
+Ghostty is available as a Universal AppImage which is compatible with any Linux distribution (Including musl based).
+You can access the AppImage at [ghostty-appimage](https://github.com/pkgforge-dev/ghostty-appimage) on GitHub.
+
+To begin, download the appropriate `.appimage` file from the [Releases](https://github.com/pkgforge-dev/ghostty-appimage/releases) page
+and follow the instructions below:
+
+```bash
+chmod a+x Ghostty-${VERSION}-${ARCH}.appimage
+./Ghostty-${VERSION}-${ARCH}.appimage
+```
+
+For comprehensive installation instructions, please refer the [installation guide](https://github.com/pkgforge-dev/ghostty-appimage#%EF%B8%8F-installation).
+
+<Warning>
+This is a community-maintained AppImage. It is not an official AppImage.
+</Warning>

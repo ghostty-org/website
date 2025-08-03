@@ -1,0 +1,27 @@
+.previewBanner {
+  background-color: var(--callout-warning);
+  color: var(--black);
+  padding: 0.75rem 1rem;
+  text-align: center;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--callout-warning) 80%, var(--black));
+  position: relative;
+
+  span a {
+    color: var(--black);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    font-weight: 600;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 0.7;
+      color: var(--black);
+    }
+  }
+}

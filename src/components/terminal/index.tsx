@@ -3,7 +3,7 @@ import React, { UIEvent, useEffect, useRef, useState } from "react";
 import { Code, P } from "../text";
 import s from "./Terminal.module.css";
 
-import { X, Menu, Grip, FolderPlus } from "lucide-react";
+import { X, Menu, LayoutGrid, SquarePlus } from "lucide-react";
 
 export type TerminalFontSize = "xtiny" | "tiny" | "small" | "medium" | "large";
 export interface TerminalProps {
@@ -38,7 +38,7 @@ export default function Terminal({
   const handleScroll = (e: UIEvent<HTMLElement>) => {
     const { scrollTop, scrollHeight, clientHeight } = e.target as HTMLElement;
     const position = Math.ceil(
-      (scrollTop / (scrollHeight - clientHeight)) * 100
+      (scrollTop / (scrollHeight - clientHeight)) * 100,
     );
     if (position < 100) {
       setAutoScroll(false);
@@ -61,7 +61,6 @@ export default function Terminal({
   const padding = " ".repeat(whitespacePadding);
   return (
     <div
-      tabIndex={0}
       className={classNames(
         s.terminal,
         className,
@@ -75,7 +74,7 @@ export default function Terminal({
         {
           [s.adwaita]: platformStyle === "adwaita",
           [s.macos]: platformStyle === "macos",
-        }
+        },
       )}
       style={
         {
@@ -117,25 +116,29 @@ function AdwaitaButtons() {
   // Blame GNOME.
 
   return (
-    <ul className={s.windowControls}>
-      <li className={s.circularButton}>
-        <X className={s.icon} />
-      </li>
-      <li>
-        <Menu className={s.icon} />
-      </li>
-      <li>
-        <Grip className={s.icon} />
-      </li>
-      <li>
-        <FolderPlus className={s.icon} />
-      </li>
-    </ul>
+    <>
+      <ul className={classNames(s.windowControls, s.start)}>
+        <li>
+          <SquarePlus className={s.icon} />
+        </li>
+      </ul>
+      <ul className={classNames(s.windowControls, s.end)}>
+        <li>
+          <LayoutGrid className={s.icon} />
+        </li>
+        <li>
+          <Menu className={s.icon} />
+        </li>
+        <li className={s.circularButton}>
+          <X className={s.icon} />
+        </li>
+      </ul>
+    </>
   );
 }
 function MacosButtons() {
   return (
-    <ul className={s.windowControls}>
+    <ul className={classNames(s.windowControls, s.start)}>
       <li className={s.circularButton} />
       <li className={s.circularButton} />
       <li className={s.circularButton} />

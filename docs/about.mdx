@@ -35,7 +35,7 @@ The GUIs interface with a shared core written in Zig that we
 call "libghostty". For those unfamiliar with Zig, it is a
 systems programming language that compiles to native machine code.
 
-Part of this is using native UI components for features like tabs,
+Part of this is using native UI components[^2] for features like tabs,
 splits, error messages, etc. in contrast to many other terminal
 emulators that either use text UIs and custom widgets or
 don't support these features at all.
@@ -63,7 +63,7 @@ inside the terminal can use. For example, Ghostty supports
 the Kitty graphics protocol, light/dark mode notifications,
 hyperlinks, and more.
 This lets terminal applications like Neovim, Zellij, and
-others do more than they could in other terminal emulators[^2].
+others do more than they could in other terminal emulators[^3].
 
 Application features are higher-level features that are useful
 for interacting with the terminal emulator itself. For example,
@@ -108,7 +108,7 @@ and rendering capabilities.
 The Ghostty GUI applications are consumers of `libghostty`. The macOS app is
 written in Swift, uses AppKit and SwiftUI, and links against the `libghostty`
 C API. The Linux app is written in Zig, uses the GTK4 C API, and also links
-against `libghostty`[^3].
+against `libghostty`[^4].
 
 This architecture allows for a clean separation between the terminal
 emulation and the GUI. It is the key architecture that allows Ghostty
@@ -132,9 +132,14 @@ GTK4 is the closest thing to a standard GUI toolkit that exists.
 Most importantly, we don't draw custom widgets and Ghostty will
 fit right into your desktop environment.
 
-[^2]: For example, Neovim uses synchronized rendering to prevent
+[^2]: Linux uses GTK4 and (optionally) Adwaita, so Ghostty will
+look and feel like a GTK4 application which may or may not be "native"
+depending on your desktop environment and definition of "native". See
+note 1 too.
+
+[^3]: For example, Neovim uses synchronized rendering to prevent
 tearing between frames.
 
-[^3]: Since the GTK4 app is written in Zig, it doesn't link in the traditional
+[^4]: Since the GTK4 app is written in Zig, it doesn't link in the traditional
 sense. Instead, it uses the public `libghostty` APIs and compiles as a single
 Zig compilation unit.

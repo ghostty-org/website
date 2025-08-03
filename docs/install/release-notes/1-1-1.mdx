@@ -1,0 +1,176 @@
+---
+title: Ghostty 1.1.1
+description: |-
+  Release notes for Ghostty 1.1.1, released on February 13, 2025.
+---
+
+Ghostty 1.1.1 features **two weeks of work** with changes from
+**13 contributors** over **125 commits.** The focus of this release
+is on fixing regressions or bugs introduced as part of the 1.1.0
+release. We've also snuck in some nice improvements to existing
+features.
+
+<Important>
+A critical regression was found in Ghostty 1.1.1 on macOS that caused
+control-modified keys to not work properly in programs using the Kitty
+Keyboard protocol such as Neovim and Fish 4.0. This was fixed in
+[1.1.2](/docs/install/release-notes/1-1-2).
+</Important>
+
+## Highlights
+
+### Server Side Decorations (SSD) on Linux X11
+
+PR:
+[#5533](https://github.com/ghostty-org/ghostty/pull/5533)
+
+Ghostty 1.1.0 introduced support for
+[server-side decorations (SSD) on Linux for Wayland compositors](/docs/install/release-notes/1-1-0#server-side-decorations-(ssd)-on-linux).
+This allows Ghostty to look and feel
+more like a native application on a wider variety of desktop environments.
+Notably, however, this did not work on X11.
+
+With Ghostty 1.1.1, we've added support for SSD on X11 as well when
+`window-decoration = server`. X11 doesn't provide a standard way to
+tell us if it prefers SSD or client-side decorations (CSD), so SSD on
+X11 only works with the explicit `server` configuration and does not work
+with the `auto` value.
+
+### Continued Input Method Editor (IME) Improvements
+
+PR:
+[#5550](https://github.com/ghostty-org/ghostty/pull/5550)
+[#5448](https://github.com/ghostty-org/ghostty/pull/5448)
+
+A lot of effort went into Ghostty 1.1.0 to improve IME support, but
+ironically broke the scenario where no input method was active (the
+GTK "simple" input method). This has been fixed in 1.1.1.
+A workaround in 1.1.0 was to install `ibus` or `fcitx`. This is no
+longer necessary, and the "simple" input method should work as expected.
+
+Additionally, on macOS, improved IME support regressed the ability for
+certain keyboard layouts to input control characters (e.g. `ctrl+c`).
+This has been fixed in 1.1.1.
+
+### macOS: Renderer Improvements for Intel GPUs
+
+PR:
+[#5625](https://github.com/ghostty-org/ghostty/pull/5625),
+[#5652](https://github.com/ghostty-org/ghostty/pull/5652)
+
+It turns out Ghostty was triggering undefined behavior on macOS
+when using discrete GPUs. Practically, this only affected Intel Macs because
+all Apple Silicon Macs have integrated GPUs and Ghostty will always prefer
+an integrated GPU if available for power efficiency.
+
+The undefined behavior would sometimes work but sometimes result in rendering
+artifacts or other strange visual behaviors. We now properly detect
+discrete GPUs and use the proper APIs and behaviors to avoid undefined
+behavior.
+
+## Full List
+
+[Full list of closed issues on GitHub](https://github.com/ghostty-org/ghostty/milestone/4?closed=1).
+
+In each section, we try to sort improvements before bug fixes.
+
+- `goto_split` and `goto_tab` now work properly with the `performable:`
+  keybind prefix.
+  [#5644](https://github.com/ghostty-org/ghostty/issues/5644)
+- The `+list-actions` CLI command now includes actions that have no
+  associated documentation.
+  [#4958](https://github.com/ghostty-org/ghostty/issues/4958)
+- Added keyboard navigation to the terminal IO window for the
+  terminal inspector.
+  [#3909](https://github.com/ghostty-org/ghostty/issues/3909)
+- Fix a crash that could occur when resetting the terminal with
+  Kitty graphics on the screen.
+  [#5693](https://github.com/ghostty-org/ghostty/issues/5693)
+- Fix a crash that could occur with very large OSC8 hyperlinks. There
+  are likely other scenarios where this crash could be triggered but
+  the entire class of crash has been resolved.
+  [#5666](https://github.com/ghostty-org/ghostty/issues/5666)
+- Fix an issue where the character under the cursor would not be visible
+  when the cursor color matched the background color.
+  [#5570](https://github.com/ghostty-org/ghostty/issues/5570)
+- Fix crashes that could occur when loading themes that were not files.
+  [#5632](https://github.com/ghostty-org/ghostty/issues/5632)
+- iTerm2 color themes updated to
+  [db227d159](https://github.com/mbadolato/iTerm2-Color-Schemes/tree/db227d159adc265818f2e898da0f70ef8d7b580e)
+  [#5511](https://github.com/ghostty-org/ghostty/pull/5511)
+
+### macOS
+
+- macOS: Add a handful of new alternate artist-drawn icon choices.
+  These can be set using the `macos-icon` configuration.
+  [#5696](https://github.com/ghostty-org/ghostty/issues/5696)
+- macOS: Place the window at the location of the last focused window
+  on startup, following the behavior of other native macOS applications.
+  [#5529](https://github.com/ghostty-org/ghostty/issues/5529)
+- macOS: Close confirmation now appears if there is an active but
+  hidden quick terminal that requires close confirmation.
+  [#5450](https://github.com/ghostty-org/ghostty/issues/5450)
+- macOS: Fix control characters not working with certain keyboard layouts.
+  [#5448](https://github.com/ghostty-org/ghostty/issues/5448)
+- macOS: Fix graphical flickering when invoking the `move_tab` keybind.
+  [#5729](https://github.com/ghostty-org/ghostty/issues/5729)
+- macOS: `toggle_visibility` now restores focus to the proper tab
+  when called from a global keybind.
+  [#5692](https://github.com/ghostty-org/ghostty/issues/5692)
+- macOS: Fixed an issue where some command characters such as
+  `cmd+backtick` would leak the unmodified character into the terminal.
+  [#5558](https://github.com/ghostty-org/ghostty/issues/5558)
+- macOS: `toggle_visibility` no longer has any effect while the window
+  is in native fullscreen. Previously, it would cause the window to
+  lose focus.
+  [#5472](https://github.com/ghostty-org/ghostty/issues/5472)
+- macOS: Fix undefined behavior for discrete GPUs.
+  [#5625](https://github.com/ghostty-org/ghostty/issues/5625)
+- macOS: Update our Sparkle dependency to 2.6.4 to fix security issues.
+  [#5598](https://github.com/ghostty-org/ghostty/issues/5598)
+
+### Linux (GTK)
+
+- GTK: Server-side decorations (SSD) now work on X11.
+  [#5533](https://github.com/ghostty-org/ghostty/pull/5533)
+- GTK: Set the `WINDOWID` environment variable to the X11 window ID.
+  [#5650](https://github.com/ghostty-org/ghostty/issues/5650)
+- GTK: Fix incorrect context menu location in certain circumstances.
+  [#5710](https://github.com/ghostty-org/ghostty/issues/5710)
+- GTK: The "simple" input method now works properly.
+  [#5550](https://github.com/ghostty-org/ghostty/pull/5550)
+- GTK: Add option to disable color management to workaround GTK bugs.
+  [#5593](https://github.com/ghostty-org/ghostty/issues/5593)
+- GTK: `window-decoration=none` works properly on GNOME
+  [#5463](https://github.com/ghostty-org/ghostty/pull/5463)
+- GTK: Remove CSD styling such as borders when CSDs are not
+  in use.
+  [#5581](https://github.com/ghostty-org/ghostty/issues/5581)
+- GTK: Nautilus integration now uses a properly named file.
+  [#5469](https://github.com/ghostty-org/ghostty/pull/5469)
+- GTK: Close cgroup file descriptor after clone to prevent a
+  small fd leak.
+  [#5515](https://github.com/ghostty-org/ghostty/issues/5515)
+
+### Changes for Package Maintainers
+
+- A new Zig dependency [`zig-gobject`](https://github.com/ianprime0509/zig-gobject)
+  was introduced. This is licensed 0BSD. The introduction of this dependency
+  does not change the existing process for packaging Ghostty.
+
+## Roadmap
+
+At the time of this release, we do not plan to have followup patch releases.
+We believe the remaining bugs are minor and can be addressed as part of
+a future, larger 1.2.0 release. We will continue to monitor the issue
+tracker and pull requests for any critical issues that may arise.
+
+The focus will shift to the 1.2.0 release. This will be a larger release
+with more significant changes and features. The timeline for this release
+is not yet determined, but is likely to be several months away.
+
+One major breaking change planned with 1.2.0 for Linux is to require
+`libadwaita`. We announced this intention as part of the 1.1.0 release
+and have asked for feedback if this is an issue. Before providing feedback,
+please
+[carefully read the details about this change](/docs/install/release-notes/1-1-0#gtk:-forcing-a-dependency-on-libadwaita).

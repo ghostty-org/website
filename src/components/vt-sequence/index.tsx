@@ -31,7 +31,7 @@ export default function VTSequence({
         {sequenceElements.map(({ value, hex }, i) => (
           <li key={i} className={s.vtelem}>
             <dl>
-              <dt>{hex ? `0x${hex}` : "____"}</dt>
+              <dt>{hex ? hex : "____"}</dt>
               <dd>{value}</dd>
             </dl>
           </li>
@@ -48,6 +48,7 @@ const special: Record<string, number> = {
   LF: 0x0a,
   CR: 0x0d,
   ESC: 0x1b,
+  "...": 0,
 };
 
 function parseSequence(sequence: string | string[]) {
@@ -55,6 +56,9 @@ function parseSequence(sequence: string | string[]) {
   if (sequenceArray[0] === "CSI") {
     sequenceArray.shift();
     sequenceArray.unshift("ESC", "[");
+  } else if (sequenceArray[0] === "OSC") {
+    sequenceArray.shift();
+    sequenceArray.unshift("ESC", "]");
   }
 
   return sequenceArray.map((value) => {
@@ -62,9 +66,20 @@ function parseSequence(sequence: string | string[]) {
     const param = value.match(/\P(\w)/)?.[1];
     if (param) return { value: param };
 
-    // All sequence elements have hex except params.
-    const specialChar = special[value] ?? value.charCodeAt(0);
-    const hex = specialChar.toString(16).padStart(2, "0").toUpperCase();
+    // Use special lookup if it exists
+    const specialChar = special[value];
+    if (specialChar !== undefined) {
+      if (specialChar === 0) return { value: "..." };
+      const hex = specialChar.toString(16).padStart(2, "0").toUpperCase();
+      return { value, hex: `0x${hex}` };
+    }
+
+    // Otherwise, encode as UTF-8
+    const utf8Bytes = new TextEncoder().encode(value);
+    const hex = Array.from(utf8Bytes)
+      .map((byte) => `0x${byte.toString(16).padStart(2, "0").toUpperCase()}`)
+      .join(" ");
+
     return { value, hex };
   });
 }

@@ -13,11 +13,11 @@ instead. See [the binaries and packages page](/docs/install/binary) to
 see if a prebuilt binary or package is available for your platform.
 </Tip>
 
-To build Ghostty, you need [Zig 0.13](https://ziglang.org/) installed.
+To build Ghostty, you need [Zig 0.14](https://ziglang.org/) installed.
 
 <Important>
-**Zig 0.13 is required.** Ghostty only guarantees that it can build
-against 0.13. Zig is still a fast-moving project so it is likely newer
+**Zig 0.14 is required.** Ghostty only guarantees that it can build
+against 0.14. Zig is still a fast-moving project so it is likely newer
 versions will not be able to build Ghostty yet. You can find binary
 releases of Zig release builds on the
 [Zig downloads page](https://ziglang.org/download/).
@@ -34,8 +34,28 @@ On Linux, you may need to install additional dependencies. See
 need Xcode installed with both the macOS and iOS SDKs enabled. See
 [Mac `.app`](#mac-.app).
 
-With Zig and necessary dependencies installed, a binary can be built using
-`zig build`:
+Begin by cloning the Ghostty repository and changing into the directory:
+
+```sh
+git clone https://github.com/ghostty-org/ghostty
+cd ghostty
+```
+
+To build a stable release, check out the associated tag. If you skip this
+step you'll build the [tip version](/docs/install/pre).
+
+<Important>
+**Version 1.1.3 and under requires Zig version 0.13 to build**. When building
+from tip you will however need Zig version 0.14 due to build system changes and
+other updates to the tooling used.
+</Important>
+
+```
+git checkout <tag>
+```
+
+With Zig and necessary dependencies installed, a binary can then be built
+using `zig build`:
 
 ```sh
 zig build -Doptimize=ReleaseFast
@@ -67,49 +87,42 @@ because Ghostty will build everything else statically by default.
 Required dependencies:
 
   * `gtk4`
-  * `libadwaita`
+  * `libadwaita` (unless using `-Dgtk-adwaita=false`)
+  * `blueprint-compiler`
   * `pkg-config`
+  * `gettext`
 
-On Ubuntu and Debian, use:
+<Warning>
+GTK 4.14 on Wayland has a bug which may cause an immediate crash.
+There is an
+[open issue](https://gitlab.gnome.org/GNOME/gtk/-/issues/6589)
+to track this GTK bug. You can workaround this issue by running ghostty with
+`GDK_DEBUG=gl-disable-gles ghostty`.
+</Warning>
 
-```sh
-sudo apt install libgtk-4-dev libadwaita-1-dev git
-```
-
-On Arch Linux, use
-
-```sh
-sudo pacman -S gtk4 libadwaita
-```
-
-On Fedora variants, use
+#### Alpine
 
 ```sh
-sudo dnf install gtk4-devel zig libadwaita-devel
+doas apk add gtk4.0-dev libadwaita-dev pkgconf ncurses blueprint-compiler gettext
 ```
 
-On Fedora Atomic variants, use
+#### Arch Linux
 
 ```sh
-rpm-ostree install gtk4-devel zig libadwaita-devel
+sudo pacman -S gtk4 gtk4-layer-shell libadwaita blueprint-compiler gettext
 ```
 
-On Gentoo, use
-```sh
-emerge -av libadwaita gtk
-```
-
-On Solus, use
+#### Debian and Ubuntu
 
 ```sh
-sudo eopkg install libgtk-4-devel libadwaita-devel perl-extutils-pkgconfig
+sudo apt install libgtk-4-dev libadwaita-1-dev git blueprint-compiler gettext libxml2-utils
 ```
 
-On OpenSuse Tumbleweed, use
+On Debian unstable/testing, the `gcc-multilib` package is also required
+for building.
 
-```sh
-sudo zypper install gtk4-tools libadwaita-devel pkgconf-pkg-config zig
-```
+On Ubuntu 24.10+ and Debian trixie+, `libgtk4-layer-shell-dev` is also
+needed for building.
 
 <Note>
 **A recent GTK is required for Ghostty to work with Nvidia (GL) drivers
@@ -121,17 +134,53 @@ Ubuntu 23.10 is 6.5.0 which has a bug which
 [causes zig to fail its hash check for packages](https://github.com/ziglang/zig/issues/17282).
 </Note>
 
-<Warning>
-GTK 4.14 on Wayland has a bug which may cause an immediate crash.
-There is an
-[open issue](https://gitlab.gnome.org/GNOME/gtk/-/issues/6589/note_2072039)
-to track this GTK bug. You can workaround this issue by running ghostty with
-`GDK_DEBUG=gl-disable-gles ghostty`.
-</Warning>
+#### Fedora
 
-#### Broken Dependencies
+On Fedora variants, use
 
-##### Pango
+```sh
+sudo dnf install gtk4-devel gtk4-layer-shell-devel zig libadwaita-devel blueprint-compiler gettext
+```
+
+On Fedora Atomic variants, use
+
+```sh
+rpm-ostree install gtk4-devel gtk4-layer-shell-devel zig libadwaita-devel blueprint-compiler gettext
+```
+
+#### Gentoo
+
+```sh
+emerge -av libadwaita gtk blueprint-compiler gettext
+```
+
+#### openSUSE Tumbleweed
+
+```sh
+sudo zypper install gtk4-devel libadwaita-devel pkgconf ncurses-devel zig blueprint-compiler gettext
+```
+
+#### openSUSE Leap
+
+```sh
+sudo zypper install gtk4-devel libadwaita-devel pkgconf ncurses-devel blueprint-compiler gettext
+```
+
+#### Solus
+
+```sh
+sudo eopkg install libgtk-4-devel libadwaita-devel pkgconf zig blueprint-compiler gettext
+```
+
+#### Void
+
+```sh
+sudo xbps-install gtk4-devel libadwaita-devel pkg-config zig blueprint-compiler gettext
+```
+
+### Broken Dependencies
+
+#### Pango
 
 If you are experiencing a segfault in `cairo_scaled_font_get_font_options`
 when running Ghostty, your Pango version may have a bug. See
@@ -216,7 +265,7 @@ The above can happen if you install the Xcode Command Line Tools _after_ Xcode
 is installed.
 
 Next, make sure you have both the macOS and iOS SDKs installed (from
-inside Xcode → Settings → Platforms). Finally, build Ghostty and the
+inside Xcode → Settings → Components). Finally, build Ghostty and the
 app:
 
 ```sh

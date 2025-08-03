@@ -55,9 +55,19 @@ export default function Sidecar({
       .map((result: { item: SidecarItem }) => result.item);
   }, [shownItems, searchTerm, fuse]);
 
+  const [lastActiveHeaderID, setLastActiveHeaderID] = useState<string | null>(
+    null,
+  );
   const activeHeaderID = useMemo(() => {
-    return filteredItems.find((v) => headerIdsInView.includes(v.id))?.id;
-  }, [filteredItems, headerIdsInView]);
+    const currentActiveID = filteredItems.find((v) =>
+      headerIdsInView.includes(v.id),
+    )?.id;
+    if (currentActiveID && currentActiveID !== lastActiveHeaderID) {
+      setLastActiveHeaderID(currentActiveID);
+      return currentActiveID;
+    }
+    return lastActiveHeaderID;
+  }, [filteredItems, headerIdsInView, lastActiveHeaderID]);
 
   useEffect(() => {
     if (activeItemRef.current && sidecarRef.current) {

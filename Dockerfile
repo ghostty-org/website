@@ -1,7 +1,7 @@
 # ===================================
 # =========== BUILD IMAGE ===========
 # ===================================
-FROM node:22-alpine AS BUILD_IMAGE
+FROM node:22-alpine AS build_image
 
 # Set the Current Working Directory inside the container
 WORKDIR /app
@@ -20,7 +20,7 @@ COPY . .
 # Compile the website (production build)
 RUN npm run build
 
-# remove development dependencies
+# Remove development dependencies
 RUN npm prune --production
 
 # ===================================
@@ -34,10 +34,10 @@ WORKDIR /app
 # Adds Bash for env variable access (alpine does not ship w/ Bash)
 RUN apk update && apk add bash
 
-COPY --from=BUILD_IMAGE /app/.next ./.next
-COPY --from=BUILD_IMAGE /app/public ./public
-COPY --from=BUILD_IMAGE /app/node_modules ./node_modules
-COPY --from=BUILD_IMAGE /app/package.json ./package.json
+COPY --from=build_image /app/.next ./.next
+COPY --from=build_image /app/public ./public
+COPY --from=build_image /app/node_modules ./node_modules
+COPY --from=build_image /app/package.json ./package.json
 
 # Run it
-CMD npm run start
+CMD ["npm", "run", "start"]

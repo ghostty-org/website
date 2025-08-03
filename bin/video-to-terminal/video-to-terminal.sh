@@ -24,21 +24,14 @@ WHITE_MAX_LUMINANCE="255"
 # @param $2: r,g,b color #2
 #
 color_distance_from() {
-  # Grab all the colors from c1 & c2
-  local c1_red="$(echo "$1" | cut -f1 -d ',')"
-  local c1_green="$(echo "$1" | cut -f2 -d ',')"
-  local c1_blue="$(echo "$1" | cut -f3 -d ',')"
-  local c2_red="$(echo "$2" | cut -f1 -d ',')"
-  local c2_green="$(echo "$2" | cut -f2 -d ',')"
-  local c2_blue="$(echo "$2" | cut -f3 -d ',')"
-
-  # Calculate their distances
-  local distance_red="$(echo "$c1_red-$c2_red" | bc | cut -f2 -d "-")"
-  local distance_green="$(echo "$c1_green-$c2_green" | bc | cut -f2 -d "-")"
-  local distance_blue="$(echo "$c1_blue-$c2_blue" | bc | cut -f2 -d "-")"
-
-  # Return the sum
-  echo "$distance_red + $distance_green + $distance_blue" | bc
+  awk -v c1="$1" -v c2="$2" '
+    BEGIN {
+      split(c1, a, ",");
+      split(c2, b, ",");
+      print abs(a[1] - b[1]) + abs(a[2] - b[2]) + abs(a[3] - b[3]);
+    }
+    function abs(x) { return ((x < 0) ? -x : x) }
+  '
 }
 
 #
@@ -57,15 +50,16 @@ pixel_for() {
   # TODO: I might want to grab a _very specific_ slice of luminance (e.g from 200 -> 220)
   # TODO: Only call this if it hits a pixel
   #local scaled_luminance="$(echo "(0.2126 * $r + 0.7152 * $g + 0.0722 * $b) * 9 / 255" | bc)"
-  local luminance="$(echo "(0.2126 * $r + 0.7152 * $g + 0.0722 * $b) / 1" | bc)"
+  local luminance=$(awk -v r="$r" -v g="$g" -v b="$b" 'BEGIN{print int((0.2126 * r + 0.7152 * g + 0.0722 * b) / 1)}')
 
   local blue_distance="$(color_distance_from "$BLUE" "$1")"
   local white_distance="$(color_distance_from "$WHITE" "$1")"
+
   if [[ $blue_distance -lt $BLUE_DISTANCE_TOLERANCE ]]; then
-    local scaled_luminance="$(echo "($luminance - $BLUE_MIN_LUMINANCE) * 9 / ($BLUE_MAX_LUMINANCE - $BLUE_MIN_LUMINANCE)" | bc)"
+    local scaled_luminance=$(awk -v luminance="$luminance" -v min="$BLUE_MIN_LUMINANCE" -v max="$BLUE_MAX_LUMINANCE" 'BEGIN{print int((luminance - min) * 9 / (max - min))}')
     echo "B$scaled_luminance"
   elif [[ $white_distance -lt $WHITE_DISTANCE_TOLERANCE ]]; then
-    local scaled_luminance="$(echo "($luminance - $WHITE_MIN_LUMINANCE) * 9 / ($WHITE_MAX_LUMINANCE - $WHITE_MIN_LUMINANCE)" | bc)"
+    local scaled_luminance=$(awk -v luminance="$luminance" -v min="$WHITE_MIN_LUMINANCE" -v max="$WHITE_MAX_LUMINANCE" 'BEGIN{print int((luminance - min) * 9 / (max - min))}')
     echo "W$scaled_luminance"
   else
     echo " "
@@ -93,16 +87,17 @@ generate_frame_images() {
   for f in $(find "$frame_images_dir" -name '*.png' | sort); do
     # We need to squish the image, as the terminal "pixels" will not be 1:1,
     local squished_image_file="$(echo "$f" | sed 's/\.png$/_squished\.png/g')"
-    local image_height="$(identify -ping -format '%h' "$f")"
+    local image_height="$(magick identify -ping -format '%h' "$f")"
     local new_height=$(echo "$FONT_RATIO * $image_height" | bc | jq '.|ceil')
-    convert -resize "x$new_height"'!' "$f" "$squished_image_file"
+
+    magick "$f" -resize "x$new_height"'!' "$squished_image_file"
     rm "$f"
     mv "$squished_image_file" "$f"
 
     # Generate a parsable .txt file for each frame
     local imagemagick_text_file="$(echo "$f" | sed 's/\.png$/_im\.txt/g')"
     local output_text_file="$(echo "$f" | sed 's/\.png$/\.txt/g')"
-    convert "$f" "$imagemagick_text_file"
+    magick "$f" "$imagemagick_text_file"
     cat "$imagemagick_text_file" | tail -n +2 | while read line; do
       # Read / parse each line
       local xy="$(echo "$line" | cut -f1 -d ' ' | sed 's/://g')"

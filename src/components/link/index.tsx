@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { SquareArrowOutUpRight } from "lucide-react";
 import NextLink from "next/link";
-import { pretendardVariable } from "../text";
+import { pretendardStdVariable } from "../text";
 import s from "./Link.module.css";
 
 export interface SimpleLink {
@@ -30,11 +30,16 @@ export default function Link({
   return (
     <NextLink
       onClick={onClick}
-      className={classNames(s.link, pretendardVariable.className, className, {
-        [s.weightLight]: weight === "light",
-        [s.weightRegular]: weight === "regular",
-        [s.weightMedium]: weight === "medium",
-      })}
+      className={classNames(
+        s.link,
+        pretendardStdVariable.className,
+        className,
+        {
+          [s.weightLight]: weight === "light",
+          [s.weightRegular]: weight === "regular",
+          [s.weightMedium]: weight === "medium",
+        },
+      )}
       href={href}
       target={isExternal ? "_blank" : ""}
     >

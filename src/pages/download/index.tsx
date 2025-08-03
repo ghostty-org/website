@@ -1,16 +1,15 @@
-import { ButtonLink } from "@/components/link";
 import { NavTreeNode } from "@/components/nav-tree";
 import SectionWrapper from "@/components/section-wrapper";
-import { H1 } from "@/components/text";
+import { H1, P } from "@/components/text";
 import NavFooterLayout from "@/layouts/nav-footer-layout";
 import { fetchLatestGhosttyVersion } from "@/lib/fetch-latest-ghostty-version";
 import { loadDocsNavTreeData } from "@/lib/fetch-nav";
-import { CodeXml, Download, Package } from "lucide-react";
 import Image from "next/image";
 import SVGIMG from "../../../public/ghostty-logo.svg";
 import { DOCS_DIRECTORY } from "../docs/[...path]";
 import s from "./DownloadPage.module.css";
-import GenericCard from "@/components/generic-card";
+import ReleaseDownloadPage from "./release";
+import TipDownloadPage from "./tip";
 
 export async function getStaticProps() {
   return {
@@ -21,7 +20,7 @@ export async function getStaticProps() {
   };
 }
 
-interface DownloadPageProps {
+export interface DownloadPageProps {
   latestVersion: string;
   docsNavTree: NavTreeNode[];
 }
@@ -30,6 +29,8 @@ export default function DownloadPage({
   latestVersion,
   docsNavTree,
 }: DownloadPageProps) {
+  const isTip = process.env.GIT_COMMIT_REF === "tip";
+
   return (
     <NavFooterLayout
       docsNavTree={docsNavTree}
@@ -44,51 +45,31 @@ export default function DownloadPage({
           <div className={s.header}>
             <Image src={SVGIMG} alt={""} />
             <H1 className={s.pageTitle}>Download Ghostty</H1>
+            {!isTip && (
+              <P weight="regular" className={s.versionInfo}>
+                Version {latestVersion} -{" "}
+                <a
+                  href={
+                    "/docs/install/release-notes/" +
+                    latestVersion.replace(/\./g, "-")
+                  }
+                >
+                  Release Notes
+                </a>
+              </P>
+            )}
           </div>
-          <div className={s.downloadCards}>
-            <GenericCard
-              title="macOS"
-              description="A universal binary that works on both Apple Silicon and Intel machines. Requires macOS 13+ (Ventura or later)."
-            >
-              <div className={s.macosLinks}>
-                <ButtonLink
-                  size="large"
-                  href={`https://release.files.ghostty.org/${latestVersion}/Ghostty.dmg`}
-                  text="Universal Binary"
-                  icon={<Download strokeWidth={2} size={17} />}
-                  showExternalIcon={false}
-                />
-                <ButtonLink
-                  size="large"
-                  href="/docs/install/binary#macos"
-                  text="Package Manager"
-                  icon={<Package strokeWidth={2} size={18} />}
-                  showExternalIcon={false}
-                />
-              </div>
-            </GenericCard>
-            <GenericCard
-              title="Linux"
-              description="Choose a pre-built package for quick setup on your Linux distribution, or build source for complete control."
-            >
-              <div className={s.linuxLinks}>
-                <ButtonLink
-                  size="large"
-                  href="/docs/install/binary#linux-(official)"
-                  text="Package Manager"
-                  icon={<Package strokeWidth={2} size={18} />}
-                  showExternalIcon={false}
-                />
-                <ButtonLink
-                  size="large"
-                  href="/docs/install/build"
-                  text="Build From Source"
-                  icon={<CodeXml strokeWidth={2} size={18} />}
-                  showExternalIcon={false}
-                />
-              </div>
-            </GenericCard>
-          </div>
+          {isTip ? (
+            <TipDownloadPage
+              latestVersion={latestVersion}
+              docsNavTree={docsNavTree}
+            />
+          ) : (
+            <ReleaseDownloadPage
+              latestVersion={latestVersion}
+              docsNavTree={docsNavTree}
+            />
+          )}
         </SectionWrapper>
       </main>
     </NavFooterLayout>
