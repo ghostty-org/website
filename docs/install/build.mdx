@@ -33,6 +33,7 @@ The Zig version that each Ghostty version requires is as follows:
 |-----------------|-------------|
 | 1.0.x           | 0.13.0      |
 | 1.1.x           | 0.13.0      |
+| 1.2.x           | 0.14.1      |
 | tip             | 0.14.1      |
 
 The official build environment is defined by [Nix](https://nixos.org/).
@@ -52,12 +53,15 @@ Begin by **downloading Ghostty's source tarball**.
 <Warning>
 
 While you can compile Ghostty from source by checking out its Git repository,
-this is **not recommended** for anyone but Ghostty developers. This is because
-source tarballs contain various preprocessed files that make Ghostty require far
-fewer dependencies to compile.
+this is **not recommended** for anyone but Ghostty developers and contributors.
+This is because source tarballs contain various preprocessed files that make
+Ghostty require far fewer dependencies to compile.
 
-If you choose to compile with a Git source, you need to install extra
-dependencies, which will be covered in the build instructions.
+If you intend to contribute to Ghostty, please consult the
+[README](https://github.com/ghostty-org/ghostty/blob/main/README.md#developing-ghostty)
+file on the steps to build Ghostty in a development environment.
+While most of the steps are exactly the same, we will be assuming a source
+tarball-based build for now on for the sake of simplicity.
 
 </Warning>
 
