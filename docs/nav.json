@@ -422,6 +422,11 @@
         },
         {
           "type": "link",
+          "path": "/gtk-opengl-context",
+          "title": "GTK OpenGL Context"
+        },
+        {
+          "type": "link",
           "path": "/macos-tiling-wms",
           "title": "macOS Tiling Window Managers"
         },
