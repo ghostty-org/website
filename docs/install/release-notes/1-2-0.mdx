@@ -4,4 +4,71 @@ description: |-
   Release notes for Ghostty 1.2.0, presently unreleased.
 ---
 
-Coming soon.
+Ghostty 1.2.0 features **6 months of work** with changes from
+**142 contributors** over **2,520 commits**. This release contains major
+improvements to every part of Ghostty, including hundreds of bug fixes.
+
+## Highlights
+
+TODO
+
+## Full Changelog
+
+[Full list of closed issues on GitHub](https://github.com/ghostty-org/ghostty/milestone/5?closed=1).
+
+In each section, we try to sort improvements before bug fixes.
+
+- TODO. [#1234](#TODO)
+
+### macOS
+
+TODO
+
+### GTK (Linux, FreeBSD)
+
+TODO
+
+### Changes for Package Maintainers
+
+TODO
+
+## Roadmap
+
+Ghostty 1.3 will continue the focus of making Ghostty the
+["best existing terminal emulator"](https://mitchellh.com/writing/ghostty-1-0-reflection)
+by shipping the last remaining major missing features to achieve
+parity with other popular terminal emulators. Namely, we plan on shipping
+scrollback search and scrollbars for 1.3, at a minimum.
+
+The primary focus of Ghostty 1.3 will be on desktop application features
+(of which scrollback search and scrollbars are a part). The core terminal
+emulation features of Ghostty have already proven to be very feature
+rich and stable. However, we plan on continuing to expand our VT feature
+support, such as adopting new experimental protocols that have been recently
+released into the ecosystem by others.
+
+To answer common requests, **Windows** and **libghostty as a
+standalone library** are not planned for Ghostty 1.3. These remain part
+of the long term roadmap, but we want to focus on our existing platforms
+and desktop applications first.
+
+### Moving to a March/September Release Cycle
+
+Ghostty will move to a 6-month release cycle for major/minor releases,
+with the next minor release (1.3.0) planned for March 2026. A March/September
+release cycle aligns well with many major Linux distibutions and macOS.
+Patch releases (e.g. 1.2.1) will be made as needed on an unscheduled basis.
+
+This is a relatively long release cycle for modern applications, but
+let's the development team focus on large, impactful features with enough
+time to stabilize in tip releases. For packagers, it avoids the churn of
+packaging new releases frequently. And the alignment with major OS releases
+let's us ensure we ship major releases that work well on new OS versions.
+
+For users who are interested in more frequent updates, we recommend using
+the [`tip` release channel](/docs/config/reference#auto-update-channel) on macOS or
+[building from source](/docs/install/release-notes/1-1-0#roadmap) frequently on Linux.
+We have thousands of nightly users (thank you for testing!) and the entire
+maintainer team works hard to keep tip releases stable. For the entire 1.1
+to 1.2 development cycle, I can't remember tip releases ever being broken
+for daily use.
