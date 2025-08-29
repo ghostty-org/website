@@ -13,14 +13,20 @@ If you have access to a prebuilt binary or package, you should use that
 instead. See [the binaries and packages page](/docs/install/binary) to
 see if a prebuilt binary or package is available for your platform.
 
+If you intend to develop or package Ghostty, please also check out our
+["Developing Ghostty"](https://github.com/ghostty-org/ghostty/blob/main/HACKING.md)
+and ["Packaging Ghostty"](https://github.com/ghostty-org/ghostty/blob/main/PACKAGING.md)
+documents respectively. This page is more oriented towards end users who
+want or need to build Ghostty from source for personal use.
+
 </Tip>
 
-To build Ghostty, you need [Zig](https://ziglang.org/) installed.
+To build Ghostty, you need to first install [Zig](https://ziglang.org/).
 
 <Important>
 
 Each version of Ghostty is only guaranteed to build for one **specific** version
-of Zig as it is still a rapidly-evolving project. **Either older or newer
+of Zig as it is still a rapidly-evolving language. **Either older or newer
 Zig compilers may not be able to build Ghostty.** If your package manager
 maintains a different version of Zig than what Ghostty requires, you can use
 static binary releases of the Zig compiler on the [Zig downloads page](https://ziglang.org/download/).
@@ -58,8 +64,8 @@ This is because source tarballs contain various preprocessed files that make
 Ghostty require far fewer dependencies to compile.
 
 If you intend to contribute to Ghostty, please consult the
-[README](https://github.com/ghostty-org/ghostty/blob/main/README.md#developing-ghostty)
-file on the steps to build Ghostty in a development environment.
+["Developing Ghostty"](https://github.com/ghostty-org/ghostty/blob/main/HACKING.md)
+documents on how to build Ghostty in a development environment.
 While most of the steps are exactly the same, we will be assuming a source
 tarball-based build for now on for the sake of simplicity.
 
@@ -149,9 +155,7 @@ Required dependencies:
 
 <Important>
 
-If you're using a Git checkout, you also need to install these dependnecies:
-
-  * `blueprint-compiler`
+If you're using a Git checkout, you also need to install these dependencies:
 
 </Important>
 
