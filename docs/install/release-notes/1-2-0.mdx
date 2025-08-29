@@ -4,4 +4,769 @@ description: |-
   Release notes for Ghostty 1.2.0, presently unreleased.
 ---
 
-Coming soon.
+<Note>
+  This page is still a **work-in-progress.** 1.2.0 is still unreleased and this
+  page is missing a lot of content. We're slowly filling in the blanks as we
+  near the release. Last update: GH-8466 [Search
+  Link](https://github.com/ghostty-org/ghostty/issues?q=state%3Aclosed%20milestone%3A1.2.0&page=1)
+</Note>
+
+Ghostty 1.2.0 features **6 months of work** with changes from
+**142 contributors** over **2,520 commits**. This release contains major
+improvements to every part of Ghostty, including hundreds of bug fixes.
+
+## Highlights
+
+Potential list:
+
+- w3c key input GH-7320
+- ssh shell integration GH-7608
+- big renderer rework GH-7620
+- macOS App Intents GH-7634
+- Custom cursor shaders GH-7648
+- GTK application rewrite, valgrind
+- GTK: progress bars (hopefully can do macOS before 1.2) GH-7975
+
+### New App Icons
+
+PRs: GH-7638 GH-8038
+
+On macOS, Ghostty 1.2 ships with a new macOS Tahoe compatible icon shown
+below. This icon is built with the new Icon Composer application and allows
+the icon to work with all of the new macOS light, dark, translucent, and
+custom tinting styles.
+
+<p align="center">
+  <a href="/images/1-2-0/macos.png" target="_blank">
+    <img
+      src="/images/1-2-0/macos.png"
+      width="160"
+      style={{ maxWidth: "50%", margin: "10px" }}
+    />
+  </a>
+</p>
+
+On GTK (Linux and FreeBSD), Ghostty 1.2 ships with a new icon that better
+matches _many_ desktop environments. We chose to align with the GNOME styling
+since that is common and doesn't generally look out of place in most
+environments.
+
+<p align="center">
+  <a href="/images/1-2-0/gnome.png" target="_blank">
+    <img
+      src="/images/1-2-0/gnome.png"
+      width="200"
+      style={{ maxWidth: "50%", margin: "10px" }}
+    />
+  </a>
+</p>
+
+<Note>
+  It's impossible to make a perfect, globally consistent icon for the Linux and
+  BSD ecosystem due to the diversity of desktop environments. We believe this
+  icon looks better in more environments than the prior icon, and avoids some
+  negative reactions that the prior icon demonstrated a macOS-centric point of
+  view.
+</Note>
+
+### Command Palette
+
+PRs: GH-7153 GH-7156
+
+Ghostty now has a command palette that can invoke most keybind actions,
+such as creating new terminals, moving focus, changing text selection,
+copy and paste, etc.
+
+The command palette is bound by default to `ctrl+shift+p` on GTK and
+`cmd+shift+p` on macOS. This can be rebound to any keybind using the
+`toggle_command_palette` keybind action. The command palette is also available
+via the menubar on both macOS and GTK.
+
+TODO: Screenshot
+
+The command palette exposes almost every available keybind. As new keybind
+actions are added to Ghostty, they will be automatically available in the
+command palette as well. This has some immediate benefits, namely that you can
+access keybind actions even if they aren't bound to a keybind. This is useful
+for infrequently used actions.
+
+For example, I personally find myself using the `move_tab` action via the
+command palette frequently, but not frequently enough to justify binding it.
+
+In future versions of Ghostty, we'll continue to expand the features that
+are available in the command palette. For example, we're working on a new
+terminal sequence specification that would allow terminal programs to expose
+any of their actions directly in the command palette (e.g. imagine Neovim
+commands being fully available in the command palette).
+
+### Quick Terminal Size
+
+PRs: GH-2384
+
+A new configuration `quick-terminal-size` can now configure the default size
+of the quick terminal. This was one of the most highly requested features.
+
+The `quick-terminal-size` configuration supports both percentage and pixel
+size. If you specify only one value, it specifies the size of the primary
+axis (depending on the location). If you specify two values, then the second
+value is the secondary axis. The example below illustrates:
+
+```
+# Percentage, primary axis only
+quick-terminal-size = 25%
+
+# Pixels work too, primary axis only
+quick-terminal-size = 600px
+
+# Two values specify primary and secondary axis
+quick-terminal-size = 25%,75%
+
+# You can also mix units
+quick-terminal-size = 300px,80%
+```
+
+The _primary axis_ is defined by the `quick-terminal-position` configuration.
+For the `top` and `bottom` values, the primary axis is the height. For
+the `left` and `right` values, the primary axis is the width. For `center`,
+it depends on your monitor orientation: it is height for landscape and width for
+portrait.
+
+Beyond simply specifying the size, the quick terminal is now resizable at
+runtime and will remember that size for the duration that Ghostty is running.
+In prior versions, the size was fixed, which caused real problems depending
+on monitor size and resolution.
+
+### Terminal Background Images
+
+PRs: GH-3645
+
+You can now specify a background image for your terminal using the
+`background-image` configuration. This comes with a set of other
+configurations so that the image appears just how you'd like it:
+`background-image-opacity`, `background-image-position`,
+`background-image-fit`, and `background-image-repeat`.
+
+TODO: Screenshot
+
+<Warning>
+  In Ghostty 1.2.0, the background image is duplicated in VRAM for each
+  terminal. For sufficiently large images and many terminals, this can lead to a
+  large increase in memory usage (specifically VRAM). A future Ghostty release
+  will share image textures across terminals to avoid this issue.
+</Warning>
+
+### Terminal Bell
+
+PRs: GH-7099, GH-5326, GH-7087, GH-7101, GH-7118, GH-7148, GH-7842, GH-7533
+
+Ghostty on both macOS and GTK support the terminal bell (ASCII `BEL` or
+`0x07`). Ghostty's behavior when the bell is rung can be customized using
+the `bell-features` configuration. We've shipped with defaults which we believe
+are the least intrusive while still being useful, and more intrusive optional
+features can be set with `bell-features`.
+
+On macOS, the bell by default will put the bell emoji (🔔) in the title of
+the terminal, will bounce the dock icon once, and will put a badge on the
+Ghostty icon visible in the dock and application switcher. No audio will be
+played.
+
+On GTK, the bell by default will put the bell emoji (🔔) in the title of
+the terminal and will mark the window as requesting attention. The exact
+behavior of "requesting attention" is determined by the window manager or
+desktop environment. No audio will be played.
+
+GTK also supports an audio bell feature which is off by default. This can be
+enabled with `bell-features=audio`. You can even specify custom audio to
+play using the `bell-audio-path` configuration.
+
+GTK also supports a border flashing animation that can be enabled with
+`bell-features=border`. This is similar to the "visual bell" feature provided
+by other terminal emulators.
+
+A future version of Ghostty will bring parity to macOS with all the bell
+features.
+
+### macOS: Undo/Redo Close
+
+PRs: GH-7535
+
+All operations that close a terminal now support undo and redo using
+standard macOS keybinds (`Cmd+Z` and `Cmd+Shift+Z`, but can be rebound).
+This includes closing a split, closing a tab, closing a window, closing
+all windows, closing other tabs, etc.
+
+Undo/redo works by keeping recently closed terminals running but hidden
+for a configurable amount of time (by default 10 seconds). During this time,
+you can undo the close and the terminal will be reopened in the same location
+as before. Since the terminal was always running, your exact terminal state
+is restored.
+
+The time that a terminal can be undone can be configured with the
+`undo-timeout` configuration.
+
+In future versions of Ghostty we plan to expand the GUI interactions
+that can be undone and redone, such as resizing splits, moving tabs, etc.
+
+### GTK: Quick Terminal
+
+PRs: GH-4624
+
+The quick terminal is now supported on Linux while running on Wayland
+with access to the
+[widely supported `wlr-layer-shell` protocol](https://wayland.app/protocols/wlr-layer-shell-unstable-v1#compositor-support).
+The quick terminal has been available on macOS since Ghostty 1.0.
+
+As a reminder, the "quick terminal" is the feature of Ghostty where a
+singleton window of a terminal can be shown and hidden with a single
+hotkey bound to `toggle_quick_terminal` (usually a global hotkey that
+works even when Ghostty isn't focused). This is sometimes referred to
+as a "dropdown terminal" or a "DOOM-style terminal."
+
+The quick terminal on Linux fully supports tabs and splits.
+
+TODO: Screenshot
+
+### GTK: Global Keybinds
+
+PRs: GH-6051
+
+The GTK application now supports global keybinds, keybinds that
+work even while Ghostty is not the focused application. These keybinds
+are defined with the `global:` prefix in the Ghostty configuration.
+
+Global keybinds require a functional XDG desktop portal installed on your
+system. Other parts of Ghostty already rely on XDG desktop portal, so it likely
+already exists. If not, its usually a single well-supported package away (plus
+a restart).
+
+Global keybinds support any keybind action but are particularly well
+suited when paired with features such as `toggle_quick_terminal`, which is
+now [also supported on GTK](#gtk:-quick-terminal).
+
+### GTK: Localization (Work-in-Progress)
+
+PRs: GH-6004 plus too many to list for each locale.
+
+Preliminary support for localization of the GTK application has been added.
+Currently, only GTK GUI elements are translated. Localization support for
+macOS and other parts of Ghostty will arrive in future releases.
+
+Ghostty 1.2 has complete localization for GUI elements for the following
+locales:
+
+- bg_BG
+- ca_ES
+- de_DE
+- es_AR
+- es_BO
+- fr_FR
+- ga_IE
+- id_ID
+- ja_JP
+- ko_KR
+- mk_MK
+- nb_NO
+- nl_NL
+- pl_PL
+- pt_BR
+- ru_RU
+- tr_TR
+- uk_UA
+- zh_CN
+
+Localization is done by volunteers for each locale. The Ghostty project
+is extremely grateful to the volunteers who have contributed their time
+to localize Ghostty. If you would like to localize Ghostty to your locale,
+please see the `CONTRIBUTING.md` documentation for instructions.
+
+### GTK: FreeBSD Support
+
+PRs: GH-7606
+
+The Ghostty GTK application now supports FreeBSD. This work was driven
+almost completely by a single community member, who did the hard work of
+submitting patches to all our dependencies to support FreeBSD, updating
+our build scripts, and assisting with automated testing to ensure Ghostty
+remains functional on FreeBSD.
+
+In addition to building and running properly on FreeBSD, the community
+is developing a FreeBSD port to make installation easier. We will update
+the installation documentation when that port is available.
+
+## System Requirements
+
+**macOS:** The minimum required macOS version for Ghostty 1.2 remains
+unchanged (macOS 13 Ventura). Ghostty is now compatible with macOS 26 (Tahoe).
+
+**GTK:** Ghostty 1.2 requires **GTK 4.14** and **libadwaita 1.5**. This
+aligns with our [GTK/Adwaita version policy](/docs/linux/#supported-gtkadwaita-versions).
+Systems with older GTK or Adwaita versions can workaround this requirement
+by using an older version of Ghostty or a community-maintained snap or
+flatpak package.
+
+## Breaking Changes
+
+- GTK: libadwaita is now required. We've
+  [warned that this was coming](/docs/install/release-notes/1-1-0#gtk:-forcing-a-dependency-on-libadwaita)
+  since the 1.1.0 release notes and our motivations are well explained in
+  the prior link. Please read that carefully before reacting! We put out a
+  call for feedback from the community and discussed this decision at length.
+  We shipped features addressing those concerns such as our SSD support, first
+  class CSS styling, and more.
+- GTK: The minimum required OpenGL version is now 4.3. This was required
+  to improve performance, fix some rendering bugs more easily, and make our
+  OpenGL backend more maintainable. OpenGL 4.3 was released in 2012, so this is
+  still over a decade old. GH-7620
+- The `dlig` font feature is now disabled by default. This may result in
+  ligatures that were previously working to no longer work. This was always
+  formally specified as a "discretionary ligature" feature, meaning that it
+  should be opt-in. The more common `calt` (contextual ligature) feature remains
+  on by default. You can reenable this feature with the `font-features` config.
+  GH-8164
+
+### Deprecations
+
+The list below contains deprecations that remain compatible today through
+a compatibility layer, but may break in a future release if they are
+ignored:
+
+- `adw-toolbar-style` has been renamed to `gtk-toolbar-style`.
+- `gtk-tabs-location=hidden` is replaced with `window-show-tab-bar=never`.
+- `selection-invert-fg-bg` is replaced with
+  `selection-foreground=cell-background` and
+  `selection-background=cell-foreground`. GH-5219
+- `cursor-invert-fg-bg` is replaced with
+  `cursor-color=cell-foreground` and
+  `cursor-text=cell-background`. GH-5219
+
+There is no set timeline to remove these deprecations, but we recommend
+adapting to the new configurations sooner rather than later to avoid
+any possible disruptions in the future.
+
+<Note>
+  The deprecations above will continue to work without any visible warnings. We
+  plan to augment our GUI to show warnings about the configuration in a future
+  release.
+</Note>
+
+## Full Changelog
+
+[Full list of closed issues on GitHub](https://github.com/ghostty-org/ghostty/milestone/5?closed=1).
+
+In each section, we try to sort improvements before bug fixes.
+
+- Commands through `-e` no longer are run wrapped with `/bin/sh`
+  and instead are executed directly. GH-7032
+- Add a new command palette feature to macOS and GTK that allows
+  executing most keybind actions even if they aren't bound. GH-7153 GH-7156
+- Directional `goto_split` on both macOS and GTK navigates to the nearest
+  split in that direction from the top-left corner of the current split.
+  We call this "spatial navigation" and it results in more intuitive split
+  navigation. GH-574
+- The `equalize_splits` keybind action now produces more expected, pleasing
+  results when multiple splits are oriented in the same direction. GH-7710
+- New opt-in shell integration features `ssh-terminfo` and `ssh-env`
+  improve the experience of using Ghostty over SSH. GH-7608
+- Cursor information is now available to custom shaders, enabling custom
+  shaders to do things such as draw cool animations for cursor movement.
+  GH-7648
+- A new CLI command `+edit-config` will open the Ghostty configuration
+  in your configured terminal `$EDITOR`. GH-7668
+- Add a new keybind `prompt_surface_title` that can be used to change
+  the title of a terminal manually. GH-2509 GH-5769
+- Add a new keybind `scroll_to_selection` which scrolls the viewport
+  to the top-left of the current selection, if it exists. GH-7265
+- Add a new keybind `set_font_size` to set the font size. GH-7795
+- Add a new keybind `copy_title_to_clipboard` that copies the current terminal title
+  to the clipboard. GH-7829
+- Add a new keybind `close_tabs:other` that closes all tabs except the
+  current one. GH-8363
+- The keybinds `write_screen_file`, `write_scrollback_file`, and
+  `write_selection_file` now support `copy` as a value to copy the file
+  path to the clipboard. GH-7721
+- config `app-notifications` has a new value `config-reload` (default on)
+  to control whether a notification is shown when the config is reloaded.
+  GH-8366
+- config: `command` value can be prefixed with `shell:` or `direct:`
+  to execute a command via the shell (default) or directly via
+  `exec`. GH-7032
+- config: copy on right click with `right-click-action = copy`. GH-4404
+- config: `background-image` can be used to set a background image for
+  the terminal. This currently applies to each terminal, not to windows.
+  GH-3645
+- config: `env` can be used to specify environment variables to set
+  in the terminal environment. GH-5257
+- config: `quick-terminal-size` can be used to customize the
+  size of the quick terminal. GH-2384
+- config: `font-shaping-break` configures when a ligature should be
+  broken (split). GH-4515
+- config: new values `cell-foreground` and `cell-background` can be used
+  with `selection-foreground`, `selection-background`, and `cursor-color`
+  to set their color values to the dynamic cell colors. GH-5219
+- config: new `bold-color` option to specify a custom color for bold to
+  make it easier to read. GH-7168
+- config: new `selection-clear-on-typing` option to clear selection
+  when typing. GH-7394
+- config: new `link-previews` option determines when URL previews in the
+  bottom of windows appear. GH-7831
+- config: new `background-opacity-cells` applies the `background-opacity`
+  configuration to explicit cell backgrounds (e.g. from the running program).
+  GH-7913
+- config: new `right-click-action` option can configure the behavior when
+  the right mouse button is clicked. GH-8254
+- cli: pressing `enter` in `+list-themes` now shows help text on
+  how to configure the theme. GH-4731
+- cli: `+list-themes` now has a flag to filter light and dark themes. GH-7235
+- cli: add theme filtering to `+list-themes`. GH-8082
+- cli: `+list-colors` shows the colors in addition to their hex code. GH-8393
+- custom shaders can now be reloaded at runtime. GH-7620
+- custom shaders blend properly with the background color. GH-7620
+- holding the mouse above or below the window while clicking now
+  scrolls the viewport without having to jiggle the mouse. GH-4422
+- shell-integration: now uses a single `GHOSTTY_SHELL_INTEGRATION_FEATURES`
+  env var to specify enabled features instead of multiple env vars. GH-6871
+- shell-integration/elvish: use the `kitty-shell-cwd://` scheme for OSC 7
+  reporting so we don't have to encode it. GH-7033
+- Split and tab navigation keybinds such as `goto_split` and `next_tab`
+  support `performable`. GH-7680
+- font: improve the performance of glyph hashing for caching yielding
+  a roughly 5% speed in synthetic stress tests. GH-7677
+- fix crash that could happen with certain `font-family` flags provided
+  specifically to the CLI. GH-7481
+- The config `adjust-cursor-thickness` now works with `cursor-style=underline`.
+  GH-7732
+- Resolve issue when pressing `backspace` with preedit text (such as
+  when using an IME). GH-5728
+- config: `keybind=` (blank) restores default keybindings, behaving
+  like other `<key>=` blank values. GH-5936
+- config: `palette` configuration now supporst whitespace between
+  the palette number and color. GH-5921
+- config: All configurations that take a list of colors (e.g.
+  `macos-icon-ghost-color`) support spaces after commas. GH-5918
+- the `copy_url_to_clipboard` keybind action works properly with OSC 8
+  hyperlinks. GH-7499
+- font: fallback fonts sizes are automatically adjusted to more closely match
+  the primary font size visually. GH-7840
+- font: Support new sprites: U+1CC00 to U+1CCFF, U+1CE00 to U+1CEFF, U+2500
+  to U+25FF, U+1CE00 to U+1CEFF, U+1FB00 to U+1FBFF. GH-7755 GH-7761
+- font: U+25E4 and U+25E2 (geometric shapes) are now rasterized
+  with the built-in sprite font. GH-3344
+- font: corner pieces of Geometric Shapes are now rasterized with
+  the built-in sprite font. GH-7562
+- font: glyph contraint logic dramatically improved, resulting in things like
+  Nerd Font icons appearing more correctly. GH-7809
+- input: mouse scrollwheel mapping to mouse events was modified to
+  better match other terminal emulators. GH-6052
+- input: `ctrl+<ASCII>` works across a wider variety of keyboard layouts.
+  GH-7309
+- input: mouse dragging while clicking cancels any mouse link actions. GH-7080
+- gracefully handle the case that the `exec` syscall fails when starting the
+  terminal command. GH-7793
+- The "failed to launch process" error message can no longer be dismissed by
+  pressing a modifier key. GH-7794
+- fix rendering issues when rectangular selection with top-left or bottom-right
+  outside of the viewport. GH-7692
+- fix some rounding errors for Octant rendering which caused Octants to not
+  line up in some scenarios. GH-7479
+- fix some mouse selection logic which sometimes caused Ghostty to incorrectly
+  select an extra line or character. GH-7444
+- fix file path regular expression to require at least one slash. GH-7355
+- fix a crash when reflowing a grapheme with a spacer head in a specific
+  location. GH-7537
+- Images rendered using the Kitty image protocol now use correct gamma
+  blending. GH-7368
+- Fix scenario where renderer could crash when zooming out if the viewport
+  pointer when out of bounds. GH-7899
+- Fix a crash that could happen if a memory page ran out of space for
+  hyperlinks. GH-8009
+- Fix undefined memory access on first frame render. GH-7982
+- Fix memory leak each time the modifier was held to search for links. GH-7998
+- Fix crashes when our bitmap allocator had exactly 64 chunks allocated. GH-8276
+- Fix possible use-after-free in font atlas error paths. There are no known
+  cases of this being exercised in the wild. GH-8249
+- Fix possible crashes in some internal OOM conditions where growing the
+  backing buffer was not implemented properly. GH-8277
+- Fix undefined memory access in OSC parser that could lead to crashes. GH-8307
+- Fix issues with Kitty image z-indexing. GH-7671
+- shell-integration/bash: no longer depends on a valid `GHOSTTY_RESOURCES_DIR`
+  env var. GH-7611
+- shell-integration/bash: fix a scenario where garbage characters could be
+  printed. GH-7802
+- shell-integration/bash: preserve existing env more reliably. GH-7908
+- Do not resolve symbolic links in OSC 7 path reporting. GH-7773
+- inspector: fix display of fractional pixel sizes. GH-8179
+- vt: Allow SGR sequences to contain up to 24 parameters, fixing some
+  Kakoune themes. GH-8417
+- vt: Indicate support for OSC 52 in the primary DA report. GH-7725
+- vt: OSC 52 can empty the current clipboard by sending an empty string. GH-8018
+- vt: `XTGETTCAP` works properly for lowercase hex characters. GH-7229
+- vt: Kitty image protocol supports delete by range operations. GH-5957
+- vt: Fix aspect ratio issues with some images using the Kitty image
+  protocol. GH-6673
+- vt: Kitty image protocol should accept commands with no control data. GH-7023
+- vt: don't force Kitty images to a grid size. GH-7367
+- vt: OSC 4/104 allow multiple color specifications. GH-7402
+- vt: add support for mode 47. GH-7443
+- vt: add support for mode 1048. GH-7473
+- vt: fix a variety of alt screen edge cases for mode 47, 1047, and 1049 to
+  better match xterm behavior. I don't know any real programs that exercised
+  these bugs, but its good hygiene. GH-7471
+- vt: clear hyperlink state when switching between normal and alt screen.
+  GH-7471
+- vt: `ctrl+esc` now produces the proper Kitty keyboard encoding. GH-7000
+- vt: clear correct row on index (`\n`) operation in certain edge cases.
+  This fixes a misrender that could happen with the vim status line
+  in certain scenarios. GH-7093
+- vt: clicking on an unfocused window no longer encodes a mouse event. GH-2595
+- vt: fix undefined memory access on certain incomplete escape sequences.
+  GH-8007
+- vt: OSC 9 notifications can contain single character messages. GH-8396
+- vt: parse more ConEmu OSC 9 sequences. This is only parsing, not executing.
+  GH-8410
+- contrib/vim: fix syntax highlighting of the config in scratch buffers. GH-7119
+
+### macOS
+
+- macOS: Support macOS 26 (Tahoe).
+- macOS: You can now undo and redo closing any type of terminal (window, tab,
+  or split). We keep recently closed terminals in memory for a configurable
+  amount of time (default 10 seconds) so you can recover them if you close
+  them by accident. GH-7535
+- macOS: Read-only accessibility API integration allows screen readers
+  to read Ghostty's structure and contents. This is also useful for AI software
+  to read Ghostty's contents. This requires accessibility permissions, so it is
+  opt-in. GH-7601
+- macOS: Integration with App Intents enables Ghostty to be automated with
+  Apple Shortcuts. GH-7634
+- macOS: Bell implementation. By default, the bell will bounce the dock icon
+  and put a bell emoji in the title. This is cleared when the terminal is
+  focused or on any input. The bell does not make any audio sounds. These
+  can all be disabled with `bell-features`. GH-7099
+- macOS: Scripts executed from Finder or dropped onto the dock now execute
+  via the login shell and sending `<filepath>; exit` via stdin. This is how
+  the built-in Terminal and other terminals work to allow loading your
+  login scripts. GH-7647
+- macOS: Custom icons are now persisted while Ghostty is not running. GH-8230
+- macOS: Add `bring_all_to_front` keybind action to bring all
+  Ghostty windows to the front. GH-4704
+- macOS: Add `reset_window_size` keybind action to reset the window
+  size to its initial configured size. GH-6038
+- macOS: Add `check_for_update` keybind action. GH-7235
+- macOS: Add "Return to Default Size" menu item. GH-1328
+- macOS: `macos-hidden` configuration will hide Ghostty from the
+  dock and tab menu. GH-4538
+- macOS: Clicking links now uses the `NSWorkspace` API rather than
+  the `open` command. This preserves the source application (Ghostty)
+  which other programs can now use to change their behavior if
+  desired. GH-5256
+- macOS: New config `macos-window-buttons` to hide the traffic light
+  buttons. GH-7504
+- macOS: New option `padded-notch` for the existing `macos-non-native-fullscreen`
+  configuration to put the non-native fullscreen window below the notch
+  but still hide the menu bar. GH-5750
+- macOS: New keybind action and menu item `toggle_window_float_on_top` to
+  have a specific terminal widnow float above all other windows even when
+  unfocused. GH-7237
+- macOS: Equalize splits now works in the quick terminal. GH-7480
+- macOS: `quick-terminal-position=center` now supports resize while retaining
+  the center position. GH-8398
+- macOS: Scripts executed from Finder or dropped onto the dock always
+  require manual confirmation to run. GH-8442
+- macOS: The reset zoom button for splits is now visible with titlebar tabs
+  and a single tab. GH-7502
+- macOS: `window-save-state` now saves terminal titles. GH-7938
+- macOS: `Cmd+h` (macOS hide window) no longer sends `h` if attempting to
+  hide the last visible window. GH-5929
+- macOS: `maximize` configuration now works on macOS. GH-5928
+- macOS: Improve key input handling speed by about 10x. GH-7121
+- macOS: Differentiate between closing a tab vs a window when pressing the
+  red traffic light. GH-7618
+- macOS: Title text is vertically centered with `macos-titlebar-style=tabs`.
+  GH-5777
+- macOS: focus no longer goes to the first split when toggling
+  non-native fullscreen. GH-6999
+- macOS: `cmd+.` can now be bound. GH-6909
+- macOS: font glyphs constrained to a terminal cell now appear sharper. GH-6914
+- macOS: the `close_window` keybind action now works. GH-7003
+- macOS: quick terminal can appear and disappear more reliably
+  on fullscreen spaces. GH-7070
+- macOS: selection off the left edge of the window no longer
+  scrolls up by one line. GH-7071
+- macOS: New windows created with `macos-titlebar-style=hidden` now cascade
+  their position like other windows. GH-7567
+- macOS: Key input that clears preedit without text shouldn't encode to pty.
+  GH-7226
+- macOS: keyboard shortcuts now work properly with the "Dvorak - QWERTY
+  ⌘" macOS keyboard layout. GH-7315
+- macOS: Round up fractional mouse scroll events, making mice with scroll
+  wheels feel more usable. GH-7185
+- macOS: All split directions are now available in the menubar and
+  context menus. GH-5807
+- macOS: Setting the pwd with OSC 7 now works with macOS's "Private Wi-Fi
+  Address" feature. GH-7029
+- macOS: Resize overlay now uses language-neutral `w x h` format
+  and omits units. GH-7142
+- macOS: "Services -> New Ghostty Window/Tab Here" now works with files.
+  GH-7286
+- macOS: Reliably retain focus when using non-native fullscreen. GH-7279
+- macOS: Fix memory leak that would retain memory of the last closed
+  surface (only one at a time). GH-7507
+- macOS: Fix memory leak where we failed to free CoreText font features. GH-7770
+- macOS: Fix memory leak in fallback discovery font descriptors. GH-7770
+- macOS: Fix memory leak for ObjC blocks. GH-7770
+- macOS: Fix crash that would occur if non-native fullscreen and
+  `fullscreen = true` were both set. GH-7277
+- macOS: If `title` is set, the title is set on the window on load,
+  allowing window managers to see the title sooner. GH-6056
+- macOS: Any keypress with `cmd` pressed is not encoded for legacy
+  key encoding. GH-6057
+- macOS: Invoking `new_tab` in anyway within the quick terminal now
+  shows a helpful error rather than creating a new window. Tabs in the
+  quick terminal will be supported in a future release. GH-5939
+- macOS: Closing non-native fullscreen windows no properly restores
+  the menu bar. GH-7525
+- macOS: Dismiss any notifications on window focus. GH-7531
+- macOS: Dismiss any notifications on window close. GH-7531
+- macOS: Dismiss any notifications of an already-focused window after
+  a few seconds. GH-7531
+- font/coretext: improve font search sorting to be more consistent. GH-7483
+- man pages now mention macOS-specific configuration path. GH-5938
+
+### GTK (Linux, FreeBSD)
+
+- GTK: Support for FreeBSD. This work was all driven by a single community
+  member and we are very grateful for their contributions. GH-7606
+- GTK: New icon that matches a wider variety of desktop environments
+  stylistically. This is never going to be perfect due to the diversity of
+  the Linux/BSD ecosystems, but the new icon is a big improvement and makes
+  the app feel less macOS-centric. GH-8038
+- GTK: Configuration can be reloaded by sending `SIGUSR2` to Ghostty. GH-7759
+- GTK: A new `gtk-titlebar-style=tabs` puts the tabs into the titlebar
+  of windows. GH-8166
+- GTK: The quick terminal now works on Linux under Wayland and the
+  `wlr-layer-shell` protocol. GH-4624
+- GTK: `global:` keybinds now work whenever XDG desktop portal
+  is available (almost all desktop environments). GH-6051
+- GTK: Display a native GUI progress bar for `OSC 9;4` progress bar sequences,
+  such as those emitted by systemd. GH-7975
+- GTK: Audio bell support (default off) can be enabled with
+  `bell-features=audio` and setting `bell-audio-path` and
+  `bell-audio-volume`. GH-5326
+- GTK: Install DBus and Systemd activation services for faster startup. GH-7433
+- GTK: OpenGL renderer now supports linear blending for more correct
+  color blending. GH-7620
+- GTK: Register the `X-KDE-Shortcut` key so that a shortcut can be registered
+  on KDE to open Ghostty. GH-7673
+- GTK: Dynamically choose between `io_uring` and `epoll` for the
+  async API on Linux. Previously, this was hardcoded to `io_uring`
+  and epoll-only systems had to build from source. GH-5916
+- GTK: New config `async-backend` can be set to `epoll` to force using
+  epoll instead of io_uring on Linux. This can be useful on kernels where
+  iowait reporting is broken. GH-5916
+- GTK: New config `window-show-tab-bar` customizes when the tab bar
+  is visible. GH-5590
+- GTK: New config `quick-terminal-keyboard-interactivity` to specifically
+  customize the keyboard interactivity setting on Wayland. GH-7477
+- GTK: New keybind action `show_gtk_inspector` to show the GTK inspector
+  since terminal keybinds usually clobber the GTK default. GH-7468
+- GTK: The new tab button now has a dropdown menu to create new splits. GH-7127
+- GTK: A new "remember choice" toggle is added to the clipboard confirmation
+  dialog. GH-6783
+- GTK: A new native GUI element is used to show when a command exits
+  improperly or while `wait-after-command` is set. GH-7836
+- GTK: Support on-screen keyboards. GH-7987
+- GTK: Show a native GUI element if the OpenGL renderer fails to initialize
+  rather than a blank window. GH-8390
+- GTK: Escape `(` and `)` when dropping filepaths onto the terminal. GH-6922
+- GTK: `copy-on-select=clipboard` no longer causes toast spam while
+  selecting. The copy only happens when the mouse is released. GH-4800
+- GTK: All split directions are now available in the menubar and
+  context menus. GH-5779
+- GTK: Windows do not request close confirmation for `wait-after-command`.
+  GH-7500
+- GTK: When server-side decorations are used, remove the `solid-csd`
+  CSS class from windows that resulted in a visible border. GH-8127
+- GTK: Fix an issue where the window would sometimes become blank
+  and not close after the last tab was closd. GH-5837
+- GTK: Resize overlay now uses language-neutral `w x h` format
+  and omits units. GH-6013
+- GTK: Clean up surface cgroup properly on close. GH-6766
+- GTK: Reduce flickering/stretching on resize for OpenGL. GH-7155
+- GTK: Detect `GHOSTTY_RESOURCES_DIR` in more installation environments.
+  GH-6814
+- GTK: Fix cases where `xdg-open` calls would leave defunct processes. GH-7657
+  GTK/X11: Fix blur regions when using > 200% scaling. GH-6978
+- font/freetype: error when loading SVG glyphs, since we don't support them
+  anyways. GH-6824
+- font/freetype: fix data races that could cause crashes in rare scenarios.
+  GH-7238
+- font/freetype: convert more non-UTF-8 encodings of font names to UTF-8.
+  GH-8204
+- packaging: experimental snap packaging is now tested in CI. The
+  published snap image is maintained by an external maintainer for now.
+  GH-3931
+
+### Changes for Package Maintainers
+
+- We now generate source tarballs with some preprocessed files as is
+  standard with many source tarballs (e.g. convertig parser `.y` to `.c`).
+  For Ghostty, we preprocess Blueprint `ui` to `xml` files, translations,
+  and GTK resource files. This allows Ghostty to built on older platforms
+  without access to newer build tools. **Packagers should use the source
+  tarball, not the Git checkout. The `PACKAGING.md` documentation has been
+  updated with this information.** GH-6800
+
+- The GLFW apprt has been deleted. This was never a supported apprt and
+  was only used for development and testing. We warned against packaging GLFW
+  in our `PACKAGING.md` documentation. This is now gone because we don't need
+  it for development or testing anymore. GH-7815
+
+## Roadmap
+
+Ghostty 1.3 will continue the focus of making Ghostty the
+["best existing terminal emulator"](https://mitchellh.com/writing/ghostty-1-0-reflection)
+by shipping the last remaining major missing features to achieve
+parity with other popular terminal emulators. Namely, we plan on shipping
+scrollback search and scrollbars for 1.3, at a minimum.[^1]
+
+The primary focus of Ghostty 1.3 will be on desktop application features
+(of which scrollback search and scrollbars are a part). The core terminal
+emulation features of Ghostty have already proven to be very feature
+rich and stable. However, we plan on continuing to expand our VT feature
+support, such as adopting new experimental protocols that have been recently
+released into the ecosystem by others.
+
+To answer common requests, **Windows** and **libghostty as a
+standalone library** are not planned for Ghostty 1.3. These remain part
+of the long term roadmap, but we want to focus on our existing platforms
+and desktop applications first.
+
+### Moving to a March/September Release Cycle
+
+Ghostty will move to a 6-month release cycle for major/minor releases,
+with the next minor release (1.3.0) planned for March 2026. A March/September
+release cycle aligns well with many major Linux distibutions and macOS.
+Patch releases (e.g. 1.2.1) will be made as needed on an unscheduled basis.
+
+This is a relatively long release cycle for modern applications, but
+let's the development team focus on large, impactful features with enough
+time to stabilize in tip releases. For packagers, it avoids the churn of
+packaging new releases frequently. And the alignment with major OS releases
+let's us ensure we ship major releases that work well on new OS versions.
+
+For users who are interested in more frequent updates, we recommend using
+the [`tip` release channel](/docs/config/reference#auto-update-channel) on macOS or
+[building from source](/docs/install/release-notes/1-1-0#roadmap) frequently on Linux.
+We have thousands of nightly users (thank you for testing!) and the entire
+maintainer team works hard to keep tip releases stable. For the entire 1.1
+to 1.2 development cycle, I can't remember tip releases ever being broken
+for daily use.
+
+[^1]:
+    "Parity" here is used loosely to describe the most popular, frequently
+    used features of other terminal emulators. There is a long tail of features
+    we'll likely never fully implement (and vice versa for our features).
+
+```
+
+```
