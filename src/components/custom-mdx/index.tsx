@@ -5,6 +5,8 @@ import ButtonLinks from "../button-links";
 import Callout, { Caution, Important, Note, Tip, Warning } from "../callout";
 import CardLinks from "../card-links";
 import CodeBlock from "../codeblock";
+import GitHub from "../github";
+import { processGitHubLinks } from "../github/mdx";
 import JumplinkHeader from "../jumplink-header";
 import Mermaid from "../mermaid";
 import { BodyParagraph, LI } from "../text";
@@ -40,8 +42,14 @@ export default function CustomMDX({ content }: CustomMDXProps) {
           h4: (props) => JumplinkHeader({ ...props, as: "h4" }),
           h5: (props) => JumplinkHeader({ ...props, as: "h5" }),
           h6: (props) => JumplinkHeader({ ...props, as: "h6" }),
-          li: LI,
-          p: BodyParagraph,
+          li: (props) => {
+            const processedChildren = processGitHubLinks(props.children);
+            return <LI {...props}>{processedChildren}</LI>;
+          },
+          p: (props) => {
+            const processedChildren = processGitHubLinks(props.children);
+            return <BodyParagraph {...props}>{processedChildren}</BodyParagraph>;
+          },
           code: (props) => {
             if (!props.className) {
               return <code {...props} />;
@@ -84,6 +92,7 @@ export default function CustomMDX({ content }: CustomMDXProps) {
           VTSequence,
           CardLinks,
           ButtonLinks,
+          GitHub,
           /* Callout Variants */
           Callout,
           Note,
