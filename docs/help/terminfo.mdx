@@ -75,7 +75,14 @@ field as an alias` which can be safely ignored.
 `/usr/share/terminfo`.  This location can be overridden with the `TERMINFO`
 environment variable.  If `TERMINFO` is not set and `tic` cannot write to
 the system location, it will place the results in `$HOME/.terminfo` if it
-exists.  `man tic` for details.
+exists. If the results were placed in `$HOME/.terminfo` it might be a good idea
+to copy them to the system database which might help when running `sudo`. 
+`man tic` for details.
+
+```sh
+sudo cp $HOME/.terminfo/x/xterm-ghostty /usr/share/terminfo/x/xterm-ghostty
+sudo cp $HOME/.terminfo/g/ghostty /usr/share/terminfo/g/ghostty
+```
 </Note>
 
 <Note>
