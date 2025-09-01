@@ -21,9 +21,7 @@ Potential list:
 
 - w3c key input GH-7320
 - ssh shell integration GH-7608
-- big renderer rework GH-7620
 - macOS App Intents GH-7634
-- Custom cursor shaders GH-7648
 - GTK application rewrite, valgrind
 - GTK: progress bars (hopefully can do macOS before 1.2) GH-7975
 
@@ -136,6 +134,48 @@ runtime and will remember that size for the duration that Ghostty is running.
 In prior versions, the size was fixed, which caused real problems depending
 on monitor size and resolution.
 
+### Renderer Rework
+
+PRs: GH-7620
+
+The renderer backends have been reworked so that the core logic is shared,
+whether rendering with OpenGL or Metal. This change will allow for quicker
+improvements to that area of the code in the future, and will also help to
+ensure feature parity between the two backends, which is something that was
+starting to become an issue as many features were implemented for Metal but
+not for OpenGL.
+
+In the process of this rework, several improvements were made for the OpenGL
+backend, which should now be more efficient and has near feature parity with
+the Metal backend.
+
+This means that Linux users will now see proper linear alpha blending, which
+removes artifacts seen around the edges of text with certain combinations of
+background and foreground color. The default `alpha-blending` configuration
+value on Linux is now `linear-corrected`, which performs linear blending with
+a correction step for text so that the apparent weight matches the non-linear
+blending that people are used to.
+
+TODO: Screenshot(s)
+
+This rework also made it so that custom shaders can now be hot reloaded.
+
+### Custom Cursor Shaders
+
+PRs: GH-7648
+
+Custom shaders are now provided information about the terminal cursor, so that
+custom effects and animations can be applied to it, like a trail or smear.
+
+TODO: Screenshots, or maybe GIFs or videos
+
+We do eventually plan to add a first-party animated cursor, so that users don't
+need to take on the additional performance cost of a custom shader just to have
+a cursor that's easier to follow as it moves, but adding this feature to custom
+shaders was an easy stop-gap measure. Plus, this will still be useful even after
+we add the first-party animated cursors, since some users may still want to have
+very specific custom effects that aren't possible through the built-in option.
+
 ### Terminal Background Images
 
 PRs: GH-3645
@@ -154,6 +194,62 @@ TODO: Screenshot
   large increase in memory usage (specifically VRAM). A future Ghostty release
   will share image textures across terminals to avoid this issue.
 </Warning>
+
+### Fallback Font Size Adjustment
+
+PRs: GH-7840, GH-7953
+
+When the font(s) you configured for Ghostty don't have a glyph for a character
+we need to render, we find a font on the system that does. These fonts are now
+adjusted in size to better match the primary font.
+
+This helps account for the differing sizes of fonts, and creates a generally
+more consistent appearance. This is also helpful for users who use multiple
+writing systems; for example, CJK (Chinese, Japanese, and Korean) text now
+avoids having large vertical "gutters" between characters.
+
+TODO: Before/after screenshots
+
+In the future, we plan to rework font configuration so that you can specify
+sizes per-font, or let a configured font be sized automatically like fallback
+fonts are.
+
+### Lots of New Built-in Glyphs
+
+PRs: GH-7732, GH-7755, GH-7761
+
+A variety of new characters are now drawn directly by Ghostty instead of having
+to rely on a font for them. We draw glyphs directly so that we can ensure they
+align correctly with the cell and each other.
+
+TODO: Screenshot, probably of the full repertoire of available sprite glyphs,
+      with the new additions highlighted.
+
+### Built-in Nerd Font Improvement
+
+PRs: GH-7809, TODO: should all the follow-up adjustments/fixes be listed here?
+
+The built-in Nerd Font symbols are now provided by a standalone symbols-only
+font, rather than using patched versions of JetBrains Mono in Regular, Bold,
+Italic, and Bold Italic styles, and the built-in JetBrains Mono now uses a
+variable font rather than 4 static ones. This makes it so that the embedded
+fonts in Ghostty take significantly less space than they used to.
+
+This also means we're now using a more up-to-date copy of the Nerd Fonts
+symbols, so newer symbols will now render correctly.
+
+The big change, however, is that Ghostty now automatically resizes Nerd Fonts
+symbols to match the cell size, in the same way that the official Nerd Fonts
+patcher does, which means that the experience of using Ghostty with a normal
+un-patched font should be nearly or completely identical to using it with a
+patched font before.
+
+This means that there is now _no reason_ to use patched fonts in Ghostty, since
+things like powerline glyphs will always be scaled appropriately for the cell
+size either way.
+
+TODO: Maybe a screenshot of powerline glyphs lining up really nicely with cell
+      edges or something, but maybe this section doesn't need a screenshot.
 
 ### Terminal Bell
 
