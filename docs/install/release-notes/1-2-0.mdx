@@ -321,7 +321,7 @@ flatpak package.
   ligatures that were previously working to no longer work. This was always
   formally specified as a "discretionary ligature" feature, meaning that it
   should be opt-in. The more common `calt` (contextual ligature) feature remains
-  on by default. You can reenable this feature with the `font-features` config.
+  on by default. You can re-enable this feature with the `font-features` config.
   GH-8164
 
 ### Deprecations
@@ -439,7 +439,7 @@ In each section, we try to sort improvements before bug fixes.
   when using an IME). GH-5728
 - config: `keybind=` (blank) restores default keybindings, behaving
   like other `<key>=` blank values. GH-5936
-- config: `palette` configuration now supporst whitespace between
+- config: `palette` configuration now supports whitespace between
   the palette number and color. GH-5921
 - config: All configurations that take a list of colors (e.g.
   `macos-icon-ghost-color`) support spaces after commas. GH-5918
@@ -453,7 +453,7 @@ In each section, we try to sort improvements before bug fixes.
   with the built-in sprite font. GH-3344
 - font: corner pieces of Geometric Shapes are now rasterized with
   the built-in sprite font. GH-7562
-- font: glyph contraint logic dramatically improved, resulting in things like
+- font: glyph constraint logic dramatically improved, resulting in things like
   Nerd Font icons appearing more correctly. GH-7809
 - input: mouse scrollwheel mapping to mouse events was modified to
   better match other terminal emulators. GH-6052
@@ -466,7 +466,7 @@ In each section, we try to sort improvements before bug fixes.
   pressing a modifier key. GH-7794
 - fix rendering issues when rectangular selection with top-left or bottom-right
   outside of the viewport. GH-7692
-- fix some rounding errors for Octant rendering which caused Octants to not
+- fix some rounding errors for octant rendering which caused octants to not
   line up in some scenarios. GH-7479
 - fix some mouse selection logic which sometimes caused Ghostty to incorrectly
   select an extra line or character. GH-7444
@@ -565,7 +565,7 @@ In each section, we try to sort improvements before bug fixes.
   configuration to put the non-native fullscreen window below the notch
   but still hide the menu bar. GH-5750
 - macOS: New keybind action and menu item `toggle_window_float_on_top` to
-  have a specific terminal widnow float above all other windows even when
+  have a specific terminal window float above all other windows even when
   unfocused. GH-7237
 - macOS: Equalize splits now works in the quick terminal. GH-7480
 - macOS: `quick-terminal-position=center` now supports resize while retaining
@@ -687,7 +687,7 @@ In each section, we try to sort improvements before bug fixes.
 - GTK: When server-side decorations are used, remove the `solid-csd`
   CSS class from windows that resulted in a visible border. GH-8127
 - GTK: Fix an issue where the window would sometimes become blank
-  and not close after the last tab was closd. GH-5837
+  and not close after the last tab was closed. GH-5837
 - GTK: Resize overlay now uses language-neutral `w x h` format
   and omits units. GH-6013
 - GTK: Clean up surface cgroup properly on close. GH-6766
@@ -709,7 +709,7 @@ In each section, we try to sort improvements before bug fixes.
 ### Changes for Package Maintainers
 
 - We now generate source tarballs with some preprocessed files as is
-  standard with many source tarballs (e.g. convertig parser `.y` to `.c`).
+  standard with many source tarballs (e.g. converting parser `.y` to `.c`).
   For Ghostty, we preprocess Blueprint `ui` to `xml` files, translations,
   and GTK resource files. This allows Ghostty to built on older platforms
   without access to newer build tools. **Packagers should use the source
@@ -745,7 +745,7 @@ and desktop applications first.
 
 Ghostty will move to a 6-month release cycle for major/minor releases,
 with the next minor release (1.3.0) planned for March 2026. A March/September
-release cycle aligns well with many major Linux distibutions and macOS.
+release cycle aligns well with many major Linux distributions and macOS.
 Patch releases (e.g. 1.2.1) will be made as needed on an unscheduled basis.
 
 This is a relatively long release cycle for modern applications, but
