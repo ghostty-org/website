@@ -25,9 +25,10 @@ if you're troubleshooting.
 </Important>
 
 <Important>
-  Using `gtk-single-instance` or `class` in your configuration file can
-  interfere with the proper operation of the `systemd` unit files or D-Bus
-  activation. We recommend that you remove them from your configuration file.
+  Using `class` in your configuration file can interfere with the proper
+  operation of the `systemd` unit files or D-Bus activation. We recommend that
+  you remove them from your configuration file and only use them explicitly via
+  the command-line when needed.
 </Important>
 
 ## Starting Ghostty at Login
@@ -78,13 +79,15 @@ be unreliable to script that using `ps` or similar utilities.
 
 ## Scripting New Windows
 
-Typically, new windows in Ghostty can be created by using the
-`ghostty` CLI directly. This will force a new Ghostty process to
-be created, which is slower and doesn't benefit from everything
-documented on this page.
+New windows can be created by using the `ghostty` CLI with no arguments.
+However, if you're using the systemd and D-Bus integration, it is much
+faster to use `ghostty +new-window` instead.
 
-The following command can be used to send a D-Bus signal to
-Ghostty to create a new window:
+The `+new-window` command will use D-Bus directly to create a new window.
+If Ghostty isn't running, the D-Bus activation unit will start Ghostty.
+This is much faster than plain `ghostty` because the plain execution has
+to load configuration, examine its environment, initialize GTK, and more
+to reach the same conclusion.
 
 ```sh
 ghostty +new-window
