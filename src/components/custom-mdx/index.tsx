@@ -11,6 +11,7 @@ import JumplinkHeader from "../jumplink-header";
 import Mermaid from "../mermaid";
 import { BodyParagraph, LI } from "../text";
 import VTSequence from "../vt-sequence";
+import Video from "../video";
 import s from "./CustomMDX.module.css";
 import { useStore } from "@/lib/use-store";
 
@@ -93,6 +94,7 @@ export default function CustomMDX({ content }: CustomMDXProps) {
           CardLinks,
           ButtonLinks,
           GitHub,
+          Video,
           /* Callout Variants */
           Callout,
           Note,
