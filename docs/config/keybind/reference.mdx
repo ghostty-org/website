@@ -303,6 +303,14 @@ Show the GTK inspector.
 
 Has no effect on macOS.
 
+## `show_on_screen_keyboard`
+Show the on-screen keyboard if one is present.
+
+Only implemented on Linux (GTK). On GNOME, the "Screen Keyboard"
+accessibility feature must be turned on, which can be found under
+Settings > Accessibility > Typing. Other platforms are as of now
+untested.
+
 ## `open_config`
 Open the configuration file in the default OS editor.
 
@@ -324,7 +332,11 @@ This might trigger a close confirmation popup, depending on the value
 of the `confirm-close-surface` configuration setting.
 
 ## `close_tab`
-Close the current tab and all splits therein.
+Close the current tab and all splits therein _or_ close all tabs and
+splits thein of tabs _other_ than the current tab, depending on the
+mode.
+
+If the mode is not specified, defaults to closing the current tab.
 
 This might trigger a close confirmation popup, depending on the value
 of the `confirm-close-surface` configuration setting.

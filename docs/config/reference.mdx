@@ -573,32 +573,24 @@ Valid values are:
 
  * `contain`
 
-```
-Preserving the aspect ratio, scale the background image to the largest
-size that can still be contained within the terminal, so that the whole
-image is visible.
-```
+   Preserving the aspect ratio, scale the background image to the largest
+   size that can still be contained within the terminal, so that the whole
+   image is visible.
 
  * `cover`
 
-```
-Preserving the aspect ratio, scale the background image to the smallest
-size that can completely cover the terminal. This may result in one or
-more edges of the image being clipped by the edge of the terminal.
-```
+   Preserving the aspect ratio, scale the background image to the smallest
+   size that can completely cover the terminal. This may result in one or
+   more edges of the image being clipped by the edge of the terminal.
 
  * `stretch`
 
-```
-Stretch the background image to the full size of the terminal, without
-preserving the aspect ratio.
-```
+   Stretch the background image to the full size of the terminal, without
+   preserving the aspect ratio.
 
  * `none`
 
-```
-Don't scale the background image.
-```
+   Don't scale the background image.
 
 The default value is `contain`.
 
@@ -644,6 +636,19 @@ If this is `false`, then the selection can still be manually
 cleared by clicking once or by pressing `escape`.
 
 Available since: 1.2.0
+
+## `selection-clear-on-copy`
+
+Whether to clear selected text after copying. This defaults to `false`.
+
+When set to `true`, the selection will be automatically cleared after
+any copy operation that invokes the `copy_to_clipboard` keyboard binding.
+Importantly, this will not clear the selection if the copy operation
+was invoked via `copy-on-select`.
+
+When set to `false`, the selection remains visible after copying, allowing
+to see what was copied and potentially perform additional operations
+on the same selection.
 
 ## `minimum-contrast`
 
@@ -766,6 +771,23 @@ Hide the mouse immediately when typing. The mouse becomes visible again
 when the mouse is used (button, movement, etc.). Platform-specific behavior
 may dictate other scenarios where the mouse is shown. For example on macOS,
 the mouse is shown again when a new window, tab, or split is created.
+
+## `scroll-to-bottom`
+
+When to scroll the surface to the bottom. The format of this is a list of
+options to enable separated by commas. If you prefix an option with `no-`
+then it is disabled. If you omit an option, its default value is used.
+
+Available options:
+
+- `keystroke` If set, scroll the surface to the bottom when the user
+  presses a key that results in data being sent to the PTY (basically
+  anything but modifiers or keybinds that are processed by Ghostty).
+
+- `output` If set, scroll the surface to the bottom if there is new data
+  to display. (Currently unimplemented.)
+
+The default is `keystroke, no-output`.
 
 ## `mouse-shift-capture`
 
@@ -1362,63 +1384,59 @@ keybind:
 The keybind trigger can be prefixed with some special values to change
 the behavior of the keybind. These are:
 
-  * `all:` - Make the keybind apply to all terminal surfaces. By default,
-    keybinds only apply to the focused terminal surface. If this is true,
-    then the keybind will be sent to all terminal surfaces. This only
-    applies to actions that are surface-specific. For actions that
-    are already global (e.g. `quit`), this prefix has no effect.
+ * `all:`
 
-```
-Available since: 1.0.0
-```
+   Make the keybind apply to all terminal surfaces. By default,
+   keybinds only apply to the focused terminal surface. If this is true,
+   then the keybind will be sent to all terminal surfaces. This only
+   applies to actions that are surface-specific. For actions that
+   are already global (e.g. `quit`), this prefix has no effect.
 
-  * `global:` - Make the keybind global. By default, keybinds only work
-    within Ghostty and under the right conditions (application focused,
-    sometimes terminal focused, etc.). If you want a keybind to work
-    globally across your system (e.g. even when Ghostty is not focused),
-    specify this prefix. This prefix implies `all:`. Note: this does not
-    work in all environments; see the additional notes below for more
-    information.
+   Available since: 1.0.0
 
-```
-Available since: 1.0.0 (on macOS)
-Available since: 1.2.0 (on GTK)
-```
+ * `global:`
 
-  * `unconsumed:` - Do not consume the input. By default, a keybind
-    will consume the input, meaning that the associated encoding (if
-    any) will not be sent to the running program in the terminal. If
-    you wish to send the encoded value to the program, specify the
-    `unconsumed:` prefix before the entire keybind. For example:
-    `unconsumed:ctrl+a=reload_config`. `global:` and `all:`-prefixed
-    keybinds will always consume the input regardless of this setting.
-    Since they are not associated with a specific terminal surface,
-    they're never encoded.
+   Make the keybind global. By default, keybinds only work within Ghostty
+   and under the right conditions (application focused, sometimes terminal
+   focused, etc.). If you want a keybind to work globally across your system
+   (e.g. even when Ghostty is not focused), specify this prefix.
+   This prefix implies `all:`.
 
-```
-Available since: 1.0.0
-```
+   Note: this does not work in all environments; see the additional notes
+   below for more information.
 
-  * `performable:` - Only consume the input if the action is able to be
-    performed. For example, the `copy_to_clipboard` action will only
-    consume the input if there is a selection to copy. If there is no
-    selection, Ghostty behaves as if the keybind was not set. This has
-    no effect with `global:` or `all:`-prefixed keybinds. For key
-    sequences, this will reset the sequence if the action is not
-    performable (acting identically to not having a keybind set at
-    all).
+   Available since: 1.0.0 on macOS, 1.2.0 on GTK
 
-```
-Performable keybinds will not appear as menu shortcuts in the
-application menu. This is because the menu shortcuts force the
-action to be performed regardless of the state of the terminal.
-Performable keybinds will still work, they just won't appear as
-a shortcut label in the menu.
-```
+ * `unconsumed:`
 
-```
-Available since: 1.1.0
-```
+   Do not consume the input. By default, a keybind will consume the input,
+   meaning that the associated encoding (if any) will not be sent to the
+   running program in the terminal. If you wish to send the encoded value
+   to the program, specify the `unconsumed:` prefix before the entire
+   keybind. For example: `unconsumed:ctrl+a=reload_config`. `global:` and
+   `all:`-prefixed keybinds will always consume the input regardless of
+   this setting. Since they are not associated with a specific terminal
+   surface, they're never encoded.
+
+   Available since: 1.0.0
+
+ * `performable:`
+
+   Only consume the input if the action is able to be performed.
+   For example, the `copy_to_clipboard` action will only consume the input
+   if there is a selection to copy. If there is no selection, Ghostty
+   behaves as if the keybind was not set. This has no effect with `global:`
+   or `all:`-prefixed keybinds. For key sequences, this will reset the
+   sequence if the action is not performable (acting identically to not
+   having a keybind set at all).
+
+   Performable keybinds will not appear as menu shortcuts in the
+   application menu. This is because the menu shortcuts force the
+   action to be performed regardless of the state of the terminal.
+   Performable keybinds will still work, they just won't appear as
+   a shortcut label in the menu.
+
+   Available since: 1.1.0
 
 Keybind triggers are not unique per prefix combination. For example,
 `ctrl+a` and `global:ctrl+a` are not two separate keybinds. The keybind
@@ -1574,34 +1592,36 @@ preference but it may not always be possible.
 
 Valid values:
 
-  * `none` - All window decorations will be disabled. Titlebar,
-    borders, etc. will not be shown. On macOS, this will also disable
-    tabs (enforced by the system).
+ * `none`
 
-  * `auto` - Automatically decide to use either client-side or server-side
-    decorations based on the detected preferences of the current OS and
-    desktop environment. This option usually makes Ghostty look the most
-    "native" for your desktop.
+   All window decorations will be disabled. Titlebar, borders, etc. will
+   not be shown. On macOS, this will also disable tabs (enforced by the
+   system).
 
-  * `client` - Prefer client-side decorations.
+ * `auto`
 
-```
-Available since: 1.1.0
-```
+   Automatically decide to use either client-side or server-side
+   decorations based on the detected preferences of the current OS and
+   desktop environment. This option usually makes Ghostty look the most
+   "native" for your desktop.
 
-  * `server` - Prefer server-side decorations. This is only relevant
-    on Linux with GTK, either on X11, or Wayland on a compositor that
-    supports the `org_kde_kwin_server_decoration` protocol (e.g. KDE Plasma,
-    but almost any non-GNOME desktop supports this protocol).
+ * `client`
 
-```
-If `server` is set but the environment doesn't support server-side
-decorations, client-side decorations will be used instead.
-```
+   Prefer client-side decorations.
 
-```
-Available since: 1.1.0
-```
+   Available since: 1.1.0
+
+ * `server`
+
+   Prefer server-side decorations. This is only relevant on Linux with GTK,
+   either on X11, or Wayland on a compositor that supports the
+   `org_kde_kwin_server_decoration` protocol (e.g. KDE Plasma, but almost
+   any non-GNOME desktop supports this protocol).
+
+   If `server` is set but the environment doesn't support server-side
+   decorations, client-side decorations will be used instead.
+
+   Available since: 1.1.0
 
 The default value is `auto`.
 
@@ -1968,6 +1988,20 @@ paste is always enabled even if this is `false`.
 
 The default value is true on Linux and macOS.
 
+## `right-click-action`
+
+The action to take when the user right-clicks on the terminal surface.
+
+Valid values:
+  * `context-menu` - Show the context menu.
+  * `paste` - Paste the contents of the clipboard.
+  * `copy` - Copy the selected text to the clipboard.
+  * `copy-or-paste` - If there is a selection, copy the selected text to
+     the clipboard; otherwise, paste the contents of the clipboard.
+  * `ignore` - Do nothing, ignore the right-click.
+
+The default value is `context-menu`.
+
 ## `click-repeat-interval`
 
 The time in milliseconds between clicks to consider a click a repeat
@@ -2182,6 +2216,47 @@ quick terminals unless another size parameter is specified, separated
 from the first by a comma (`,`). Percentage and pixel sizes can be mixed
 together: for instance, a size of `50%,500px` for a top-positioned quick
 terminal would be half a screen tall, and 500 pixels wide.
+
+## `gtk-quick-terminal-layer`
+
+The layer of the quick terminal window. The higher the layer,
+the more windows the quick terminal may conceal.
+
+Valid values are:
+
+ * `overlay`
+
+   The quick terminal appears in front of all windows.
+
+ * `top` (default)
+
+   The quick terminal appears in front of normal windows but behind
+   fullscreen overlays like lock screens.
+
+ * `bottom`
+
+   The quick terminal appears behind normal windows but in front of
+   wallpapers and other windows in the background layer.
+
+ * `background`
+
+   The quick terminal appears behind all windows.
+
+GTK Wayland only.
+
+Available since: 1.2.0
+
+## `gtk-quick-terminal-namespace`
+
+The namespace for the quick terminal window.
+
+This is an identifier that is used by the Wayland compositor and/or
+scripts to determine the type of layer surfaces and to possibly apply
+unique effects.
+
+GTK Wayland only.
+
+Available since: 1.2.0
 
 ## `quick-terminal-screen`
 
@@ -2420,11 +2495,9 @@ The uniform values available to shaders are as follows:
 
  * `sampler2D iChannel0` - Input texture.
 
-```
-A texture containing the current terminal screen. If multiple custom
-shaders are specified, the output of previous shaders is written to
-this texture, to allow combining multiple effects.
-```
+   A texture containing the current terminal screen. If multiple custom
+   shaders are specified, the output of previous shaders is written to
+   this texture, to allow combining multiple effects.
 
  * `vec3 iResolution` - Output texture size, `[width, height, 1]` (in px).
 
@@ -2541,7 +2614,12 @@ Valid values are:
    Prepend a bell emoji (🔔) to the title of the alerted surface until the
    terminal is re-focused or interacted with (such as on keyboard input).
 
-   Only implemented on macOS.
+ * `border`
+
+   Display a border around the alerted surface until the terminal is
+   re-focused or interacted with (such as on keyboard input).
+
+   GTK only.
 
 Example: `audio`, `no-audio`, `system`, `no-system`
 
@@ -2578,6 +2656,8 @@ Possible notifications are:
 
   - `clipboard-copy` (default: true) - Show a notification when text is copied
     to the clipboard.
+  - `config-reload` (default: true) - Show a notification when
+    the configuration is reloaded.
 
 To specify a notification to enable, specify the name of the notification.
 To specify a notification to disable, prefix the name with `no-`. For
@@ -2713,6 +2793,22 @@ Therefore, to make this work after changing the setting, you must
 usually `cd` to a different directory, open a different file in an
 editor, etc.
 
+## `macos-dock-drop-behavior`
+
+Controls the windowing behavior when dropping a file or folder
+onto the Ghostty icon in the macOS dock.
+
+Valid values are:
+
+  * `new-tab` - Create a new tab in the current window, or open
+    a new window if none exist.
+  * `new-window` - Create a new window unconditionally.
+
+The default value is `new-tab`.
+
+This setting is only supported on macOS and has no effect on other
+platforms.
+
 ## `macos-option-as-alt`
 
 macOS doesn't have a distinct "alt" key and instead has the "option"
@@ -2826,6 +2922,8 @@ Valid values:
  * `blueprint`, `chalkboard`, `microchip`, `glass`, `holographic`,
    `paper`, `retro`, `xray` - Official variants of the Ghostty icon
    hand-created by artists (no AI).
+ * `custom` - Use a completely custom icon. The location must be specified
+   using the additional `macos-custom-icon` configuration
  * `custom-style` - Use the official Ghostty icon but with custom
    styles applied to various layers. The custom styles must be
    specified using the additional `macos-icon`-prefixed configurations.
@@ -2844,6 +2942,18 @@ Other caveats:
     This is because the update dialog is managed through a
     separate framework and cannot be customized without significant
     effort.
+
+## `macos-custom-icon`
+
+The absolute path to the custom icon file.
+Supported formats include PNG, JPEG, and ICNS.
+
+Defaults to `~/.config/ghostty/Ghostty.icns`
+
+<Note>
+ This configuration is required when `macos-icon` is set to
+`custom`
+</Note>
 
 ## `macos-icon-frame`
 
@@ -2989,10 +3099,25 @@ already a running process.
 
 If `false`, each new ghostty process will launch a separate application.
 
-The default value is `desktop` which will default to `true` if Ghostty
-detects that it was launched from the `.desktop` file such as an app
-launcher (like Gnome Shell)  or by D-Bus activation. If Ghostty is launched
-from the command line, it will default to `false`.
+If `detect`, Ghostty will assume true (single instance) unless one of
+the following scenarios is found:
+
+1. TERM_PROGRAM environment variable is a non-empty value. In this
+case, we assume Ghostty is being launched from a graphical terminal
+session and you want a dedicated instance.
+
+2. Any CLI arguments exist. In this case, we assume you are passing
+custom Ghostty configuration. Single instance mode inherits the
+configuration from when it was launched, so we must disable single
+instance to load the new configuration.
+
+If either of these scenarios is producing a false positive, you can
+set this configuration explicitly to the behavior you want.
+
+The pre-1.2 option `desktop` has been deprecated. Please replace
+this with `detect`.
+
+The default value is `detect`.
 
 Note that debug builds of Ghostty have a separate single-instance ID
 so you can test single instance without conflicting with release builds.
@@ -3034,6 +3159,22 @@ Valid values are:
  * `raised` - Top and bottom bars cast a shadow on the terminal area.
  * `raised-border` - Similar to `raised` but the shadow is replaced with a
    more subtle border.
+
+## `gtk-titlebar-style`
+
+The style of the GTK titlbar. Available values are `native` and `tabs`.
+
+The `native` titlebar style is a traditional titlebar with a title, a few
+buttons and window controls. A separate tab bar will show up below the
+titlebar if you have multiple tabs open in the window.
+
+The `tabs` titlebar merges the tab bar and the traditional titlebar.
+This frees up vertical space on your screen if you use multiple tabs. One
+limitation of the `tabs` titlebar is that you cannot drag the titlebar
+by the titles any longer (as they are tab titles now). Other areas of the
+`tabs` title bar can be used to drag the window around.
+
+The default style is `native`.
 
 ## `gtk-wide-tabs`
 
@@ -3091,6 +3232,14 @@ usage).
 
 Available since Ghostty 1.2.0.
 
+## `faint-opacity`
+
+The opacity level (opposite of transparency) of the faint text. A value of
+1 is fully opaque and a value of 0 is fully transparent. A value less than 0
+or greater than 1 will be clamped to the nearest valid value.
+
+Available since Ghostty 1.2.0.
+
 ## `term`
 
 This will be used to set the `TERM` environment variable.
@@ -3104,28 +3253,6 @@ from working properly. https://github.com/vim/vim/pull/13211 fixes this.
 
 String to send when we receive `ENQ` (`0x05`) from the command that we are
 running. Defaults to an empty string if not set.
-
-## `launched-from`
-
-The mechanism used to launch Ghostty. This should generally not be
-set by users, see the warning below.
-
-<Warning>
- This is a low-level configuration that is not intended to be
-modified by users. All the values will be automatically detected as they
-are needed by Ghostty. This is only here in case our detection logic is
-incorrect for your environment or for developers who want to test
-Ghostty's behavior in different, forced environments.
-</Warning>
-
-This is set using the standard `no-[value]`, `[value]` syntax separated
-by commas. Example: "no-desktop,systemd". Specific details about the
-available values are documented on LaunchProperties in the code. Since
-this isn't intended to be modified by users, the documentation is
-lighter than the other configurations and users are expected to
-refer to the code for details.
-
-Available since: 1.2.0
 
 ## `async-backend`
 
