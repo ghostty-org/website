@@ -1144,6 +1144,25 @@ application developers can take advantage of.
   security and compatibility with tooling. Tip releases have always been
   signed. GH-8549
 
+#### Flatpak/Snap Update
+
+Ghostty 1.2 now comes with a configuration to build for Flatpak as well as
+Snap. We test this for every commit in CI and strive to keep Ghostty
+working via these distribution methods. However, we do not officially
+provide or maintain Flatpak or Snap packages, yet.
+
+This is major progress: Ghostty 1.1.x didn't work at all as a Flatpak
+or Snap package without pataches, and the official project made no guarantees
+about maintaining these packages. Now, we at least build and test on these
+platforms, while still falling short of official distribution.
+
+Our major blocker for official distribution is **maintainer interest**
+and release automation. None of the current Ghostty maintainers main the
+Snap or Flatpak builds of Ghostty, and we don't feel confident in our
+ability to maintain these packages long term. If you are interested in
+helping maintain the Flatpak or Snap packages of Ghostty, please join
+Discord and message us in `#packaging`.
+
 ## Roadmap
 
 Ghostty 1.3 will continue the focus of making Ghostty the
