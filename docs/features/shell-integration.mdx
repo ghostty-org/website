@@ -23,6 +23,9 @@ description: |-
   while at a prompt.
 - `sudo` can be automatically wrapped to preserve Ghostty terminfo
   (disabled by default)
+- `ssh` can be automatically wrapped to either transmit the Ghostty
+  terminfo or set the `TERM` environment variable to `xterm-256color`
+  to maximize compatibility (disabled by default)
 
 ## Shell Integration Injection
 
@@ -30,10 +33,10 @@ Ghostty will automatically inject the shell integration code for `bash`,
 `zsh`, `fish`, and `elvish`.
 
 <Note>
-The version of Bash distributed with macOS (`/bin/bash`) does not support
-automatic shell integration. You'll need to manually source the shell
-integration script (as shown below). You can also install a standard
-version of Bash from Homebrew or elsewhere and set it as your shell.
+  The version of Bash distributed with macOS (`/bin/bash`) does not support
+  automatic shell integration. You'll need to manually source the shell
+  integration script (as shown below). You can also install a standard version
+  of Bash from Homebrew or elsewhere and set it as your shell.
 </Note>
 
 Other shells do not have shell integration code written, but they will function
@@ -120,10 +123,10 @@ fi
 ```
 
 <Note>
-Technically, the bash shell integration script could be sourced from
-anywhere, but some bash configurations may interfere with the
-shell integration. To avoid this, we recommend sourcing the script
-as early as possible in your shell configuration.
+  Technically, the bash shell integration script could be sourced from anywhere,
+  but some bash configurations may interfere with the shell integration. To
+  avoid this, we recommend sourcing the script as early as possible in your
+  shell configuration.
 </Note>
 
 Each shell integration's installation instructions are documented inline:
