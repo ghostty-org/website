@@ -84,6 +84,15 @@ via the menubar on both macOS and GTK.
   </a>
 </p>
 
+<p align="center">
+  <a href="/images/1-2-0/palette-gtk.png" target="_blank">
+    <img
+      src="/images/1-2-0/palette-gtk.png"
+      style={{ maxWidth: "90%", margin: "10px" }}
+    />
+  </a>
+</p>
+
 The command palette exposes almost every available keybind. As new keybind
 actions are added to Ghostty, they will be automatically available in the
 command palette as well. This has some immediate benefits, namely that you can
@@ -135,6 +144,26 @@ Beyond simply specifying the size, the quick terminal is now resizable at
 runtime and will remember that size for the duration that Ghostty is running.
 In prior versions, the size was fixed, which caused real problems depending
 on monitor size and resolution.
+
+Screenshots with a couple examples on GTK are shown below:
+
+<p align="center">
+  <a href="/images/1-2-0/quick-terminal-pos1.png" target="_blank">
+    <img
+      src="/images/1-2-0/quick-terminal-pos1.png"
+      style={{ maxWidth: "85%", margin: "10px" }}
+    />
+  </a>
+</p>
+
+<p align="center">
+  <a href="/images/1-2-0/quick-terminal-pos2.png" target="_blank">
+    <img
+      src="/images/1-2-0/quick-terminal-pos2.png"
+      style={{ maxWidth: "85%", margin: "10px" }}
+    />
+  </a>
+</p>
 
 ### SSH Improvements (Work-in-Progress)
 
@@ -343,9 +372,9 @@ size either way.
 
 PR: GH-7320
 
-We've reworked our key bindings to be more consistent, based on the
+We've reworked our keybindings to be more consistent, based on the
 [W3C key event code specification](https://www.w3.org/TR/uievents-code/).
-This work should result in more predictable, working key bindings across
+This work should result in more predictable, working keybindings across
 operating systems and keyboard layouts, but also brings with it some
 **major behavior changes that may break existing keybindings.**
 
@@ -395,7 +424,9 @@ desktop environment. No audio will be played.
 
 GTK also supports an audio bell feature which is off by default. This can be
 enabled with `bell-features=audio`. You can even specify custom audio to
-play using the `bell-audio-path` configuration.
+play using the `bell-audio-path` configuration. The `bell-features=system`
+feature (default off) will use the "system beep" which usually can be audio
+as well, configured via a central system setting.
 
 GTK also supports a border flashing animation that can be enabled with
 `bell-features=border`. This is similar to the "visual bell" feature provided
@@ -517,6 +548,15 @@ works even when Ghostty isn't focused). This is sometimes referred to
 as a "dropdown terminal" or a "DOOM-style terminal."
 
 The quick terminal on Linux fully supports tabs and splits.
+
+<p align="center">
+  <a href="/images/1-2-0/quick-terminal-gtk.png" target="_blank">
+    <img
+      src="/images/1-2-0/quick-terminal-gtk.png"
+      style={{ maxWidth: "90%", margin: "10px" }}
+    />
+  </a>
+</p>
 
 ### GTK: Global Keybinds
 
@@ -641,6 +681,12 @@ flatpak package.
   to improve performance, fix some rendering bugs more easily, and make our
   OpenGL backend more maintainable. OpenGL 4.3 was released in 2012, so this is
   still over a decade old. GH-7620
+- Bundled themes have been updated to
+  [release-20250915-154825-b4500fc](https://github.com/mbadolato/iTerm2-Color-Schemes/releases/tag/release-20250915-154825-b4500fc).
+  Since the themes are managed upstream, this may include theme renames
+  and color changes. **If your theme that was working in 1.1.3 stops working
+  when updating to 1.2, please check the linked release to verify your theme
+  name.**
 - The `dlig` font feature is now disabled by default. This may result in
   ligatures that were previously working to no longer work. This was always
   formally specified as a "discretionary ligature" feature, meaning that it
@@ -830,6 +876,10 @@ In each section, we try to sort improvements before bug fixes.
   printed. GH-7802
 - shell-integration/bash: preserve existing env more reliably. GH-7908
 - Do not resolve symbolic links in OSC 7 path reporting. GH-7773
+- Bundled themes updated to [release-20250915-154825-b4500fc](https://github.com/mbadolato/iTerm2-Color-Schemes/releases/tag/release-20250915-154825-b4500fc).
+  This may rename existing themes. If your theme stops working, please check
+  to see if the theme was renamed. The renames are done upstream so there
+  isn't any way for us to avoid them.
 - inspector: fix display of fractional pixel sizes. GH-8179
 - contrib/vim: fix syntax highlighting of the config in scratch buffers. GH-7119
 
@@ -981,7 +1031,7 @@ application developers can take advantage of.
   allowing window managers to see the title sooner. GH-6056
 - macOS: Any keypress with `cmd` pressed is not encoded for legacy
   key encoding. GH-6057
-- macOS: Invoking `new_tab` in anyway within the quick terminal now
+- macOS: Invoking `new_tab` in any way within the quick terminal now
   shows a helpful error rather than creating a new window. Tabs in the
   quick terminal will be supported in a future release. GH-5939
 - macOS: Closing non-native fullscreen windows no properly restores
