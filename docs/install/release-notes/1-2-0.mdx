@@ -146,8 +146,8 @@ compatible with SSH for remote machines that haven't updated to support
 
 The new `ssh-env` opt-in feature will automatically set the `TERM` variable
 to `xterm-256color` for SSH sessions (as well as forward some other
-environment variables to make sessions work better). While not stricly correct,
-this bandaid solution helps more than it hurts in most cases.
+environment variables to make sessions work better). While not strictly correct,
+this band-aid solution helps more than it hurts in most cases.
 
 The new `ssh-terminfo` opt-in feature will automatically copy the Ghostty
 terminfo to the remote machine so that the proper `xterm-ghostty` `TERM`
@@ -256,7 +256,7 @@ show activity, as shown below:
 
 Graphical progress bars are now supported by multiple terminals across Windows,
 Linux, and macOS as well as a handful of major terminal programs such as
-the systemd and Zig CLIs. We hope given the growing terminal support that more
+the systemd and Zig CLIs. We hope, given the growing terminal support, that more
 programs will start using this feature.
 
 Today, Ghostty shows a simple, basic progress bar at the top of the terminal.
@@ -309,7 +309,7 @@ align correctly with the cell and each other.
 
 An example of just a fraction of the newly supported glyphs is shown below.
 Notice how the glyphs align perfectly with each other along the cell edges
-with no gaps in between. This kind of pixel perfect rendering is very important
+with no gaps in between. This kind of pixel-perfect rendering is very important
 for TUI applications that use glyphs such as these for UI elements.
 
 | Ghostty 1.1.3 (Old)                                                                           | Ghostty 1.2.0 (New)                                                                           |
@@ -350,7 +350,7 @@ operating systems and keyboard layouts, but also brings with it some
 **major behavior changes that may break existing keybindings.**
 
 All single codepoint characters now match the character produced by the
-keyboard layout (i.e. are layout-dependent). So `ctrl+c`` matches the
+keyboard layout (i.e. are layout-dependent). So `ctrl+c` matches the
 physical "c" key on a US standard keyboard with a US layout, but matches
 the "i" key on a Dvorak layout. This also works for international characters.
 Codepoints are case-insensitive and match via Unicode case folding (this is
@@ -364,9 +364,9 @@ keycode sent by the OS or GUI framework; these can often be overridden
 using programs to remap keys at the "hardware" level but software layouts
 do not do this.
 
-As a result of the above **the `physical:` prefix has been removed.**
+As a result of the above, **the `physical:` prefix has been removed.**
 Physical keybinds are now explicit through the use of multi-codepoint key
-names as noted above. Previous `pyhsical:` keybinds continue to work but
+names as noted above. Previous `physical:` keybinds continue to work but
 should be updated to the new format.
 
 For backwards compatibility, all existing key names in Ghostty that didn't
@@ -417,7 +417,7 @@ programs). In any case, Ghostty takes terminal emulation compatibility very
 seriously and we work hard to ensure that Ghostty can support the wide
 spectrum of terminal features that exist.
 
-Getting this right is easier said then done: a very small subset of terminal
+Getting this right is easier said than done: a very small subset of terminal
 emulation functionality is formally specified, with the vast majority
 being defined by de facto standards based on how terminal emulators behave.
 Additionally, since no singular standards body exists, protocols often
@@ -498,7 +498,7 @@ and more. It is a really powerful tool!
 
 This feature doesn't replace our future plans for a full cross-platform
 Ghostty API. This macOS-specific feature does address many of those use cases
-for macOS users, but we stil plan to build alternate scripting choices in
+for macOS users, but we still plan to build alternate scripting choices in
 the future.
 
 ### GTK: Quick Terminal
@@ -528,7 +528,7 @@ are defined with the `global:` prefix in the Ghostty configuration.
 
 Global keybinds require a functional XDG desktop portal installed on your
 system. Other parts of Ghostty already rely on XDG desktop portal, so it likely
-already exists. If not, its usually a single well-supported package away (plus
+already exists. If not, it's usually a single well-supported package away (plus
 a restart).
 
 Global keybinds support any keybind action but are particularly well
@@ -1078,7 +1078,7 @@ application developers can take advantage of.
 - We now generate source tarballs with some preprocessed files as is
   standard with many source tarballs (e.g. converting parser `.y` to `.c`).
   For Ghostty, we preprocess Blueprint `ui` to `xml` files, translations,
-  and GTK resource files. This allows Ghostty to built on older platforms
+  and GTK resource files. This allows Ghostty to be built on older platforms
   without access to newer build tools. **Packagers should use the source
   tarball, not the Git checkout. The `PACKAGING.md` documentation has been
   updated with this information.** GH-6800
@@ -1122,10 +1122,10 @@ release cycle aligns well with many major Linux distributions and macOS.
 Patch releases (e.g. 1.2.1) will be made as needed on an unscheduled basis.
 
 This is a relatively long release cycle for modern applications, but
-let's the development team focus on large, impactful features with enough
+lets the development team focus on large, impactful features with enough
 time to stabilize in tip releases. For packagers, it avoids the churn of
 packaging new releases frequently. And the alignment with major OS releases
-let's us ensure we ship major releases that work well on new OS versions.
+lets us ensure we ship major releases that work well on new OS versions.
 
 For users who are interested in more frequent updates, we recommend using
 the [`tip` release channel](/docs/config/reference#auto-update-channel) on macOS or
