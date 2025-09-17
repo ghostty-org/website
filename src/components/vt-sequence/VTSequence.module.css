@@ -5,9 +5,14 @@
   display: inline-flex;
   flex-direction: column;
   align-items: flex-start;
+  font-size: 14px;
 
   & .unimplemented {
-    font-family: var(--jetbrains-mono);
+    /* Fix for https://github.com/ghostty-org/website/issues/312
+  * In the case a user has custom fonts disabled, this ensures
+  * that the code block is still readable.
+  */
+    font-family: var(--jetbrains-mono), monospace;
     font-size: 14px;
     background: var(--atom-one-red);
     color: var(--gray-0);
@@ -26,7 +31,7 @@
     flex-grow: 1;
     width: 100%;
     display: flex;
-    font-family: var(--jetbrains-mono);
+    font-family: var(--jetbrains-mono), monospace;
     list-style: none;
 
     & .vtelem {

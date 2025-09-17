@@ -63,40 +63,30 @@ export default function JumplinkHeader({
 /**
  * @param children the MDX children node of the header element
  * @returns The resulting id string which should be applied to the jumplink-header
- */
-function headerDeeplinkIdentifier(children?: React.ReactNode): string {
-  const unexpectedError = () => {
-    return new Error(`We have encountered an unsupported MDX element in a Header,
-and are unable to generate an identifier for it. This likely a bug
-with the function which threw this error.
+ */ function headerDeeplinkIdentifier(children?: React.ReactNode): string {
+  let flattenedTitle = "";
 
-Header MDX:
-${JSON.stringify(children, null, 2)}`);
+  const extractText = (child: React.ReactNode): void => {
+    if (typeof child === "string") {
+      flattenedTitle += child;
+    } else if (Array.isArray(child)) {
+      child.forEach(extractText);
+    } else if (
+      typeof child === "object" &&
+      child !== null &&
+      "props" in child &&
+      typeof (child as any).props?.children !== "undefined"
+    ) {
+      extractText((child as any).props.children);
+    }
   };
 
-  if (typeof children === "string") {
-    // # Some simple string header
-    return slugify(children, { lower: true });
-  } else if (Array.isArray(children)) {
-    // # Some `multi-component` header
-    var flattenedTitle = "";
-    children.forEach((value) => {
-      if (typeof value === "string") {
-        flattenedTitle += value;
-      } else if (typeof value === "object" && value.type === "code") {
-        flattenedTitle += value.props.children;
-      } else {
-        throw unexpectedError();
-      }
-    });
-    return slugify(flattenedTitle, { lower: true });
-  } else if (children != null && typeof children === "object") {
-    if ((children as any).type === "code") {
-      // # `just-some-code`
-      return slugify((children as any).props.children, { lower: true });
-    }
-    throw unexpectedError();
-  } else {
-    throw unexpectedError();
+  extractText(children);
+
+  if (!flattenedTitle.trim()) {
+    throw new Error(`Unable to generate slug for header – content is empty or unsupported:
+${JSON.stringify(children, null, 2)}`);
   }
+
+  return slugify(flattenedTitle, { lower: true });
 }

@@ -47,6 +47,14 @@ If your platform isn't available, you must
   a pull request to add it to this page!
 </Tip>
 
+### Alpine Linux
+
+Ghostty is available in the official Alpine Linux [testing repository](https://pkgs.alpinelinux.org/package/edge/testing/x86_64/ghostty).
+
+```sh
+apk add ghostty
+```
+
 ### Arch Linux
 
 The latest tagged release of Ghostty is available as
@@ -78,7 +86,7 @@ emerge -av ghostty
 
 ### NixOS
 
-Ghostty is available in [nixpkgs unstable](https://search.nixos.org/packages?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=ghostty).
+Ghostty is available in [nixpkgs](https://search.nixos.org/packages?from=0&size=50&sort=relevance&type=packages&query=ghostty).
 
 ```
 environment.systemPackages = [
@@ -117,11 +125,11 @@ Below is an example:
   }: {
     nixosConfigurations.mysystem = nixpkgs.lib.nixosSystem {
       modules = [
-        {
+        ({ pkgs, ... }: {
           environment.systemPackages = [
-            ghostty.packages.x86_64-linux.default
+            ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default
           ];
-        }
+        })
       ];
     };
   };
@@ -144,7 +152,7 @@ zypper install ghostty
 
 ### Snap
 
-Ghosty is available as [`ghostty`](https://snapcraft.io/ghostty) in the Snap Store.
+Ghostty is available as [`ghostty`](https://snapcraft.io/ghostty) in the Snap Store.
 
 ```sh
 snap install ghostty --classic
@@ -192,10 +200,10 @@ These are user-maintained packages and not official Debian packages.
 
 ### Fedora
 
-Ghostty is available in [Fedora COPR](https://copr.fedorainfracloud.org/coprs/pgdev/ghostty/).
+Ghostty is available in [Fedora COPR](https://copr.fedorainfracloud.org/coprs/scottames/ghostty/).
 
 ```sh
-dnf copr enable pgdev/ghostty
+dnf copr enable scottames/ghostty
 dnf install ghostty
 ```
 
@@ -210,31 +218,20 @@ Ghostty is also available in [Terra](https://terra.fyralabs.com/).
 These are user-maintained packages and not official Fedora packages.
 </Warning>
 
-#### Silverblue (and other immutable variants)
+#### Atomic Desktops (Silverblue)
 
 Add the copr repository to your system:
 
 ```sh
-sudo $EDITOR /etc/yum.repos.d/_copr:copr.fedorainfracloud.org:pgdev:ghostty.repo
-```
-
-```ini
-[copr:copr.fedorainfracloud.org:pgdev:ghostty]
-name=Copr repo for Ghostty owned by pgdev
-baseurl=https://download.copr.fedorainfracloud.org/results/pgdev/ghostty/fedora-$releasever-$basearch/
-type=rpm-md
-skip_if_unavailable=True
-gpgcheck=1
-gpgkey=https://download.copr.fedorainfracloud.org/results/pgdev/ghostty/pubkey.gpg
-repo_gpgcheck=0
-enabled=1
-enabled_metadata=1
+. /etc/os-release
+curl -fsSL "https://copr.fedorainfracloud.org/coprs/scottames/ghostty/repo/fedora-${VERSION_ID}/scottames-ghostty-fedora-${VERSION_ID}.repo" | sudo tee /etc/yum.repos.d/_copr:copr.fedorainfracloud.org:scottames:ghostty.repo > /dev/null
 ```
 
 After adding the repository, install Ghostty:
 
 ```sh
-rpm-ostree update --install ghostty
+rpm-ostree refresh-md && \
+rpm-ostree install ghostty
 ```
 
 ### Ubuntu
@@ -255,22 +252,19 @@ This is a user-maintained package. It is not an official Ubuntu package.
 
 ### Universal AppImage
 
-Ghostty is available as a Universal AppImage from
-[ghostty-appimage](https://github.com/psadi/ghostty-appimage) on GitHub.
-Upon downloading the `.appimage` file from the
-[Releases](https://github.com/psadi/ghostty-appimage/releases) page, follow the
-below instructions:
+Ghostty is available as a Universal AppImage which is compatible with any Linux distribution (Including musl based).
+You can access the AppImage at [ghostty-appimage](https://github.com/pkgforge-dev/ghostty-appimage) on GitHub.
+
+To begin, download the appropriate `.appimage` file from the [Releases](https://github.com/pkgforge-dev/ghostty-appimage/releases) page
+and follow the instructions below:
 
 ```bash
-chmod +x Ghostty-x86_64.AppImage
-./Ghostty-x86_64.AppImage
+chmod a+x Ghostty-${VERSION}-${ARCH}.appimage
+./Ghostty-${VERSION}-${ARCH}.appimage
 ```
 
-Alternatively, setup can be done graphically by right-clicking
-the `Ghostty-x86_64.AppImage` file, selecting **Properties**, navigating to
-the **Permissions** tab and checking the box that says **Executable as
-Program**.
+For comprehensive installation instructions, please refer the [installation guide](https://github.com/pkgforge-dev/ghostty-appimage#%EF%B8%8F-installation).
 
 <Warning>
-This is a user-maintained AppImage. It is not an official AppImage.
+This is a community-maintained AppImage. It is not an official AppImage.
 </Warning>

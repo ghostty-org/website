@@ -9,7 +9,14 @@
 
 .codeBlock code {
   padding: 16px;
-  font-family: inherit;
+  /* Fix for https://github.com/ghostty-org/website/issues/312
+  * In the case a user has custom fonts disabled, this ensures
+  * that the code block is still readable. 
+  *
+  * Additionally, `inherit` here didn't seem to be working? So we're
+  * setting the font-family explicitly. 
+  */
+  font-family: var(--jetbrains-mono), monospace;
 }
 
 .copyButton {
@@ -40,4 +47,3 @@
 .copyButtonSuccess {
   color: var(--atom-one-green);
 }
-

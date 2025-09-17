@@ -6,7 +6,7 @@ description: |-
 ---
 
 Ghostty uses GTK single instance mode by default when it detects
-it is launched from a desktop environment (i.e. not from the CLI).
+it is not launched from a CLI environment.
 
 GTK single instance mode is recommended by the GTK project and is
 the idiomatic way official Gnome applications are expected to behave.
@@ -15,42 +15,33 @@ instance will create a new window, gain focus, and terminate the
 second instance.
 
 <Tip>
-If you're using Ghostty on Linux and are experiencing slow startup times
-or high memory usage, GTK single instance detection may not be
-working for your environment and you may need to force it on.
-Continue reading this page to learn more.
+  If you're using Ghostty on Linux and are experiencing slow startup times or
+  high memory usage, GTK single instance detection may not be working for your
+  environment and you may need to force it on. Continue reading this page to
+  learn more.
 </Tip>
 
-## Desktop Environment Detection
+## CLI Environment Detection
 
 The default behavior of Ghostty is to use GTK single instance mode
-**when launched from a desktop environment.**
+**when _not_ launched from a CLI environment.**
 
 Ghostty has this behavior because CLI terminal usage is common
 (i.e. `ghostty -e "some command"`) and in those cases the expected
 behavior is to launch a new process and block until it exits.
 Single instance mode doesn't allow us to easily do this so we only
-want to enable single instance mode when launched from a desktop
+want to enable single instance mode when launched from a non-CLI
 environment.
 
 There isn't a standard API to detect if an application is launched
-from a desktop environment, so Ghostty uses the following heuristic:
+from a non-CLI environment, so Ghostty uses the following heuristic:
 
-1. The `GIO_LAUNCHED_DESKTOP_FILE_PID` environment variable is set.
-   Gnome applications set this variable when launched from a `.desktop`
-   file.
+1. If the `TERM_PROGRAM` environment variable is set to any non-empty
+   value, we're assume we're in a graphical terminal emulator and disable
+   GTK single instance mode.
 
-2. The PID in `GIO_LAUNCHED_DESKTOP_FILE_PID` matches the pid of
-   the Ghostty process. This prevents Ghostty being launched from
-   another desktop application from being detected as a desktop
-   application.
-
-<Note>
-I expect that this heuristic isn't perfect. If you can improve
-this, please [start a GitHub discussion](https://github.com/ghostty-org/ghostty/discussions).
-During the private beta period of Ghostty, we had around 5,000
-beta testers and this heuristic overall worked very well.
-</Note>
+2. If any command line arguments are passed to Ghostty, we assume we
+   want instance-specific configuration and disable GTK single instance mode.
 
 ## Forcing GTK Single Instance Mode On or Off
 

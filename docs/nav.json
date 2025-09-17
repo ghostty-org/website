@@ -42,6 +42,16 @@
             },
             {
               "type": "link",
+              "path": "/1-2-0",
+              "title": "1.2.0"
+            },
+            {
+              "type": "link",
+              "path": "/1-1-3",
+              "title": "1.1.3"
+            },
+            {
+              "type": "link",
               "path": "/1-1-2",
               "title": "1.1.2"
             },
@@ -100,6 +110,23 @@
               "title": "Action Reference"
             }
           ]
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "path": "/linux",
+      "title": "Linux",
+      "children": [
+        {
+          "type": "link",
+          "path": "/",
+          "title": "Overview"
+        },
+        {
+          "type": "link",
+          "path": "/systemd",
+          "title": "Systemd and D-Bus"
         }
       ]
     },
@@ -226,11 +253,6 @@
             },
             {
               "type": "link",
-              "path": "/decscusr",
-              "title": "Set Cursor Style (DECSCUSR)"
-            },
-            {
-              "type": "link",
               "path": "/ind",
               "title": "Index (IND)"
             },
@@ -300,6 +322,11 @@
               "type": "link",
               "path": "/dch",
               "title": "Delete Character (DCH)"
+            },
+            {
+              "type": "link",
+              "path": "/decscusr",
+              "title": "Set Cursor Style (DECSCUSR)"
             },
             {
               "type": "link",
@@ -414,6 +441,11 @@
           "type": "link",
           "path": "/gtk-single-instance",
           "title": "GTK Single Instance"
+        },
+        {
+          "type": "link",
+          "path": "/gtk-opengl-context",
+          "title": "GTK OpenGL Context"
         },
         {
           "type": "link",
