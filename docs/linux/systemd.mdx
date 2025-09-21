@@ -66,7 +66,7 @@ creation will always be fast.
 
 ## Reloading the Config
 
-You can tell Ghostty to reload it's config (from a script or the CLI) by using
+You can tell Ghostty to reload its config (from a script or the CLI) by using
 this command:
 
 ```sh
@@ -97,7 +97,7 @@ This will create a new window even if Ghostty is not already running,
 because D-Bus activation will cause Ghostty to be launched.
 
 This command is very useful in particular for window managers such as
-i3, Hyperland, or River.
+i3, Hyprland, or River.
 
 ### Hyprland
 
@@ -124,7 +124,7 @@ Ghostty.
 From this point, the behavior depends on whether Ghostty is already running
 or not.
 
-This process ensures that any startup delayed caused by GTK (or any
+This process ensures that any startup delay caused by GTK (or any
 other initialization) is only incurred once if there are active
 windows or if Ghostty is configured to remain running (not the
 default).
@@ -245,7 +245,7 @@ If installed as a system package, the following files will be created:
 ```
 $PREFIX/share/applications/com.mitchellh.ghostty.desktop
 $PREFIX/share/dbus-1/services/com.mitchellh.ghostty.service
-$PREFiX/lib/systemd/user/app-com.mitchellh.ghostty.service
+$PREFIX/lib/systemd/user/app-com.mitchellh.ghostty.service
 ```
 
 <Warning>
@@ -262,11 +262,11 @@ If you have installed a development build of Ghostty (in `Debug` mode),
 paths on this page need to be altered slightly:
 
 ```sh
-systemctl enable --user app-com.mitchell.ghostty-debug.service
-systemctl stop --user app-com.mitchell.ghostty-debug.service
-systemctl reload --user app-com.mitchell.ghostty-debug.service
+systemctl enable --user app-com.mitchellh.ghostty-debug.service
+systemctl stop --user app-com.mitchellh.ghostty-debug.service
+systemctl reload --user app-com.mitchellh.ghostty-debug.service
 journalctl -a -f --user -u app-com.mitchellh.ghostty-debug.service
-ghostty +new-window --class=com.mitchell.ghostty-debug.service
+ghostty +new-window --class=com.mitchellh.ghostty-debug.service
 ```
 
 These are the files that control the launching of debug versions of Ghostty if
@@ -284,7 +284,7 @@ locations:
 ```
 $PREFIX/share/applications/com.mitchellh.ghostty-debug.desktop
 $PREFIX/share/dbus-1/services/com.mitchellh.ghostty-debug.service
-$PREFiX/lib/systemd/user/app-com.mitchellh.ghostty-debug.service
+$PREFIX/lib/systemd/user/app-com.mitchellh.ghostty-debug.service
 ```
 
 [^1]:
