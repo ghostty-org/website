@@ -6,11 +6,14 @@ import { CheckIcon, CopyIcon } from "lucide-react";
 
 interface CodeblockProps {
   children?: React.ReactNode;
+  className?: string;
 }
 
-export default function CodeBlock({ children }: CodeblockProps) {
+export default function CodeBlock({ children, className }: CodeblockProps) {
   return (
-    <pre className={classNames(s.codeBlock, jetbrainsMono.className)}>
+    <pre
+      className={classNames(s.codeBlock, jetbrainsMono.className, className)}
+    >
       {children}
       <CopyButton />
     </pre>
