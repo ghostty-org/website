@@ -1,0 +1,19 @@
+.docsearch {
+  display: flex;
+  justify-content: flex-end;
+  flex: 1;
+  padding: 0 30px;
+
+  :global(.DocSearch-Button-Key) {
+    /* The default mix is at 20%, which is too subtle */
+    border-color: color-mix(in srgb, var(--docsearch-subtle-color) 70%, transparent);
+  }
+
+  @media(max-width: 768px) {
+    padding-right: 0;
+
+    :global(.DocSearch-Button) {
+      border: 0;
+    }
+  }
+}
