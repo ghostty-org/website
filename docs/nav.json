@@ -142,6 +142,11 @@
         },
         {
           "type": "link",
+          "path": "/commands",
+          "title": "CLI Actions"
+        },
+        {
+          "type": "link",
           "path": "/theme",
           "title": "Color Theme"
         },
