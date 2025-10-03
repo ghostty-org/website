@@ -30,7 +30,7 @@ export default function CustomMDX({ content }: CustomMDXProps) {
     // When we do a client-side navigation to another page
     // the content will change & we will need to do a reset.
     resetHeaderIdsInView();
-  }, [content]);
+  }, [content, resetHeaderIdsInView]);
 
   return (
     <div className={s.customMDX}>

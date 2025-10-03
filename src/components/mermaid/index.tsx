@@ -14,6 +14,7 @@ export default function Mermaid({ chart, id, className = "" }: MermaidProps) {
 
   useEffect(() => {
     let mermaidInstance: any;
+    const element = elementRef.current;
 
     const renderMermaid = async () => {
       try {
@@ -78,8 +79,7 @@ export default function Mermaid({ chart, id, className = "" }: MermaidProps) {
 
         mermaidInstance = mermaid;
 
-        if (elementRef.current) {
-          const element = elementRef.current;
+        if (element) {
           element.innerHTML = "";
 
           const diagramId =
@@ -136,8 +136,8 @@ export default function Mermaid({ chart, id, className = "" }: MermaidProps) {
     renderMermaid();
 
     return () => {
-      if (elementRef.current) {
-        elementRef.current.innerHTML = "";
+      if (element) {
+        element.innerHTML = "";
       }
     };
   }, [chart, id]);

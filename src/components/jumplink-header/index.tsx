@@ -29,7 +29,7 @@ export default function JumplinkHeader({
   const updateHeaderIdInView = useStore((state) => state.updateHeaderIdInView);
   useEffect(() => {
     updateHeaderIdInView(inView, id);
-  }, [inView]);
+  }, [inView, id, updateHeaderIdInView]);
 
   return (
     <div className={s.jumplinkHeader} id={id}>
