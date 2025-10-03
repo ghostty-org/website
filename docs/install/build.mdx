@@ -36,11 +36,11 @@ static binary releases of the Zig compiler on the [Zig downloads page](https://z
 The Zig version that each Ghostty version requires is as follows:
 
 | Ghostty version | Zig version |
-|-----------------|-------------|
+| --------------- | ----------- |
 | 1.0.x           | 0.13.0      |
 | 1.1.x           | 0.13.0      |
 | 1.2.x           | 0.14.1      |
-| tip             | 0.14.1      |
+| tip             | 0.15.1      |
 
 The official build environment is defined by [Nix](https://nixos.org/).
 You do not need to use Nix to build Ghostty, but the Nix environment is the
@@ -83,6 +83,7 @@ https://release.files.ghostty.org/VERSION/ghostty-VERSION.tar.gz.minisig
 Signature files are signed with
 [minisign](https://jedisct1.github.io/minisign/)
 using the following public key:
+
 ```
 RWQlAjJC23149WL2sEpT/l0QKy7hMIFhYdQOFy0Z7z7PbneUgvlsnYcV
 ```
@@ -147,11 +148,11 @@ because Ghostty will build everything else statically by default.
 
 Required dependencies:
 
-  * `gtk4`
-  * `libadwaita`
-  * `gtk4-layer-shell`
-  * `pkg-config` or `pkgconf`
-  * `gettext`
+- `gtk4`
+- `libadwaita`
+- `gtk4-layer-shell`
+- `pkg-config` or `pkgconf`
+- `gettext`
 
 <Important>
 
@@ -369,8 +370,8 @@ inside Xcode → Settings → Components).
 
 #### Other Dependencies
 
-Ghostty also requires some additional library dependencies to be 
-installed. You can choose to install them however you'd like, but 
+Ghostty also requires some additional library dependencies to be
+installed. You can choose to install them however you'd like, but
 the easiest way is via Homebrew:
 
 ```sh
@@ -378,8 +379,8 @@ brew install gettext
 ```
 
 <Note>
-If you're using the **Nix development environment**, these dependencies
-are handled for you and you do not need to install them manually.
+  If you're using the **Nix development environment**, these dependencies are
+  handled for you and you do not need to install them manually.
 </Note>
 
 ### Mac `.app`
