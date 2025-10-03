@@ -19,7 +19,7 @@ interface CustomMDXProps {
   content: MDXRemoteSerializeResult;
 }
 
-function isReactElement(children: any): children is ReactElement {
+function isReactElement(children: any): children is ReactElement<any> {
   return children && typeof children === "object" && "props" in children;
 }
 
@@ -88,7 +88,7 @@ export default function CustomMDX({ content }: CustomMDXProps) {
           blockquote: Blockquote,
           img: (props) => (
             // eslint-disable-next-line @next/next/no-img-element
-            <img className={s.image} src={props.src} alt={props.alt} />
+            (<img className={s.image} src={props.src} alt={props.alt} />)
           ),
           VTSequence,
           CardLinks,

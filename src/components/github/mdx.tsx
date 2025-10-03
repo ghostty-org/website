@@ -1,7 +1,7 @@
 import { ReactElement } from "react";
 import GitHub from "./index";
 
-function isReactElement(children: any): children is ReactElement {
+function isReactElement(children: any): children is ReactElement<any> {
   return children && typeof children === "object" && "props" in children;
 }
 

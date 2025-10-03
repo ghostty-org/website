@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { FocusEvent, forwardRef, LegacyRef } from "react";
+import { FocusEvent, forwardRef, Ref } from "react";
 import s from "./Button.module.css";
 
 export type ButtonSize = "small" | "medium" | "large";
@@ -23,7 +23,7 @@ function Button(
     onBlur,
     onClick,
   }: ButtonProps,
-  ref?: LegacyRef<HTMLButtonElement>
+  ref?: Ref<HTMLButtonElement>
 ) {
   return (
     <button

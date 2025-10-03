@@ -36,7 +36,7 @@ interface NavTreeProps {
   // An optional callback, primarily used
   // by our mobile nav to tell it to close.
   onNavLinkClicked?: () => void;
-  activeItemRef?: React.RefObject<HTMLLIElement>;
+  activeItemRef?: React.RefObject<HTMLLIElement | null>;
 }
 
 export default function NavTree({
@@ -77,7 +77,7 @@ interface NavTreeNodesListProps {
   path: string;
   nodes: NavTreeNode[];
   onNavLinkClicked?: () => void;
-  activeItemRef?: React.RefObject<HTMLLIElement>;
+  activeItemRef?: React.RefObject<HTMLLIElement | null>;
 }
 
 function NavTreeNodesList({
@@ -113,7 +113,7 @@ interface NodeProps {
   path: string;
   node: NavTreeNode;
   onLinkNodeClicked?: () => void;
-  activeItemRef?: React.RefObject<HTMLLIElement>;
+  activeItemRef?: React.RefObject<HTMLLIElement | null>;
 }
 
 function Node({ path, node, onLinkNodeClicked, activeItemRef }: NodeProps) {
@@ -161,7 +161,7 @@ function FolderNode({
   path: string;
   node: FolderNode;
   onLinkNodeClicked?: () => void;
-  activeItemRef?: React.RefObject<HTMLLIElement>;
+  activeItemRef?: React.RefObject<HTMLLIElement | null>;
 }) {
   var [open, setOpen] = useState(node.open ? true : false);
   return (
