@@ -105,8 +105,8 @@ In each section, we try to sort improvements before bug fixes.
 - macOS: allocation error when editing config file no longer crashes. GH-8886
 - macOS: custom shaders now work on Intel GPUs. GH-8751 GH-8749
 - macOS: "New Terminal" shortcut properly passes desired configuration to splits. GH-8638
-- config: add support for `~` expansion in `macos-custom-icon`. GH-9024
-- quick-terminal: now stores the last closed size per screen. GH-8796
+- macOS: add support for `~` expansion in `macos-custom-icon`. GH-9024
+- macOS: restores size more reliably when used with muiltiple monitors. GH-8796
 - macOS: "New Terminal" app intent now opens only one terminal when Ghostty isn't running. GH-8669
 - macOS: "Copy Screen to Temporary File and Open" action now opens the file properly. GH-8763
 - macOS: `window-position-x/y` now correctly use top-left corner as reference. GH-8672 GH-8760
@@ -118,14 +118,14 @@ In each section, we try to sort improvements before bug fixes.
 
 ### Linux (GTK)
 
-- GTK: `minimum-contrast` for black text now sets proper color instead of being invisible. GH-8782
+- GTK: Enter key now confirms "Change Terminal Title" dialog. GH-8949
 - GTK: dragging last tab out of tab overview no longer crashes. GH-8944 GH-8955
+- GTK: `minimum-contrast` for black text now sets proper color instead of being invisible. GH-8782
 - GTK: `quit-after-last-window-closed-delay` now works as expected. GH-9052 GH-9053
 - GTK: `split-divider-color` now applies correctly. GH-8853
 - GTK: `unfocused-split-fill` now renders properly. GH-8813
 - GTK: bell features now trigger on every BEL character. GH-8962
 - GTK: duplicate signal handlers no longer cause multiple toasts. GH-9001
-- GTK: Enter key now confirms "Change Terminal Title" dialog. GH-8949
 - GTK: Flatpak-aware resource directory support restored. GH-8816
 
 ### Changes for Package Maintainers
