@@ -1,0 +1,137 @@
+---
+title: Ghostty 1.2.1
+description: |-
+  Release notes for Ghostty 1.2.1, released on October 6, 2025.
+---
+
+Ghostty 1.2.1 features **two weeks of work** with changes from
+**13 contributors** over **62 commits.**
+
+## Highlights
+
+### Font Rendering Improvements
+
+PRs: GH-8563 GH-8580 GH-8738 GH-8720 GH-8847
+
+Ghostty 1.2.0 contained a substantial overhaul of the font rendering
+system. As expected with such a large change, some issues were discovered
+outside of our testing. Ghostty 1.2.1 addresses many of these issues.
+
+An overview of the changes:
+
+- Nerd Font icons are now larger and better matched in size relative to each
+  other, making better use of available cell space. Icons wider than a single
+  cell are now left-aligned rather than centered across cells.
+- CJK characters no longer appear oversized when using wide-aspect primary fonts.
+  The IC width (ideographic character width) is now upper-bounded by measuring
+  the overall bounding box of ASCII characters.
+- Glyph constraints are now applied before thickening and centering operations,
+  ensuring that icon sizes and positions are consistent regardless of font size,
+  thickening strength, or display DPI.
+- Fixed bugs in Nerd Font patch extraction where rules were applied to wrong
+  glyphs due to codepoint offset issues, and irrelevant patch sets were
+  incorrectly included.
+- Improved FreeType glyph measurements to ensure glyphs are measured with the
+  same hinting as they are rendered.
+
+### Shell Integration Adds `ghostty` to `PATH`
+
+PR: GH-8976
+
+Shell integration now automatically adds `GHOSTTY_BIN_DIR` to your PATH,
+making Ghostty-provided helper binaries immediately available in new shells
+without manual configuration. This simplifies setup and reduces friction when
+using Ghostty's tooling.
+
+Ghostty previously (and still) adds `ghostty` to your PATH prior to executing
+the shell, but many shell configurations reset PATH. This change adds an
+additional layer as part of the shell integration scripts to increase the
+chances that `ghostty` is available in your shell.
+
+This is supported for bash, zsh, fish, and elvish.
+
+### Mouse Scroll Multiplier for Precision Scrolling Devices
+
+PR: GH-8927
+
+The `mouse-scroll-multiplier` configuration now supports precision
+scrolling devices like Apple trackpads. You can now independently control
+multipliers for both discrete (mouse wheel) and precision (trackpad)
+scrolling, making navigation through large scrollback buffers smoother
+and more predictable across different input devices.
+
+Examples:
+
+```
+# Apply the same multiplier to both precision and discrete
+mouse-scroll-multiplier = 3
+
+# Apply different multipliers (order doesn't matter)
+mouse-scroll-multiplier = precision:0.1,discrete:3
+
+# Apply only to precision, use default for discrete
+mouse-scroll-multiplier = precision:2
+```
+
+The default precision multiplier is `0.1` while the default discrete
+multiplier remains `1`.
+
+## Full Changelog
+
+[Full list of closed issues on GitHub](https://github.com/ghostty-org/ghostty/milestone/8?closed=1).
+
+In each section, we try to sort improvements before bug fixes.
+
+- config: `font-size` now reloads at runtime if font wasn't manually set. GH-8680
+- cli: `+list-themes` now includes cursor and selection colors in preview. GH-8446
+- cli: `+edit-config` properly handles `$EDITOR` values with arguments. GH-8898
+- config: `command-palette-entry` now supports commas in fields. GH-8849
+- config: binding values containing `=` now parse properly. GH-8675
+- Scrolling no longer reverses direction when dragging mouse outside the window. GH-8683
+- Config template creates properly even if config directory already exists. GH-8892
+- config: treat empty XDG environment variables as not existing. GH-8830
+- shell-integration: now adds `GHOSTTY_BIN_DIR` to PATH for all supported shells. GH-8976
+- shell-integration/bash: mark ssh wrapper as a function to avoid alias conflicts. GH-8647
+- i18n: add Croatian (hr_HR) translation. GH-8668
+- i18n: add Traditional Chinese (zh_TW) translation. GH-6773
+- i18n: Portuguese translation updates. GH-8633
+- contrib/vim: use `:setf` to set the filetype. GH-8914
+
+### macOS
+
+- macOS: implement `bell-features=border` on macOS. GH-8768
+- macOS: `bell-features=title` now works properly. GH-8766
+- macOS: progress bar widget now renders correctly on macOS 26. GH-8731 GH-8753
+- macOS: allocation error when editing config file no longer crashes. GH-8886
+- macOS: custom shaders now work on Intel GPUs. GH-8751 GH-8749
+- macOS: "New Terminal" shortcut properly passes desired configuration to splits. GH-8638
+- config: add support for `~` expansion in `macos-custom-icon`. GH-9024
+- quick-terminal: now stores the last closed size per screen. GH-8796
+- macOS: "New Terminal" app intent now opens only one terminal when Ghostty isn't running. GH-8669
+- macOS: "Copy Screen to Temporary File and Open" action now opens the file properly. GH-8763
+- macOS: `window-position-x/y` now correctly use top-left corner as reference. GH-8672 GH-8760
+- macOS: "New Ghostty Tab Here" service now opens a tab instead of a new window. GH-8783 GH-8784
+- macOS: Services no longer show warning dialog "the service could not be used". GH-8785 GH-8790
+- macOS: `window-step-resize` now works more reliably with Stage Manager. GH-9020
+- macOS: Delay app icon update in syncAppearance to improve startup time. GH-8792
+- font/coretext: crash with certain RTL languages and trailing spaces no longer occurs. GH-9002
+
+### Linux (GTK)
+
+- GTK: `minimum-contrast` for black text now sets proper color instead of being invisible. GH-8782
+- GTK: dragging last tab out of tab overview no longer crashes. GH-8944 GH-8955
+- GTK: `quit-after-last-window-closed-delay` now works as expected. GH-9052 GH-9053
+- GTK: `split-divider-color` now applies correctly. GH-8853
+- GTK: `unfocused-split-fill` now renders properly. GH-8813
+- GTK: bell features now trigger on every BEL character. GH-8962
+- GTK: duplicate signal handlers no longer cause multiple toasts. GH-9001
+- GTK: Enter key now confirms "Change Terminal Title" dialog. GH-8949
+- GTK: Flatpak-aware resource directory support restored. GH-8816
+
+### Changes for Package Maintainers
+
+- Ghostty now limits builds to 32 cores on Linux to workaround a known
+  memory corruption bug in Zig, allowing Ghostty to be reliably built on
+  machines with more than 32 cores. This bug has been resolved in Zig but
+  won't be backported to the 0.14.x series that Ghostty 1.2.x relies on.
+  GH-8925
