@@ -41,9 +41,8 @@ An overview of the changes:
 PR: GH-8976
 
 Shell integration now automatically adds `GHOSTTY_BIN_DIR` to your PATH,
-making Ghostty-provided helper binaries immediately available in new shells
-without manual configuration. This simplifies setup and reduces friction when
-using Ghostty's tooling.
+making the `ghostty` binary available in many shells without additional
+configuration.
 
 Ghostty previously (and still) adds `ghostty` to your PATH prior to executing
 the shell, but many shell configurations reset PATH. This change adds an
