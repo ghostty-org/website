@@ -1,0 +1,17 @@
+---
+title: Ghostty 1.2.2
+description: |-
+  Release notes for Ghostty 1.2.2, released on October 8, 2025.
+---
+
+Ghostty 1.2.2 is a hotfix to fix a critical regression from 1.2.1
+where we accidentally forgot to backport a memory leak fix. As a result,
+Ghostty 1.2.1 has a significant memory leak under certain scenarios that
+can cause runaway memory growth. This issue affects all platforms.
+
+We've also included a very small fix for macOS font rendering that would
+cause very small (one pixel or half pixel) offsets for some glyphs that could
+result in blurriness.
+
+This was released very shortly after 1.2.1, please see the
+[1.2.1 release notes](/docs/install/release-notes/1-2-1).
