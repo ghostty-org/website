@@ -149,17 +149,47 @@ function parseAnchorLinks({
       type: string;
       value: string;
     }[];
+    data?: any;
   };
+
   return () => {
+    // We need to keep track of how many times that we have encountered a
+    // given header ID, as to ensure that we don't run into any conflicts.
+    // If there is a conflict, the sidecar will run into issues, and only
+    // the first header will be able to be deep-linked to.
+    //
+    // In the event that we encounter a duplicate Header ID, we'll simply
+    // add a suffix to the ID to make it unique. e.g. if there are two headers
+    // with the same name "Foo", the first ID will be "foo", while the second
+    // will be "foo-2".
+    const encounteredIDs = new Map<string, number>();
+
     return function (node: Node) {
       visit(node, "heading", (node: Node) => {
         if (node.type === "heading") {
           let headingNode = node as HeadingNode;
           if (headingNode.children.length > 0) {
             const text = headingNode.children.map((v) => v.value).join("");
+            const baseId = slugify(text.toLowerCase());
+
+            // If this is not the first occurrence, add a data-index attribute
+            const encounteredCount = (encounteredIDs.get(baseId) || 0) + 1;
+            encounteredIDs.set(baseId, encounteredCount);
+            if (encounteredCount >= 2) {
+              if (!headingNode.data) {
+                headingNode.data = {};
+              }
+              headingNode.data.hProperties = {
+                ...headingNode.data.hProperties,
+                "data-index": encounteredCount.toString(),
+              };
+            }
+            const resolvedID =
+              encounteredCount >= 2 ? `${baseId}-${encounteredCount}` : baseId;
+
             pageHeaders.push({
               depth: headingNode.depth,
-              id: slugify(text.toLowerCase()),
+              id: resolvedID,
               title: text,
             });
           }

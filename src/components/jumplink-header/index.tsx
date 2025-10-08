@@ -11,14 +11,16 @@ interface JumplinkHeaderProps {
   as: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
   className?: string;
   children?: React.ReactNode;
+  "data-index"?: string;
 }
 
 export default function JumplinkHeader({
   className,
   children,
   as,
+  "data-index": dataIndex,
 }: JumplinkHeaderProps) {
-  const id = headerDeeplinkIdentifier(children);
+  const id = headerDeeplinkIdentifier(children, dataIndex);
   const { ref, inView } = useInView({
     // This is our header height!  This also impacts our
     // margin below, but TBH I actually like it needing to
@@ -62,8 +64,14 @@ export default function JumplinkHeader({
 
 /**
  * @param children the MDX children node of the header element
+ * @param dataIndex optional data-index attribute value, which is precomputed and set via
+ *                 our fetch-docs remark parser in the event that this is the 2nd+ time we have
+ *                 encountered this ID, to ensure that the generated ID is unique.
  * @returns The resulting id string which should be applied to the jumplink-header
- */ function headerDeeplinkIdentifier(children?: React.ReactNode): string {
+ */ function headerDeeplinkIdentifier(
+  children?: React.ReactNode,
+  dataIndex?: string,
+): string {
   let flattenedTitle = "";
 
   const extractText = (child: React.ReactNode): void => {
@@ -86,6 +94,11 @@ export default function JumplinkHeader({
   if (!flattenedTitle.trim()) {
     throw new Error(`Unable to generate slug for header – content is empty or unsupported:
 ${JSON.stringify(children, null, 2)}`);
+  }
+
+  // Append data-index if it exists
+  if (dataIndex) {
+    flattenedTitle += `-${dataIndex}`;
   }
 
   return slugify(flattenedTitle, { lower: true });
