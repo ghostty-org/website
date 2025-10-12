@@ -44,6 +44,10 @@ the `sudo` feature enabled and Ghostty will alias sudo to automatically do
 this for you. To enable the shell-integration feature specify
 `shell-integration-features = sudo` in your configuration.
 
+See
+[`shell-integration-features`](/docs/config/reference#shell-integration-features)
+for more about this configuration option.
+
 ## SSH
 
 If you use SSH to connect to other machines that do not have Ghostty's
@@ -54,21 +58,41 @@ terminal: xterm-ghostty`, `Error opening terminal: xterm-ghostty.` or
 Hopefully someday Ghostty will have terminfo entries pre-distributed
 everywhere, but in the meantime there are two ways to resolve the situation:
 
-1. Copy Ghostty's terminfo entry to the remote machine.
-2. Configure SSH to fall back to a known terminfo entry.
+1. Copy Ghostty's terminfo entry to the remote machine. The easiest way is using
+   the following one-liner:
+   ```sh
+   infocmp -x xterm-ghostty | ssh YOUR-SERVER -- tic -x -
+   ```
+2. Configure SSH to fall back to a known terminfo entry using the following SSH
+   configuration (**requires [OpenSSH 8.7](https://www.openssh.com/txt/release-8.7)
+   or newer**):
+   ```ssh-config
+   # .ssh/config
+   Host example.com
+     SetEnv TERM=xterm-256color
+   ```
 
-### Copy Ghostty's terminfo to a remote machine
+Both variants can be automated by specifying one or both of the following in
+your Ghostty configuration:
 
-The following one-liner will export the terminfo entry from your host and
-import it on the remote machine:
+1. `shell-integration-features = ssh-terminfo` to copy the terminfo entry the
+   first time you log into a new server over SSH.
+2. `shell-integration-features = ssh-env` to configure SSH to fall back to
+   `xterm-256color`.
 
-```sh
-infocmp -x xterm-ghostty | ssh YOUR-SERVER -- tic -x -
-```
+If both features are enabled
+(`shell-integration-features = ssh-terminfo,ssh-env`), Ghostty will try to
+install the terminfo entry first and use the fallback if installation failed.
 
-The `tic` command on the server may give the warning `"<stdin>", line 2,
-col 31, terminal 'xterm-ghostty': older tic versions may treat the description
-field as an alias` which can be safely ignored.
+See
+[`shell-integration-features`](/docs/config/reference#shell-integration-features)
+for more about this configuration option.
+
+<Note>
+  The `tic` command on the server may give the warning `"<stdin>", line 2,
+  col 31, terminal 'xterm-ghostty': older tic versions may treat the description
+  field as an alias` which can be safely ignored.
+</Note>
 
 <Note>
   `tic` will normally place its results in the system database,
@@ -87,21 +111,6 @@ field as an alias` which can be safely ignored.
   `infocmp` above with the full path `/opt/homebrew/opt/ncurses/bin/infocmp` or
   `/usr/local/opt/ncurses/bin/infocmp`.
 </Note>
-
-### Configure SSH to fall back to a known terminfo entry
-
-If copying around terminfo entries is untenable, you can override `TERM` to a
-fallback value using SSH config.
-
-```ssh-config
-# .ssh/config
-Host example.com
-  SetEnv TERM=xterm-256color
-```
-
-**Requires OpenSSH 8.7 or newer.** [The 8.7 release added
-support](https://www.openssh.com/txt/release-8.7) for setting `TERM` via
-`SetEnv`.
 
 <Warning>
   **Fallback does not support advanced terminal features.** Because
