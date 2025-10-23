@@ -1,0 +1,107 @@
+---
+title: Ghostty 1.2.3
+description: |-
+  Release notes for Ghostty 1.2.3, released on October 23, 2025.
+---
+
+Ghostty 1.2.3 features **two weeks of work** with changes from
+**6 contributors** over **27 commits.** This is a patch release primarily
+focused on fixing issues introduced in the 1.2.x series.
+
+<Important>
+  This release contains a critical fix for a deadlock scenario that can happen
+  on all platforms. We highly recommend that all users on prior 1.2.x versions
+  upgrade to this version at their soonest convenience.
+</Important>
+
+## Highlights
+
+### macOS Titlebar Tabs Improvements
+
+PRs: GH-9090 GH-9163 GH-9168 GH-1787 GH-1813 GH-1945 GH-8612
+
+Ghostty 1.2.3 includes multiple fixes for `macos-titlebar-style = tabs`,
+including many issues that have existed since pre-1.0! Additionally, multiple
+Tahoe-specific (macOS 26) bugs related to this configuration were also fixed,
+since Tahoe introduced a dramatically different tab bar.
+
+An overview of the changes:
+
+- Fixed title misalignment and clipping in tab titlebar style.
+- Corrected titlebar coloring in fullscreen mode when titlebar tabs are enabled.
+- Resolved issues where theme changes would cause the titlebar to lose styling.
+- Fixed truncated title appearing in top-left corner when using tab titlebar
+  style in fullscreen.
+- Improved behavior with macOS 26 native fullscreen and titlebar tabs.
+
+### Font Rendering Improvements
+
+PRs: GH-9142 GH-9152 GH-9160
+
+Ghostty 1.2.3 continues to include a number of refinements to the rewritten
+font rendering system introduced in 1.2.0. The changes in Ghostty 1.2.3
+focus primarily on icon glyphs (e.g. Nerd Fonts). Ghostty 1.2.3 users should
+see better sized icons in all scenarios.
+
+## Full Changelog
+
+[Full list of closed issues on GitHub](https://github.com/ghostty-org/ghostty/milestone/10?closed=1).
+
+In each section, we try to sort improvements before bug fixes.
+
+- font: Numerous tweaks to improve various edge cases, especially around
+  icon glyphs. GH-9076 GH-9142 GH-9160 GH-9152
+- terminal: add semi-colon character to word boundary list for selection. GH-9069
+- input: modify other keys 2 should use all mods, ignore consumed mods.
+  This fixes a misencoding that caused shifted modifiers to not work
+  with tmux (but also any other terminal program using modify other keys state 2)
+  GH-9289
+- Fix a deadlock scenario where programs that emit many color change
+  or query operations could cause Ghostty to hang. GH-9224
+- Fix a resource leak by not starting the scroll timer when scrolling
+  outside the viewport if the scroll timer is already active. GH-9195
+- Fix memory corruption that could happen when starting a scroll in
+  one screen (primary vs alt) and continuing to scroll after the terminal
+  program switched screens. GH-9223
+- renderer: fix garbled rendering under some cases. GH-9252
+- shell-integration: `ssh-terminfo` now caches properly for IPv6 addresses. GH-9251 GH-9281
+- shell-integration: cursor integration now works in vi mode for fish. GH-9157
+- shell-integration: no longer updates universal `fish_user_paths` variable. GH-9273
+
+### macOS
+
+- macOS: Quick terminal size is now properly remembered per screen. GH-9256
+- macOS: `goto_split` direction is now compatible with `performable:` bindings.
+  GH-9283 GH-9284
+- macOS: `window-position-x/y` works properly paired with `window-width/height`. GH-9313
+- macOS: Fix UI hang when pasting large unsafe text. GH-9322 GH-9324
+- macOS: Fixed multiple `macos-titlebar-style=tabs` related issues. GH-1787
+  GH-1813 GH-1945 GH-8612 GH-9090 GH-9163
+- macOS: New Tab action now reliably opens tab instead of window when
+  appropriate. GH-9124
+- macOS: Fix crash if Cocoa APIs return a nil locale. GH-9290
+
+### GTK (Linux, FreeBSD)
+
+- GTK: If `title` is configured, set the correct window title immediately. GH-9120
+- GTK: quick terminal autohide now works properly. GH-9145 GH-9139
+
+### Changes for Package Maintainers
+
+- A new `-Demit-themes` (default true) build option has been added to
+  build Ghostty without any bundled themes. This was added for packagers
+  who are sensitive to licensing issues that may exist in our upstream
+  dependency. We're looking into this in more detail but this is meant as
+  a short-term solution to avoid the themes entirely if there are concerns.
+  GH-9288
+
+## Roadmap
+
+We don't plan on releasing any further 1.2.x releases, except in the
+circumstance that a critical issue is found. The 1.2.x series has already
+been very stable, and we believe 1.2.3 addresses the remaining major issues
+that exist.
+
+That doesn't mean Ghostty is without bugs, of course! We'll continue to fix
+bugs and improve features, but unless those bugs are critical, we'll hold
+their release until Ghostty 1.3.0.
