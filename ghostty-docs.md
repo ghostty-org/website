@@ -1,102 +1,97 @@
 # Ghostty Documentation
 
-> Complete documentation for Ghostty terminal emulator
+> Complete offline documentation for Ghostty terminal emulator
+
+> This file was generated from the official Ghostty documentation
+
+> Original source: https://ghostty.org/docs
+
 
 ## Table of Contents
 
-- [About Ghostty](#about-ghostty)
+- [About Ghostty](#about)
 - [Install](#install)
-  - [Binaries and Packages](#install-binaries-and-packages)
-  - [Build from Source](#install-build-from-source)
-  - [Packaging Ghostty](#install-packaging-ghostty)
-  - [Prerelease Builds](#install-prerelease-builds)
-  - [Release Notes](#release-notes)
-    - [Release Notes](#installrelease-notes-release-notes)
-    - [1.2.3](#installrelease-notes-123)
-    - [1.2.2](#installrelease-notes-122)
-    - [1.2.1](#installrelease-notes-121)
-    - [1.2.0](#installrelease-notes-120)
-    - [1.1.3](#installrelease-notes-113)
-    - [1.1.2](#installrelease-notes-112)
-    - [1.1.1](#installrelease-notes-111)
-    - [1.1.0](#installrelease-notes-110)
-    - [1.0.1](#installrelease-notes-101)
-- [Configuration](#configuration)
-  - [Configuration](#config-configuration)
-  - [Option Reference](#config-option-reference)
-  - [Keybindings](#keybindings)
-    - [Custom Keybindings](#configkeybind-custom-keybindings)
-    - [Trigger Sequences](#configkeybind-trigger-sequences)
-    - [Action Reference](#configkeybind-action-reference)
+  - [Prebuilt Ghostty Binaries and Packages](#install-binary)
+  - [Build Ghostty from Source](#install-build)
+  - [Packaging Ghostty](#install-package)
+  - [Prerelease Builds](#install-pre)
+- [Configuration](#config)
+  - [Configuration](#config)
+  - [Reference](#config-reference)
+  - [Keybindings](#config-keybind)
+    - [Custom Keybindings](#config-keybind)
+    - [Trigger Sequences](#config-keybind-sequence)
+    - [Keybinding Action Reference](#config-keybind-reference)
 - [Linux](#linux)
-  - [Linux](#linux-linux)
-  - [Systemd and D-Bus](#linux-systemd-and-d-bus)
+  - [Linux](#linux)
+  - [Systemd and D-Bus Integration](#linux-systemd)
 - [Features](#features)
-  - [Features](#features-features)
-  - [Color Theme](#features-color-theme)
+  - [Features](#features)
+  - [Color Theme](#features-theme)
   - [Shell Integration](#features-shell-integration)
-- [Terminal API (VT)](#terminal-api-vt)
-  - [Terminal API (VT)](#vt-terminal-api-vt)
-  - [Reference](#vt-reference)
-  - [Concepts](#concepts)
-    - [Control Sequences](#vtconcepts-control-sequences)
-    - [Cursor](#vtconcepts-cursor)
-    - [Screen](#vtconcepts-screen)
-  - [Control](#control)
-    - [Backspace (BS)](#vtcontrol-backspace-bs)
-    - [Bell (BEL)](#vtcontrol-bell-bel)
-    - [Carriage Return (CR)](#vtcontrol-carriage-return-cr)
-    - [Linefeed (LF)](#vtcontrol-linefeed-lf)
-    - [Tab (TAB)](#vtcontrol-tab-tab)
-  - [ESC](#esc)
-    - [Screen Alignment Test (DECALN)](#vtesc-screen-alignment-test-decaln)
-    - [Keypad Application Mode (DECKPAM)](#vtesc-keypad-application-mode-deckpam)
-    - [Keypad Numeric Mode (DECKPNM)](#vtesc-keypad-numeric-mode-deckpnm)
-    - [Restore Cursor (DECRC)](#vtesc-restore-cursor-decrc)
-    - [Save Cursor (DECSC)](#vtesc-save-cursor-decsc)
-    - [Index (IND)](#vtesc-index-ind)
-    - [Reverse Index (RI)](#vtesc-reverse-index-ri)
-    - [Reset to Initial State (RIS)](#vtesc-reset-to-initial-state-ris)
-  - [CSI](#csi)
-    - [Cursor Backward Tabulation (CBT)](#vtcsi-cursor-backward-tabulation-cbt)
-    - [Cursor Horizontal Tabulation (CHT)](#vtcsi-cursor-horizontal-tabulation-cht)
-    - [Cursor Next Line (CNL)](#vtcsi-cursor-next-line-cnl)
-    - [Cursor Preceding Line (CPL)](#vtcsi-cursor-preceding-line-cpl)
-    - [Cursor Backward (CUB)](#vtcsi-cursor-backward-cub)
-    - [Cursor Down (CUD)](#vtcsi-cursor-down-cud)
-    - [Cursor Forward (CUF)](#vtcsi-cursor-forward-cuf)
-    - [Cursor Position (CUP)](#vtcsi-cursor-position-cup)
-    - [Cursor Up (CUU)](#vtcsi-cursor-up-cuu)
-    - [Delete Character (DCH)](#vtcsi-delete-character-dch)
-    - [Set Cursor Style (DECSCUSR)](#vtcsi-set-cursor-style-decscusr)
-    - [Set Left and Right Margins (DECSLRM)](#vtcsi-set-left-and-right-margins-decslrm)
-    - [Set Top and Bottom Margins (DECSTBM)](#vtcsi-set-top-and-bottom-margins-decstbm)
-    - [Delete Line (DL)](#vtcsi-delete-line-dl)
-    - [Device Status Report (DSR)](#vtcsi-device-status-report-dsr)
-    - [Erase Character (ECH)](#vtcsi-erase-character-ech)
-    - [Erase in Display (ED)](#vtcsi-erase-in-display-ed)
-    - [Erase in Line (EL)](#vtcsi-erase-in-line-el)
-    - [Horizontal Position Absolute (HPA)](#vtcsi-horizontal-position-absolute-hpa)
-    - [Horizontal Position Relative (HPR)](#vtcsi-horizontal-position-relative-hpr)
-    - [Insert Character (ICH)](#vtcsi-insert-character-ich)
-    - [Insert Line (IL)](#vtcsi-insert-line-il)
-    - [Repeat (REP)](#vtcsi-repeat-rep)
-    - [Scroll Down (SD)](#vtcsi-scroll-down-sd)
-    - [Scroll Up (SU)](#vtcsi-scroll-up-su)
-    - [Tab Clear (TBC)](#vtcsi-tab-clear-tbc)
-    - [Vertical Position Absolute (VPA)](#vtcsi-vertical-position-absolute-vpa)
-    - [Vertical Position Relative (VPR)](#vtcsi-vertical-position-relative-vpr)
-    - [Shift-Escape Behavior (XTSHIFTESCAPE)](#vtcsi-shift-escape-behavior-xtshiftescape)
+- [Terminal API (VT)](#vt)
+  - [Terminal API (VT)](#vt)
+  - [VT Sequence Reference](#vt-reference)
+  - [Concepts](#vt-concepts)
+    - [Control Sequences](#vt-concepts-sequences)
+    - [Cursor](#vt-concepts-cursor)
+    - [Screen](#vt-concepts-screen)
+  - [Control](#vt-control)
+    - [Backspace (BS)](#vt-control-bs)
+    - [Bell (BEL)](#vt-control-bel)
+    - [Carriage Return (CR)](#vt-control-cr)
+    - [Linefeed (LF)](#vt-control-lf)
+    - [Tab (TAB)](#vt-control-tab)
+  - [ESC](#vt-esc)
+    - [Screen Alignment Test (DECALN)](#vt-esc-decaln)
+    - [Keypad Application Mode (DECKPAM)](#vt-esc-deckpam)
+    - [Keypad Numeric Mode (DECKPNM)](#vt-esc-deckpnm)
+    - [Restore Cursor (DECRC)](#vt-esc-decrc)
+    - [Save Cursor (DECSC)](#vt-esc-decsc)
+    - [Index (IND)](#vt-esc-ind)
+    - [Reverse Index (RI)](#vt-esc-ri)
+    - [Full Reset (RIS)](#vt-esc-ris)
+  - [CSI](#vt-csi)
+    - [Cursor Backward Tabulation (CBT)](#vt-csi-cbt)
+    - [Cursor Horizontal Tabulation (CHT)](#vt-csi-cht)
+    - [Cursor Next Line (CNL)](#vt-csi-cnl)
+    - [Cursor Previous Line (CPL)](#vt-csi-cpl)
+    - [Cursor Backward (CUB)](#vt-csi-cub)
+    - [Cursor Down (CUD)](#vt-csi-cud)
+    - [Cursor Forward (CUF)](#vt-csi-cuf)
+    - [Cursor Position (CUP)](#vt-csi-cup)
+    - [Cursor Up (CUU)](#vt-csi-cuu)
+    - [Delete Character (DCH)](#vt-csi-dch)
+    - [Set Cursor Style (DECSCUSR)](#vt-csi-decscusr)
+    - [Set Left and Right Margins (DECSLRM)](#vt-csi-decslrm)
+    - [Set Top and Bottom Margins (DECSTBM)](#vt-csi-decstbm)
+    - [Delete Line (DL)](#vt-csi-dl)
+    - [Device Status Report (DSR)](#vt-csi-dsr)
+    - [Erase Character (ECH)](#vt-csi-ech)
+    - [Erase Display (ED)](#vt-csi-ed)
+    - [Erase Line (EL)](#vt-csi-el)
+    - [Horizontal Position Absolute (HPA)](#vt-csi-hpa)
+    - [Horizontal Position Relative (HPR)](#vt-csi-hpr)
+    - [Insert Character (ICH)](#vt-csi-ich)
+    - [Insert Line (IL)](#vt-csi-il)
+    - [Repeat Previous Character (REP)](#vt-csi-rep)
+    - [Scroll Down (SD)](#vt-csi-sd)
+    - [Scroll Up (SU)](#vt-csi-su)
+    - [Tab Clear (TBC)](#vt-csi-tbc)
+    - [Vertical Position Absolute (VPA)](#vt-csi-vpa)
+    - [Vertical Position Relative (VPR)](#vt-csi-vpr)
+    - [Set Shift-Escape (XTSHIFTESCAPE)](#vt-csi-xtshiftescape)
 - [Help](#help)
-  - [Help](#help-help)
+  - [Help](#help)
   - [Terminfo](#help-terminfo)
-  - [GTK Single Instance](#help-gtk-single-instance)
-  - [GTK OpenGL Context](#help-gtk-opengl-context)
-  - [macOS Tiling Window Managers](#help-macos-tiling-window-managers)
+  - [GTK Single Instance Mode](#help-gtk-single-instance)
+  - [GTK OpenGL Context Errors](#help-gtk-opengl-context)
+  - [macOS Tiling Window Managers](#help-macos-tiling-wms)
   - [macOS Login Shells](#help-macos-login-shells)
 
 ---
 
+<a id="about"></a>
 ## About Ghostty
 
 Ghostty is a terminal emulator that differentiates itself by being
@@ -240,10 +235,12 @@ Zig compilation unit.
 
 
 
+<a id="install"></a>
 ## Install
 
 
-### Binaries and Packages
+<a id="install-binary"></a>
+### Prebuilt Ghostty Binaries and Packages
 
 The Ghostty project only officially provides prebuilt binaries
 for macOS. Other platforms may provide packages for Ghostty,
@@ -277,7 +274,7 @@ packages provided by the respective distributions.
 the warning associated with those packages for more information.
 
 If your platform isn't available, you must
-[build Ghostty from source](#install-build-from-source).
+[build Ghostty from source](#install-build).
 
 > **Tip:** **Interested in creating a package for your platform?** Check out the
 >   [packaging
@@ -497,11 +494,12 @@ For comprehensive installation instructions, please refer the [installation guid
 
 
 
-### Build from Source
+<a id="install-build"></a>
+### Build Ghostty from Source
 
 > **Tip:** **Building Ghostty from source is not recommended for most users.**
 > If you have access to a prebuilt binary or package, you should use that
-> instead. See [the binaries and packages page](#install-binaries-and-packages) to
+> instead. See [the binaries and packages page](#install-binary) to
 > see if a prebuilt binary or package is available for your platform.
 >
 > If you intend to develop or package Ghostty, please also check out our
@@ -860,6 +858,7 @@ build with all security features,
 
 
 
+<a id="install-package"></a>
 ### Packaging Ghostty
 
 > **Warning:** **This page is for people who want to build and package Ghostty for
@@ -880,6 +879,7 @@ Please open an issue directly on the Ghostty repository.
 
 
 
+<a id="install-pre"></a>
 ### Prerelease Builds
 
 If you're comfortable with running prerelease software, you can
@@ -901,7 +901,7 @@ with more details in the sections following the table.
 | -------- | ----------- |
 | macOS | `auto-update-channel` to get the latest prerelease builds |
 | Nix   | Standard `flake.nix` in the Ghostty repository |
-| Linux | [Build from source](#install-build-from-source) |
+| Linux | [Build from source](#install-build) |
 
 ## macOS
 
@@ -958,2621 +958,11 @@ section on the building from source page.
 
 
 
-### Release Notes
-
-
-#### Release Notes
-
-- [1.2.3](#installrelease-notes-123) - Released on October 23, 2025
-- [1.2.2](#installrelease-notes-122) - Released on October 8, 2025
-- [1.2.1](#installrelease-notes-121) - Released on October 6, 2025
-- [1.2.0](#installrelease-notes-120) - Released on September 15, 2025
-- [1.1.3](#installrelease-notes-113) - Released on March 24, 2025
-- [1.1.2](#installrelease-notes-112) - Released on February 13, 2025
-- [1.1.1](#installrelease-notes-111) – Released on February 13, 2025
-- [1.1.0](#installrelease-notes-110) – Released on January 30, 2025
-- [1.0.1](#installrelease-notes-101) – Released on December 31, 2024
-
-
-
-#### 1.2.3
-
-Ghostty 1.2.3 features **two weeks of work** with changes from
-**6 contributors** over **27 commits.** This is a patch release primarily
-focused on fixing issues introduced in the 1.2.x series.
-
-> **Important:** This release contains a critical fix for a deadlock scenario that can happen
->   on all platforms. We highly recommend that all users on prior 1.2.x versions
->   upgrade to this version at their soonest convenience.
-
-## Highlights
-
-### macOS Titlebar Tabs Improvements
-
-PRs: GH-9090 GH-9163 GH-9168 GH-1787 GH-1813 GH-1945 GH-8612
-
-Ghostty 1.2.3 includes multiple fixes for `macos-titlebar-style = tabs`,
-including many issues that have existed since pre-1.0! Additionally, multiple
-Tahoe-specific (macOS 26) bugs related to this configuration were also fixed,
-since Tahoe introduced a dramatically different tab bar.
-
-An overview of the changes:
-
-- Fixed title misalignment and clipping in tab titlebar style.
-- Corrected titlebar coloring in fullscreen mode when titlebar tabs are enabled.
-- Resolved issues where theme changes would cause the titlebar to lose styling.
-- Fixed truncated title appearing in top-left corner when using tab titlebar
-  style in fullscreen.
-- Improved behavior with macOS 26 native fullscreen and titlebar tabs.
-
-### Font Rendering Improvements
-
-PRs: GH-9142 GH-9152 GH-9160
-
-Ghostty 1.2.3 continues to include a number of refinements to the rewritten
-font rendering system introduced in 1.2.0. The changes in Ghostty 1.2.3
-focus primarily on icon glyphs (e.g. Nerd Fonts). Ghostty 1.2.3 users should
-see better sized icons in all scenarios.
-
-This addresses all currently known font _rendering_ issues, particularly
-those stemming from the rewritten renderer in 1.2.0. Note that there are
-still other known font-related issues but they either predate Ghostty 1.2
-or are otherwise unrelated to font rendering (and are instead related to
-font discovery, loading, shaping, etc.).
-
-## Full Changelog
-
-[Full list of closed issues on GitHub](https://github.com/ghostty-org/ghostty/milestone/10?closed=1).
-
-In each section, we try to sort improvements before bug fixes.
-
-- font: Numerous tweaks to improve various edge cases, especially around
-  icon glyphs. GH-9076 GH-9142 GH-9160 GH-9152
-- terminal: add semi-colon character to word boundary list for selection. GH-9069
-- input: modify other keys 2 should use all mods, ignore consumed mods.
-  This fixes a misencoding that caused shifted modifiers to not work
-  with tmux (but also any other terminal program using modify other keys state 2)
-  GH-9289
-- Fix a deadlock scenario where programs that emit many color change
-  or query operations could cause Ghostty to hang. GH-9224
-- Fix a resource leak by not starting the scroll timer when scrolling
-  outside the viewport if the scroll timer is already active. GH-9195
-- Fix memory corruption that could happen when starting a scroll in
-  one screen (primary vs alt) and continuing to scroll after the terminal
-  program switched screens. GH-9223
-- renderer: fix garbled rendering under some cases. GH-9252
-- shell-integration: `ssh-terminfo` now caches properly for IPv6 addresses. GH-9251 GH-9281
-- shell-integration: cursor integration now works in vi mode for fish. GH-9157
-- shell-integration: no longer updates universal `fish_user_paths` variable. GH-9273
-
-### macOS
-
-- macOS: Quick terminal size is now properly remembered per screen. GH-9256
-- macOS: `goto_split` direction is now compatible with `performable:` bindings.
-  GH-9283 GH-9284
-- macOS: `window-position-x/y` works properly paired with `window-width/height`. GH-9313
-- macOS: Fix UI hang when pasting large unsafe text. GH-9322 GH-9324
-- macOS: Fixed multiple `macos-titlebar-style=tabs` related issues. GH-1787
-  GH-1813 GH-1945 GH-8612 GH-9090 GH-9163
-- macOS: New Tab action now reliably opens tab instead of window when
-  appropriate. GH-9124
-- macOS: Fix crash if Cocoa APIs return a nil locale. GH-9290
-
-### GTK (Linux, FreeBSD)
-
-- GTK: If `title` is configured, set the correct window title immediately. GH-9120
-- GTK: quick terminal autohide now works properly. GH-9145 GH-9139
-
-### Changes for Package Maintainers
-
-- A new `-Demit-themes` (default true) build option has been added to
-  build Ghostty without any bundled themes. This was added for packagers
-  who are sensitive to licensing issues that may exist in our upstream
-  dependency. We're looking into this in more detail but this is meant as
-  a short-term solution to avoid the themes entirely if there are concerns.
-  GH-9288
-
-## Roadmap
-
-We don't plan on releasing any further 1.2.x releases, except in the
-circumstance that a critical issue is found. The 1.2.x series has already
-been very stable, and we believe 1.2.3 addresses the remaining major issues
-that exist.
-
-That doesn't mean Ghostty is without bugs, of course! We'll continue to fix
-bugs and improve features, but unless those bugs are critical, we'll hold
-their release until Ghostty 1.3.0.
-
-
-
-#### 1.2.2
-
-Ghostty 1.2.2 is a hotfix to fix a critical regression from 1.2.1
-where we accidentally forgot to backport a memory leak fix. As a result,
-Ghostty 1.2.1 has a significant memory leak under certain scenarios that
-can cause runaway memory growth. This issue affects all platforms.
-
-We've also included a very small fix for macOS font rendering that would
-cause very small (one pixel or half pixel) offsets for some glyphs that could
-result in blurriness.
-
-This was released very shortly after 1.2.1, please see the
-[1.2.1 release notes](#installrelease-notes-121).
-
-
-
-#### 1.2.1
-
-Ghostty 1.2.1 features **two weeks of work** with changes from
-**13 contributors** over **62 commits.** This is a patch release primarily
-focused on fixing issues introduced in the 1.2.0 release. It includes
-a small handful of improvements, too.
-
-## Highlights
-
-### Font Rendering Improvements
-
-PRs: GH-8563 GH-8580 GH-8738 GH-8720 GH-8847
-
-Ghostty 1.2.0 contained a substantial overhaul of the font rendering
-system. As expected with such a large change, some issues were discovered
-outside of our testing. Ghostty 1.2.1 addresses many of these issues.
-
-An overview of the changes:
-
-- Nerd Font icons are now larger and better matched in size relative to each
-  other, making better use of available cell space. Icons wider than a single
-  cell are now left-aligned rather than centered across cells.
-- CJK characters no longer appear oversized when using wide-aspect primary fonts.
-  The IC width (ideographic character width) is now upper-bounded by measuring
-  the overall bounding box of ASCII characters.
-- Glyph constraints are now applied before thickening and centering operations,
-  ensuring that icon sizes and positions are consistent regardless of font size,
-  thickening strength, or display DPI.
-- Fixed bugs in Nerd Font patch extraction where rules were applied to wrong
-  glyphs due to codepoint offset issues, and irrelevant patch sets were
-  incorrectly included.
-- Improved FreeType glyph measurements to ensure glyphs are measured with the
-  same hinting as they are rendered.
-
-### Shell Integration Adds `ghostty` to `PATH`
-
-PR: GH-8976
-
-Shell integration now automatically adds `GHOSTTY_BIN_DIR` to your PATH,
-making the `ghostty` binary available in many shells without additional
-configuration.
-
-Ghostty previously (and still) adds `ghostty` to your PATH prior to executing
-the shell, but many shell configurations reset PATH. This change adds an
-additional layer as part of the shell integration scripts to increase the
-chances that `ghostty` is available in your shell.
-
-This is supported for bash, zsh, fish, and elvish.
-
-### Mouse Scroll Multiplier for Precision Scrolling Devices
-
-PR: GH-8927
-
-The `mouse-scroll-multiplier` configuration now supports precision
-scrolling devices like Apple trackpads. You can now independently control
-multipliers for both discrete (mouse wheel) and precision (trackpad)
-scrolling, making navigation through large scrollback buffers smoother
-and more predictable across different input devices.
-
-Examples:
-
-```
-# Apply the same multiplier to both precision and discrete
-mouse-scroll-multiplier = 3
-
-# Apply different multipliers (order doesn't matter)
-mouse-scroll-multiplier = precision:0.1,discrete:3
-
-# Apply only to precision, use default for discrete
-mouse-scroll-multiplier = precision:2
-```
-
-The default precision multiplier is `0.1` while the default discrete
-multiplier remains `1`.
-
-## Full Changelog
-
-[Full list of closed issues on GitHub](https://github.com/ghostty-org/ghostty/milestone/8?closed=1).
-
-In each section, we try to sort improvements before bug fixes.
-
-- config: `font-size` now reloads at runtime if font wasn't manually set. GH-8680
-- cli: `+list-themes` now includes cursor and selection colors in preview. GH-8446
-- cli: `+edit-config` properly handles `$EDITOR` values with arguments. GH-8898
-- config: `command-palette-entry` now supports commas in fields. GH-8849
-- config: binding values containing `=` now parse properly. GH-8675
-- Scrolling no longer reverses direction when dragging mouse outside the window. GH-8683
-- Config template creates properly even if config directory already exists. GH-8892
-- config: treat empty XDG environment variables as not existing. GH-8830
-- shell-integration: now adds `GHOSTTY_BIN_DIR` to PATH for all supported shells. GH-8976
-- shell-integration/bash: mark ssh wrapper as a function to avoid alias conflicts. GH-8647
-- i18n: add Croatian (hr_HR) translation. GH-8668
-- i18n: add Traditional Chinese (zh_TW) translation. GH-6773
-- i18n: Portuguese translation updates. GH-8633
-- contrib/vim: use `:setf` to set the filetype. GH-8914
-
-### macOS
-
-- macOS: implement `bell-features=border` on macOS. GH-8768
-- macOS: `bell-features=title` now works properly. GH-8766
-- macOS: progress bar widget now renders correctly on macOS 26. GH-8731 GH-8753
-- macOS: allocation error when editing config file no longer causes a crash. GH-8886
-- macOS: custom shaders now work on Intel GPUs. GH-8751 GH-8749
-- macOS: "New Terminal" shortcut properly passes desired configuration to splits. GH-8638
-- macOS: add support for `~` expansion in `macos-custom-icon`. GH-9024
-- macOS: quick terminal restores size more reliably when used with muiltiple monitors. GH-8796
-- macOS: "New Terminal" app intent now opens only one terminal when Ghostty isn't running. GH-8669
-- macOS: "Copy Screen to Temporary File and Open" action now opens the file properly. GH-8763
-- macOS: `window-position-x/y` now correctly use top-left corner as reference. GH-8672 GH-8760
-- macOS: "New Ghostty Tab Here" service now opens a tab instead of a new window. GH-8783 GH-8784
-- macOS: Services no longer show warning dialog "the service could not be used". GH-8785 GH-8790
-- macOS: `window-step-resize` now works more reliably with Stage Manager. GH-9020
-- macOS: Delay app icon update in syncAppearance to improve startup time. GH-8792
-- font/coretext: crash with certain RTL languages and trailing spaces no longer occurs. GH-9002
-
-### GTK (Linux, FreeBSD)
-
-- GTK: Enter key now confirms "Change Terminal Title" dialog. GH-8949
-- GTK: dragging last tab out of tab overview no longer crashes. GH-8944 GH-8955
-- GTK: `minimum-contrast` for black text now sets proper color instead of being invisible. GH-8782
-- GTK: `quit-after-last-window-closed-delay` now works as expected. GH-9052 GH-9053
-- GTK: `split-divider-color` now applies correctly. GH-8853
-- GTK: `unfocused-split-fill` now renders properly. GH-8813
-- GTK: bell features now trigger on every BEL character. GH-8962
-- GTK: duplicate signal handlers no longer cause multiple toasts. GH-9001
-- GTK: Flatpak-aware resource directory support restored. GH-8816
-
-### Changes for Package Maintainers
-
-- Ghostty now limits builds to 32 cores on Linux to workaround a known
-  memory corruption bug in Zig, allowing Ghostty to be reliably built on
-  machines with more than 32 cores. This bug has been resolved in Zig but
-  won't be backported to the 0.14.x series that Ghostty 1.2.x relies on.
-  GH-8925
-
-## Roadmap
-
-We believe there will likely be a 1.2.2 release at some point to continue to
-address minor issues introduced by the changes in 1.2.0 and 1.2.1. A possible
-1.2.2 release is probably going to be a mid-cycle release (months away) rather
-than a quick follow-up.
-
-As it stands, the 1.2.x series has been very stable and we don't feel a rush to
-release any more bugfix releases. We've heard very positive feedback about the
-release and we're happy to see people enjoying the new features.
-
-See the roadmap from the [1.2.0 release notes](#install-release-notes-1-2-0roadmap)
-for bigger picture plans.
-
-
-
-#### 1.2.0
-
-Ghostty 1.2.0 features **6 months of work** with changes from
-**149 contributors** over **2,676 commits**. Thank you to all the contributors,
-maintainers, community moderators, translators, packagers, and users
-who each helped make this release possible. This release contains major
-improvements to every part of Ghostty, including hundreds of bug fixes.
-
-## Security
-
-- macOS: [GHSA-q9fg-cpmh-c78x](https://github.com/ghostty-org/ghostty/security/advisories/GHSA-q9fg-cpmh-c78x).
-  Fixed an issue where Ghostty can be used as a vector for privilege
-  escalation from other vulnerable or malicious sources. This requires a
-  vulnerable application outside of Ghostty to initiate this chain of events.
-  As such, this is considered a low risk advisory.
-
-## Highlights
-
-### New App Icons
-
-PRs: GH-7638 GH-8038
-
-On macOS, Ghostty 1.2 ships with a new macOS Tahoe compatible icon shown
-below. This icon is built with the new Icon Composer application and allows
-the icon to work with all of the new macOS light, dark, translucent, and
-custom tinting styles.
-
-<p align="center">
-  <a href="/images/1-2-0/macos.png" target="_blank">
-    <img
-      src="/images/1-2-0/macos.png"
-      width="160"
-      style={{ maxWidth: "50%", margin: "10px" }}
-    />
-  </a>
-</p>
-
-On GTK (Linux and FreeBSD), Ghostty 1.2 ships with a new icon that better
-matches _many_ desktop environments. We chose to align with the GNOME styling
-since that is common and doesn't generally look out of place in most
-environments.
-
-<p align="center">
-  <a href="/images/1-2-0/gnome.png" target="_blank">
-    <img
-      src="/images/1-2-0/gnome.png"
-      width="200"
-      style={{ maxWidth: "50%", margin: "10px" }}
-    />
-  </a>
-</p>
-
-> **Note:** It's impossible to make a perfect, globally consistent icon for the Linux and
->   BSD ecosystem due to the diversity of desktop environments. We believe this
->   icon looks better in more environments than the prior icon, and avoids some
->   negative reactions that the prior icon demonstrated a macOS-centric point of
->   view.
-
-### Command Palette
-
-PRs: GH-7153 GH-7156
-
-Ghostty now has a command palette that can invoke most keybind actions,
-such as creating new terminals, moving focus, changing text selection,
-copy and paste, etc.
-
-The command palette is bound by default to `ctrl+shift+p` on GTK and
-`cmd+shift+p` on macOS. This can be rebound to any keybind using the
-`toggle_command_palette` keybind action. The command palette is also available
-via the menubar on both macOS and GTK.
-
-<p align="center">
-  <a href="/images/1-2-0/palette-macos.png" target="_blank">
-    <img
-      src="/images/1-2-0/palette-macos.png"
-      style={{ maxWidth: "90%", margin: "10px" }}
-    />
-  </a>
-</p>
-
-<p align="center">
-  <a href="/images/1-2-0/palette-gtk.png" target="_blank">
-    <img
-      src="/images/1-2-0/palette-gtk.png"
-      style={{ maxWidth: "90%", margin: "10px" }}
-    />
-  </a>
-</p>
-
-The command palette exposes almost every available keybind. As new keybind
-actions are added to Ghostty, they will be automatically available in the
-command palette as well. This has some immediate benefits, namely that you can
-access keybind actions even if they aren't bound to a keybind. This is useful
-for infrequently used actions.
-
-For example, I personally find myself using the `move_tab` action via the
-command palette frequently, but not frequently enough to justify binding it.
-
-In future versions of Ghostty, we'll continue to expand the features that
-are available in the command palette. For example, we're working on a new
-terminal sequence specification that would allow terminal programs to expose
-any of their actions directly in the command palette (e.g. imagine Neovim
-commands being fully available in the command palette).
-
-### Quick Terminal Size
-
-PRs: GH-2384
-
-A new configuration `quick-terminal-size` can now configure the default size
-of the quick terminal. This was one of the most highly requested features.
-
-The `quick-terminal-size` configuration supports both percentage and pixel
-size. If you specify only one value, it specifies the size of the primary
-axis (depending on the location). If you specify two values, then the second
-value is the secondary axis. The example below illustrates:
-
-```
-# Percentage, primary axis only
-quick-terminal-size = 25%
-
-# Pixels work too, primary axis only
-quick-terminal-size = 600px
-
-# Two values specify primary and secondary axis
-quick-terminal-size = 25%,75%
-
-# You can also mix units
-quick-terminal-size = 300px,80%
-```
-
-The _primary axis_ is defined by the `quick-terminal-position` configuration.
-For the `top` and `bottom` values, the primary axis is the height. For
-the `left` and `right` values, the primary axis is the width. For `center`,
-it depends on your monitor orientation: it is height for landscape and width for
-portrait.
-
-Beyond simply specifying the size, the quick terminal is now resizable at
-runtime and will remember that size for the duration that Ghostty is running.
-In prior versions, the size was fixed, which caused real problems depending
-on monitor size and resolution.
-
-Screenshots with a couple examples on GTK are shown below:
-
-<p align="center">
-  <a href="/images/1-2-0/quick-terminal-pos1.png" target="_blank">
-    <img
-      src="/images/1-2-0/quick-terminal-pos1.png"
-      style={{ maxWidth: "85%", margin: "10px" }}
-    />
-  </a>
-</p>
-
-<p align="center">
-  <a href="/images/1-2-0/quick-terminal-pos2.png" target="_blank">
-    <img
-      src="/images/1-2-0/quick-terminal-pos2.png"
-      style={{ maxWidth: "85%", margin: "10px" }}
-    />
-  </a>
-</p>
-
-### SSH Improvements (Work-in-Progress)
-
-PR: GH-7608
-
-Ghostty now has opt-in shell integration features to make Ghostty more
-compatible with SSH for remote machines that haven't updated to support
-[Ghostty's terminfo](#help-terminfo).
-
-The new `ssh-env` opt-in feature will automatically set the `TERM` variable
-to `xterm-256color` for SSH sessions (as well as forward some other
-environment variables to make sessions work better). While not strictly correct,
-this band-aid solution helps more than it hurts in most cases.
-
-The new `ssh-terminfo` opt-in feature will automatically copy the Ghostty
-terminfo to the remote machine so that the proper `xterm-ghostty` `TERM`
-setting can be used and remote programs can take full advantage of all of
-Ghostty's features (and avoid xterm features we don't support).
-
-Both of these features are opt-in because they require overriding the `ssh`
-command in your shell. This operation is not without risk, so we want to make
-sure users are aware of what they're doing. We do our best to make this
-stable and reliable, but there are edge cases we can't account for. As such,
-this is still a work-in-progress and we welcome feedback.
-
-### Renderer Rework
-
-PRs: GH-7620
-
-The renderer backends have been reworked so that the core logic is shared,
-whether rendering with OpenGL or Metal. This change will allow for quicker
-improvements to that area of the code in the future, and will also help to
-ensure feature parity between the two backends, which is something that was
-starting to become an issue as many features were implemented for Metal but
-not for OpenGL.
-
-In the process of this rework, several improvements were made for the OpenGL
-backend, which should now be more efficient and has near feature parity with
-the Metal backend.
-
-This means that Linux users will now see proper linear alpha blending, which
-removes artifacts seen around the edges of text with certain combinations of
-background and foreground color. The default `alpha-blending` configuration
-value on Linux is now `linear-corrected`, which performs linear blending with
-a correction step for text so that the apparent weight matches the non-linear
-blending that people are used to.
-
-This rework also made it so that custom shaders can now be hot reloaded.
-
-### Custom Cursor Shaders
-
-PRs: GH-7648
-
-Custom shaders are now provided information about the terminal cursor, so that
-custom effects and animations can be applied to it, like a trail or smear.
-
-The example below shows a
-["cursor blaze" shader](https://raw.githubusercontent.com/hackr-sh/ghostty-shaders/refs/heads/main/cursor_blaze.glsl)
-that leaves a trail behind the cursor as it moves:
-
-<Video src="https://web.files.ghostty.org/release-notes-1-2-0-cursor-trails.mp4" />
-
-Cursor shaders and custom shaders in general are not for everyone, but
-we've seen some incredibly creative shaders from the community. A lot of
-people are having a lot of fun, and beyond simple eye candy they can be
-practically useful too, such as making the cursor easier to follow as it
-moves (but perhaps less loudly).
-
-We do eventually plan to add a first-party animated cursor, so that users don't
-need to take on the additional performance cost of a custom shader just to have
-a cursor that's easier to follow as it moves, but adding this feature to custom
-shaders was an easy stop-gap measure. Plus, this will still be useful even after
-we add the first-party animated cursors, since some users may still want to have
-very specific custom effects that aren't possible through the built-in option.
-
-### Terminal Background Images
-
-PRs: GH-3645
-
-You can now specify a background image for your terminal using the
-`background-image` configuration. This comes with a set of other
-configurations so that the image appears just how you'd like it:
-`background-image-opacity`, `background-image-position`,
-`background-image-fit`, and `background-image-repeat`.
-
-<p align="center">
-  <a href="/images/1-2-0/background-image.png" target="_blank">
-    <img
-      src="/images/1-2-0/background-image.png"
-      style={{ maxWidth: "85%", margin: "10px" }}
-    />
-  </a>
-</p>
-
-> **Warning:** In Ghostty 1.2.0, the background image is duplicated in VRAM for each
->   terminal. For sufficiently large images and many terminals, this can lead to a
->   large increase in memory usage (specifically VRAM). A future Ghostty release
->   will share image textures across terminals to avoid this issue.
-
-### Graphical Progress Bars
-
-PRs: GH-7975, GH-8477
-
-Ghostty now recognizes the [ConEmu `OSC 9;4` sequences](https://conemu.github.io/en/AnsiEscapeCodes.html#ConEmu_specific_OSC)
-and renders a GUI native progress bar.
-
-As far as we know, we believe Ghostty is the first terminal emulator on
-macOS to support this feature. Multiple terminals other than Ghostty on both
-Linux and Windows already support this feature.
-
-Progress bars can show success/error states, numerical progress towards
-completion, indeterminate progress (pulsing), and more. Programs like
-[Amp](https://ampcode.com/) are already utilizing the progress bar today to
-show activity, as shown below:
-
-<Video src="https://web.files.ghostty.org/release-notes-1-2-0-progress.mp4" />
-
-Graphical progress bars are now supported by multiple terminals across Windows,
-Linux, and macOS as well as a handful of major terminal programs such as
-the systemd and Zig CLIs. We hope, given the growing terminal support, that more
-programs will start using this feature.
-
-Today, Ghostty shows a simple, basic progress bar at the top of the terminal.
-In future versions, we will expand progress so it is shown in tab headers,
-task bars, dock icons, etc.
-
-> **Note:** The progress report `OSC 9;4` sequence collides with the iTerm2 notification
->   sequence. Ghostty is the only emulator to support both sequences. To handle
->   this, `OSC 9;4` always parses as a progress report, meaning you can't send any
->   notifications starting with `;4` as notifications. We think this is a
->   reasonable trade-off given the extremely specific text and the wider support
->   for the more recommended `OSC 777` notification sequence.
-
-### Fallback Font Size Adjustment
-
-PRs: GH-7840, GH-7953
-
-When the font(s) you configured for Ghostty don't have a glyph for a character
-we need to render, we find a font on the system that does. These fonts are now
-adjusted in size to better match the primary font. This is similar (but
-not identical) to [`font-size-adjust` in CSS](https://developer.mozilla.org/en-US/docs/Web/CSS/font-size-adjust).
-
-This helps account for the differing sizes of fonts, and creates a generally
-more consistent appearance. This is also helpful for users who use multiple
-writing systems; for example, CJK (Chinese, Japanese, and Korean) text now
-avoids having large vertical "gutters" between characters.
-
-| Ghostty 1.1.3 (Old)                                                                          | Ghostty 1.2.0 (New)                                                                          |
-| -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| <p align="center"><img src="/images/1-2-0/adjust-old.png" style={{ maxWidth: "90%" }} /></p> | <p align="center"><img src="/images/1-2-0/adjust-new.png" style={{ maxWidth: "90%" }} /></p> |
-
-The example above is a subtle difference. The difference is more apparent
-when many differing font faces get used in a single line. To ensure we were
-on the right path, we also polled a number of Chinese readers within
-the community and feedback leaned strongly positive towards the new behavior.
-
-In the future, we plan to rework font configuration so that you can specify
-sizes per-font, or let a configured font be sized automatically like fallback
-fonts are.
-
-### Lots of New Built-in Glyphs
-
-PRs: GH-7732, GH-7755, GH-7761
-
-A variety of new characters are now drawn directly by Ghostty instead of having
-to rely on a font for them. We draw glyphs directly so that we can ensure they
-align correctly with the cell and each other.
-
-An example of just a fraction of the newly supported glyphs is shown below.
-Notice how the glyphs align perfectly with each other along the cell edges
-with no gaps in between. This kind of pixel-perfect rendering is very important
-for TUI applications that use glyphs such as these for UI elements.
-
-| Ghostty 1.1.3 (Old)                                                                           | Ghostty 1.2.0 (New)                                                                           |
-| --------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| <p align="center"><img src="/images/1-2-0/sprites-old.png" style={{ maxWidth: "66%" }} /></p> | <p align="center"><img src="/images/1-2-0/sprites-new.png" style={{ maxWidth: "66%" }} /></p> |
-
-### Built-in Nerd Font Improvement
-
-PRs: GH-7809, and subsequent PRs to fix minor issues
-
-The built-in Nerd Font symbols are now provided by a standalone symbols-only
-font, rather than using patched versions of JetBrains Mono in Regular, Bold,
-Italic, and Bold Italic styles, and the built-in JetBrains Mono now uses a
-variable font rather than 4 static ones. This makes it so that the embedded
-fonts in Ghostty take significantly less space than they used to.
-
-This also means we're now using a more up-to-date copy of the Nerd Fonts
-symbols, so newer symbols will now render correctly.
-
-The big change, however, is that Ghostty now automatically resizes Nerd Fonts
-symbols to match the cell size, in the same way that the official Nerd Fonts
-patcher does, which means that the experience of using Ghostty with a normal
-un-patched font should be nearly or completely identical to using it with a
-patched font before.
-
-This means that there is now _no reason_ to use patched fonts in Ghostty, since
-things like powerline glyphs will always be scaled appropriately for the cell
-size either way.
-
-### Key Binding Rework
-
-PR: GH-7320
-
-We've reworked our keybindings to be more consistent, based on the
-[W3C key event code specification](https://www.w3.org/TR/uievents-code/).
-This work should result in more predictable, working keybindings across
-operating systems and keyboard layouts, but also brings with it some
-**major behavior changes that may break existing keybindings.**
-
-All single codepoint characters now match the character produced by the
-keyboard layout (i.e. are layout-dependent). So `ctrl+c` matches the
-physical "c" key on a US standard keyboard with a US layout, but matches
-the "i" key on a Dvorak layout. This also works for international characters.
-Codepoints are case-insensitive and match via Unicode case folding (this is
-how both Windows and macOS treat keyboard shortcuts).
-
-All other key names match physical keys, and the key names are named
-according to the W3C key codes. Example: `ctrl+KeyA` will always match the "a"
-key on a US physical layout (the name `KeyA` lining up with US keyboards is
-mandated by the spec, not us). Note when we say "physical" here we mean the
-keycode sent by the OS or GUI framework; these can often be overridden
-using programs to remap keys at the "hardware" level but software layouts
-do not do this.
-
-As a result of the above, **the `physical:` prefix has been removed.**
-Physical keybinds are now explicit through the use of multi-codepoint key
-names as noted above. Previous `physical:` keybinds continue to work but
-should be updated to the new format.
-
-For backwards compatibility, all existing key names in Ghostty that didn't
-match W3C map to their W3C equivalent. For example, `grave_accent` maps to
-`backquote`.
-
-### Terminal Bell
-
-PRs: GH-7099, GH-5326, GH-7087, GH-7101, GH-7118, GH-7148, GH-7842, GH-7533
-
-Ghostty on both macOS and GTK support the terminal bell (ASCII `BEL` or
-`0x07`). Ghostty's behavior when the bell is rung can be customized using
-the `bell-features` configuration. We've shipped with defaults which we believe
-are the least intrusive while still being useful, and more intrusive optional
-features can be set with `bell-features`.
-
-On macOS, the bell by default will put the bell emoji (🔔) in the title of
-the terminal, will bounce the dock icon once, and will put a badge on the
-Ghostty icon visible in the dock and application switcher. No audio will be
-played.
-
-On GTK, the bell by default will put the bell emoji (🔔) in the title of
-the terminal and will mark the window as requesting attention. The exact
-behavior of "requesting attention" is determined by the window manager or
-desktop environment. No audio will be played.
-
-GTK also supports an audio bell feature which is off by default. This can be
-enabled with `bell-features=audio`. You can even specify custom audio to
-play using the `bell-audio-path` configuration. The `bell-features=system`
-feature (default off) will use the "system beep" which usually can be audio
-as well, configured via a central system setting.
-
-GTK also supports a border flashing animation that can be enabled with
-`bell-features=border`. This is similar to the "visual bell" feature provided
-by other terminal emulators.
-
-A future version of Ghostty will bring parity to macOS with all the bell
-features.
-
-### Terminal Emulation Compatibility
-
-Ghostty 1.2 includes dozens of improvements to core terminal emulation to
-ensure terminal programs work consistently and correctly in Ghostty as they
-do in other terminal emulators. You can find the full list of related changes
-in the [terminal capabilities](#terminal-capabilities) section.
-
-The improvements range from very minor (GH-7443, a sequence not used by any
-known program in the wild) to very important (GH-8590, which broke some real
-programs). In any case, Ghostty takes terminal emulation compatibility very
-seriously and we work hard to ensure that Ghostty can support the wide
-spectrum of terminal features that exist.
-
-Getting this right is easier said than done: a very small subset of terminal
-emulation functionality is formally specified, with the vast majority
-being defined by de facto standards based on how terminal emulators behave.
-Additionally, since no singular standards body exists, protocols often
-conflict with each other and we're left determining which protocol is more
-important or how we can compromise to support both.
-
-For example, the [progress bars](#graphical-progress-bars) sequence
-collides with the iTerm2 desktop notification sequence. As a compromise,
-any unambiguous progress bar sequence takes priority over notifications,
-so if you wanted to send a notification that exactly said the sequence to
-set a progress bar, it will not work. This is a compromise Ghostty made
-so that we can be one of the only terminals to support both progress bars
-and iTerm2 desktop notifications.[^2]
-
-### macOS: Tahoe Support
-
-Ghostty 1.2 adds support for macOS 26 (Tahoe).
-
-When running on macOS 26, Ghostty will use the new Liquid Glass style. The
-[app icon has been updated](#install-release-notes-1-2-0new-app-icons)
-to support macOS 26 features such as light, dark, tinting, etc.
-A number of UI details have been updated to better match the new macOS style,
-such as icons in menu bars. In addition to visual support, a number of
-compatibility issues were also fixed.
-
-Ghostty 1.2 remains fully compatible with prior macOS versions back to
-and including macOS 13 (Ventura).
-
-> **Note:** Ghostty 1.1.x is functional on macOS 26. Due to the way macOS SDKs work,
->   Ghostty 1.1.x will use the old pre-Tahoe UI styling. There are still some
->   compatibility issues, but it is largely functional if you are unable to
->   upgrade to Ghostty 1.2 in the near term.
-
-### macOS: Undo/Redo Close
-
-PRs: GH-7535
-
-All operations that close a terminal now support undo and redo using
-standard macOS keybinds (`Cmd+Z` and `Cmd+Shift+Z`, but can be rebound).
-This includes closing a split, closing a tab, closing a window, closing
-all windows, closing other tabs, etc.
-
-Undo/redo works by keeping recently closed terminals running but hidden
-for a configurable amount of time (by default 5 seconds). During this time,
-you can undo the close and the terminal will be reopened in the same location
-as before. Since the terminal was always running, your exact terminal state
-is restored.
-
-The time that a terminal can be undone can be configured with the
-`undo-timeout` configuration.
-
-<Video src="https://web.files.ghostty.org/release-notes-1-2-0-undo.mp4" />
-
-In future versions of Ghostty we plan to expand the GUI interactions
-that can be undone and redone, such as resizing splits, moving tabs, etc.
-
-### macOS: Apple Shortcuts
-
-PR: GH-7634
-
-Ghostty on macOS now integrates with Apple Shortcuts. This enables a Ghostty
-to be scripted on macOS, especially when combined with non-Ghostty-specific
-shortcut actions like taking screenshots, moving windows, etc.
-
-<p align="center">
-  <a href="/images/1-2-0/shortcuts.png" target="_blank">
-    <img
-      src="/images/1-2-0/shortcuts.png"
-      style={{ maxWidth: "85%", margin: "10px" }}
-    />
-  </a>
-</p>
-
-Apple Shortcuts can be bound to global shortcuts, synced across devices,
-and more. It is a really powerful tool!
-
-This feature doesn't replace our future plans for a full cross-platform
-Ghostty API. This macOS-specific feature does address many of those use cases
-for macOS users, but we still plan to build alternate scripting choices in
-the future.
-
-### GTK: Quick Terminal
-
-PRs: GH-4624
-
-The quick terminal is now supported on Linux while running on Wayland
-with access to the
-[widely supported `wlr-layer-shell` protocol](https://wayland.app/protocols/wlr-layer-shell-unstable-v1#compositor-support).
-The quick terminal has been available on macOS since Ghostty 1.0.
-
-As a reminder, the "quick terminal" is the feature of Ghostty where a
-singleton window of a terminal can be shown and hidden with a single
-hotkey bound to `toggle_quick_terminal` (usually a global hotkey that
-works even when Ghostty isn't focused). This is sometimes referred to
-as a "dropdown terminal" or a "DOOM-style terminal."
-
-The quick terminal on Linux fully supports tabs and splits.
-
-<p align="center">
-  <a href="/images/1-2-0/quick-terminal-gtk.png" target="_blank">
-    <img
-      src="/images/1-2-0/quick-terminal-gtk.png"
-      style={{ maxWidth: "90%", margin: "10px" }}
-    />
-  </a>
-</p>
-
-### GTK: Global Keybinds
-
-PRs: GH-6051
-
-The GTK application now supports global keybinds, keybinds that
-work even while Ghostty is not the focused application. These keybinds
-are defined with the `global:` prefix in the Ghostty configuration.
-
-Global keybinds require a functional XDG desktop portal installed on your
-system. Other parts of Ghostty already rely on XDG desktop portal, so it likely
-already exists. If not, it's usually a single well-supported package away (plus
-a restart).
-
-Global keybinds support any keybind action but are particularly well
-suited when paired with features such as `toggle_quick_terminal`, which is
-now [also supported on GTK](#gtk:-quick-terminal).
-
-### GTK: Localization (Work-in-Progress)
-
-PRs: GH-6004 plus too many to list for each locale.
-
-Preliminary support for localization of the GTK application has been added.
-Currently, only GTK GUI elements are translated. Localization support for
-macOS and other parts of Ghostty will arrive in future releases.
-
-Ghostty 1.2 has complete localization for GUI elements for the following
-locales:
-
-- bg_BG
-- ca_ES
-- de_DE
-- es_AR
-- es_BO
-- fr_FR
-- ga_IE
-- he_IL
-- hu_HU
-- id_ID
-- it_IT
-- ja_JP
-- ko_KR
-- mk_MK
-- nb_NO
-- nl_NL
-- pl_PL
-- pt_BR
-- ru_RU
-- tr_TR
-- uk_UA
-- zh_CN
-
-Localization is done by volunteers for each locale. The Ghostty project
-is extremely grateful to the volunteers who have contributed their time
-to localize Ghostty. If you would like to localize Ghostty to your locale,
-please see the `CONTRIBUTING.md` documentation for instructions.
-
-### GTK: FreeBSD Support
-
-PRs: GH-7606
-
-The Ghostty GTK application now supports FreeBSD. This work was driven
-almost completely by a single community member, who did the hard work of
-submitting patches to all our dependencies to support FreeBSD, updating
-our build scripts, and assisting with automated testing to ensure Ghostty
-remains functional on FreeBSD.
-
-In addition to building and running properly on FreeBSD, the community
-is developing a FreeBSD port to make installation easier. We will update
-the installation documentation when that port is available.
-
-### GTK: Full, Leak-free Rewrite
-
-PRs: GH-7961, [`gtk-ng` PRs](https://github.com/ghostty-org/ghostty/pulls?page=4&q=is%3Apr+is%3Aclosed+gtk-ng)
-
-We've rewritten the entire GTK application from the ground up using the
-full [GObject type system](https://docs.gtk.org/gobject/concepts.html).
-Throughout the process, we tested every feature with [Valgrind](https://valgrind.org/)
-to check for memory leaks, undefined memory access, use-after-free, and more.
-
-See the original PR for full motivations, but the result is a more stable,
-modern GTK application that is much more maintainable for contributors.
-
-The GTK application in 1.1.3 had some known memory leaks that required
-Ghostty to be restarted after very extended periods of time. Terminals
-are usually never closed for many developers and no application should require
-restarts. The GTK application now is completely stable and tip users
-have reported no issues keeping it running for weeks at a time.
-
-This doesn't just benefit GTK users: as a result of this work, we now
-run all Ghostty unit tests under Valgrind for every commit (GH-8309).
-Over 90% of our unit tests cover cross-platform code, so this helps
-ensure that all of Ghostty is more stable and reliable.
-
-> **Note:** Valgrind is only able to detect memory issues in executed code paths. We
->   exercised every possible GUI interaction, but we didn't exercise every
->   possible code path in Ghostty.
-
-## System Requirements
-
-**macOS:** The minimum required macOS version for Ghostty 1.2 remains
-unchanged (macOS 13 Ventura). Ghostty is now compatible with macOS 26 (Tahoe).
-
-**GTK:** Ghostty 1.2 requires **GTK 4.14** and **libadwaita 1.5**. This
-aligns with our [GTK/Adwaita version policy](#linux-supported-gtkadwaita-versions).
-Systems with older GTK or Adwaita versions can workaround this requirement
-by using an older version of Ghostty or a community-maintained snap or
-flatpak package.
-
-## Breaking Changes
-
-- GTK: libadwaita is now required. We've
-  [warned that this was coming](#install-release-notes-1-1-0gtk-forcing-a-dependency-on-libadwaita)
-  since the 1.1.0 release notes and our motivations are well explained in
-  the prior link. Please read that carefully before reacting! We put out a
-  call for feedback from the community and discussed this decision at length.
-  We shipped features addressing those concerns such as our SSD support, first
-  class CSS styling, and more.
-- GTK: The minimum required OpenGL version is now 4.3. This was required
-  to improve performance, fix some rendering bugs more easily, and make our
-  OpenGL backend more maintainable. OpenGL 4.3 was released in 2012, so this is
-  still over a decade old. GH-7620
-- Bundled themes have been updated to
-  [release-20250915-154825-b4500fc](https://github.com/mbadolato/iTerm2-Color-Schemes/releases/tag/release-20250915-154825-b4500fc).
-  Since the themes are managed upstream, this may include theme renames
-  and color changes. **If your theme that was working in 1.1.3 stops working
-  when updating to 1.2, please check the linked release to verify your theme
-  name.**
-- The `dlig` font feature is now disabled by default. This may result in
-  ligatures that were previously working to no longer work. This was always
-  formally specified as a "discretionary ligature" feature, meaning that it
-  should be opt-in. The more common `calt` (contextual ligature) feature remains
-  on by default. You can re-enable this feature with the `font-features` config.
-  GH-8164
-
-### Deprecations
-
-The list below contains deprecations that remain compatible today through
-a compatibility layer, but may break in a future release if they are
-ignored:
-
-- `adw-toolbar-style` has been renamed to `gtk-toolbar-style`.
-- `gtk-tabs-location=hidden` is replaced with `window-show-tab-bar=never`.
-- `selection-invert-fg-bg` is replaced with
-  `selection-foreground=cell-background` and
-  `selection-background=cell-foreground`. GH-5219
-- `cursor-invert-fg-bg` is replaced with
-  `cursor-color=cell-foreground` and
-  `cursor-text=cell-background`. GH-5219
-
-There is no set timeline to remove these deprecations, but we recommend
-adapting to the new configurations sooner rather than later to avoid
-any possible disruptions in the future.
-
-> **Note:** The deprecations above will continue to work without any visible warnings. We
->   plan to augment our GUI to show warnings about the configuration in a future
->   release.
-
-## Full Changelog
-
-[Full list of closed issues on GitHub](https://github.com/ghostty-org/ghostty/milestone/5?closed=1).
-
-In each section, we try to sort improvements before bug fixes.
-
-- Commands through `-e` no longer are run wrapped with `/bin/sh`
-  and instead are executed directly. GH-7032
-- Add a new command palette feature to macOS and GTK that allows
-  executing most keybind actions even if they aren't bound. GH-7153 GH-7156
-- Directional `goto_split` on both macOS and GTK navigates to the nearest
-  split in that direction from the top-left corner of the current split.
-  We call this "spatial navigation" and it results in more intuitive split
-  navigation. GH-574
-- The `equalize_splits` keybind action now produces more expected, pleasing
-  results when multiple splits are oriented in the same direction. GH-7710
-- New opt-in shell integration features `ssh-terminfo` and `ssh-env`
-  improve the experience of using Ghostty over SSH. GH-7608
-- Cursor information is now available to custom shaders, enabling custom
-  shaders to do things such as draw cool animations for cursor movement.
-  GH-7648
-- A new CLI command `+edit-config` will open the Ghostty configuration
-  in your configured terminal `$EDITOR`. GH-7668
-- Add a new keybind `prompt_surface_title` that can be used to change
-  the title of a terminal manually. GH-2509 GH-5769
-- Add a new keybind `scroll_to_selection` which scrolls the viewport
-  to the top-left of the current selection, if it exists. GH-7265
-- Add a new keybind `set_font_size` to set the font size. GH-7795
-- Add a new keybind `copy_title_to_clipboard` that copies the current terminal title
-  to the clipboard. GH-7829
-- Add a new keybind `close_tabs:other` that closes all tabs except the
-  current one. GH-8363
-- The keybinds `write_screen_file`, `write_scrollback_file`, and
-  `write_selection_file` now support `copy` as a value to copy the file
-  path to the clipboard. GH-7721
-- config `app-notifications` has a new value `config-reload` (default on)
-  to control whether a notification is shown when the config is reloaded.
-  GH-8366
-- config: `command` value can be prefixed with `shell:` or `direct:`
-  to execute a command via the shell (default) or directly via
-  `exec`. GH-7032
-- config: copy on right click with `right-click-action = copy`. GH-4404
-- config: `background-image` can be used to set a background image for
-  the terminal. This currently applies to each terminal, not to windows.
-  GH-3645
-- config: `env` can be used to specify environment variables to set
-  in the terminal environment. GH-5257
-- config: `quick-terminal-size` can be used to customize the
-  size of the quick terminal. GH-2384
-- config: `font-shaping-break` configures when a ligature should be
-  broken (split). GH-4515
-- config: new values `cell-foreground` and `cell-background` can be used
-  with `selection-foreground`, `selection-background`, and `cursor-color`
-  to set their color values to the dynamic cell colors. GH-5219
-- config: new `bold-color` option to specify a custom color for bold to
-  make it easier to read. GH-7168
-- config: new `selection-clear-on-typing` option to clear selection
-  when typing. GH-7394
-- config: new `link-previews` option determines when URL previews in the
-  bottom of windows appear. GH-7831
-- config: new `background-opacity-cells` applies the `background-opacity`
-  configuration to explicit cell backgrounds (e.g. from the running program).
-  GH-7913
-- config: new `faint-opacity` configures the cell opacity to use for
-  cells marked as faint by the terminal program. GH-8472
-- config: new `right-click-action` option can configure the behavior when
-  the right mouse button is clicked. GH-8254
-- cli: pressing `enter` in `+list-themes` now shows help text on
-  how to configure the theme. GH-4731
-- cli: `+list-themes` now has a flag to filter light and dark themes. GH-7235
-- cli: add theme filtering to `+list-themes`. GH-8082
-- cli: `+list-colors` shows the colors in addition to their hex code. GH-8393
-- custom shaders can now be reloaded at runtime. GH-7620
-- custom shaders blend properly with the background color. GH-7620
-- holding the mouse above or below the window while clicking now
-  scrolls the viewport without having to jiggle the mouse. GH-4422
-- shell-integration: now uses a single `GHOSTTY_SHELL_INTEGRATION_FEATURES`
-  env var to specify enabled features instead of multiple env vars. GH-6871
-- shell-integration/elvish: use the `kitty-shell-cwd://` scheme for OSC 7
-  reporting so we don't have to encode it. GH-7033
-- Split and tab navigation keybinds such as `goto_split` and `next_tab`
-  support `performable`. GH-7680
-- font: improve the performance of glyph hashing for caching yielding
-  a roughly 5% speed in synthetic stress tests. GH-7677
-- fix crash that could happen with certain `font-family` flags provided
-  specifically to the CLI. GH-7481
-- The config `adjust-cursor-thickness` now works with `cursor-style=underline`.
-  GH-7732
-- Resolve issue when pressing `backspace` with preedit text (such as
-  when using an IME). GH-5728
-- config: `keybind=` (blank) restores default keybindings, behaving
-  like other `<key>=` blank values. GH-5936
-- config: `palette` configuration now supports whitespace between
-  the palette number and color. GH-5921
-- config: All configurations that take a list of colors (e.g.
-  `macos-icon-ghost-color`) support spaces after commas. GH-5918
-- the `copy_url_to_clipboard` keybind action works properly with OSC 8
-  hyperlinks. GH-7499
-- font: fallback fonts sizes are automatically adjusted to more closely match
-  the primary font size visually. GH-7840
-- font: Support new sprites: U+1CC00 to U+1CCFF, U+1CE00 to U+1CEFF, U+2500
-  to U+25FF, U+1CE00 to U+1CEFF, U+1FB00 to U+1FBFF. GH-7755 GH-7761
-- font: U+25E4 and U+25E2 (geometric shapes) are now rasterized
-  with the built-in sprite font. GH-3344
-- font: corner pieces of Geometric Shapes are now rasterized with
-  the built-in sprite font. GH-7562
-- font: glyph constraint logic dramatically improved, resulting in things like
-  Nerd Font icons appearing more correctly. GH-7809
-- input: for keyboards that support it, the `copy` and `paste` physical
-  keys now bind by default to `copy_to_clipboard` and `paste_from_clipboard`,
-  respectively. GH-8586
-- input: the default `copy_to_clipboard` bindings are marked as performable,
-  meaning the key will be encoded to the pty if there is no text to copy.
-  This allows TUIs to capture this. GH-8504
-- input: mouse scrollwheel mapping to mouse events was modified to
-  better match other terminal emulators. GH-6052
-- input: `ctrl+<ASCII>` works across a wider variety of keyboard layouts.
-  GH-7309
-- input: mouse dragging while clicking cancels any mouse link actions. GH-7080
-- input: the `goto_tab` binding now binds by default to both the physical
-  and logical numeric keys to work with more keyboard layouts. GH-8486
-- renderer: micro-optimization to improve cached glyph lookup performance
-  GH-8536.
-- gracefully handle the case that the `exec` syscall fails when starting the
-  terminal command. GH-7793
-- The "failed to launch process" error message can no longer be dismissed by
-  pressing a modifier key. GH-7794
-- fix rendering issues when rectangular selection with top-left or bottom-right
-  outside of the viewport. GH-7692
-- fix some rounding errors for octant rendering which caused octants to not
-  line up in some scenarios. GH-7479
-- fix some mouse selection logic which sometimes caused Ghostty to incorrectly
-  select an extra line or character. GH-7444
-- fix file path regular expression to require at least one slash. GH-7355
-- fix a crash when reflowing a grapheme with a spacer head in a specific
-  location. GH-7537
-- Images rendered using the Kitty image protocol now use correct gamma
-  blending. GH-7368
-- Fix scenario where renderer could crash when zooming out if the viewport
-  pointer when out of bounds. GH-7899
-- Fix a crash that could happen if a memory page ran out of space for
-  hyperlinks. GH-8009
-- Fix undefined memory access on first frame render. GH-7982
-- Fix memory leak each time the modifier was held to search for links. GH-7998
-- Fix crashes when our bitmap allocator had exactly 64 chunks allocated. GH-8276
-- Fix possible use-after-free in font atlas error paths. There are no known
-  cases of this being exercised in the wild. GH-8249
-- Fix possible crashes in some internal OOM conditions where growing the
-  backing buffer was not implemented properly. GH-8277
-- Fix undefined memory access in OSC parser that could lead to crashes. GH-8307
-- Fix issues with Kitty image z-indexing. GH-7671
-- shell-integration/bash: no longer depends on a valid `GHOSTTY_RESOURCES_DIR`
-  env var. GH-7611
-- shell-integration/bash: fix a scenario where garbage characters could be
-  printed. GH-7802
-- shell-integration/bash: preserve existing env more reliably. GH-7908
-- Do not resolve symbolic links in OSC 7 path reporting. GH-7773
-- Bundled themes updated to [release-20250915-154825-b4500fc](https://github.com/mbadolato/iTerm2-Color-Schemes/releases/tag/release-20250915-154825-b4500fc).
-  This may rename existing themes. If your theme stops working, please check
-  to see if the theme was renamed. The renames are done upstream so there
-  isn't any way for us to avoid them.
-- inspector: fix display of fractional pixel sizes. GH-8179
-- contrib/vim: fix syntax highlighting of the config in scratch buffers. GH-7119
-
-### Terminal Capabilities
-
-This section covers the changes to terminal emulation and other capabilities
-exposed to applications running inside the terminal.
-
-Ghostty remains focused
-on terminal emulator compatibility so the changes in Ghostty 1.2 only add
-or improve compatibility with features in other terminal emulators. In future
-versions of Ghostty, we plan to add new Ghostty-specific features that
-application developers can take advantage of.
-
-- vt: add support for mode 47. GH-7443
-- vt: add support for mode 1048. GH-7473
-- vt: parse more ConEmu OSC 9 sequences. The only ConEmu OSC 9 sequence that
-  Ghostty reacts to is the `9;4` progress bar sequence. The remainder are
-  parsed but ignored. GH-8410
-- vt: Significant improvements in feature support and compatibility of
-  color operations with xterm. Specifically OSC 4, 5, 10-19, 104, 105, and
-  110-119. This adds new sequence support in addition to fixing compatibility
-  of previously supported color operations. GH-8590
-- vt: Indicate support for OSC 52 in the primary DA report. GH-7725
-- vt: OSC 4/104 allow multiple color specifications. GH-7402
-- vt: Allow SGR sequences to contain up to 24 parameters, fixing some
-  Kakoune themes. GH-8417
-- vt: OSC 52 can empty the current clipboard by sending an empty string. GH-8018
-- vt: `XTGETTCAP` works properly for lowercase hex characters. GH-7229
-- vt: Kitty image protocol supports delete by range operations. GH-5957
-- vt: Fix aspect ratio issues with some images using the Kitty image
-  protocol. GH-6673
-- vt: Kitty image protocol should accept commands with no control data. GH-7023
-- vt: don't force Kitty images to a grid size. GH-7367
-- vt: fix a variety of alt screen edge cases for mode 47, 1047, and 1049 to
-  better match xterm behavior. I don't know any real programs that exercised
-  these bugs, but its good hygiene. GH-7471
-- vt: clear hyperlink state when switching between normal and alt screen.
-  GH-7471
-- vt: `ctrl+esc` now produces the proper Kitty keyboard encoding. GH-7000
-- vt: clear correct row on index (`\n`) operation in certain edge cases.
-  This fixes a misrender that could happen with the vim status line
-  in certain scenarios. GH-7093
-- vt: clicking on an unfocused window no longer encodes a mouse event. GH-2595
-- vt: fix undefined memory access on certain incomplete escape sequences.
-  GH-8007
-- vt: OSC 9 notifications can contain single character messages. GH-8396
-- vt: when VS15 makes a default wide character narrow, the cursor moves back
-  one cell. GH-8538
-
-### macOS
-
-- macOS: Support macOS 26 (Tahoe).
-- macOS: You can now undo and redo closing any type of terminal (window, tab,
-  or split). We keep recently closed terminals in memory for a configurable
-  amount of time (default 10 seconds) so you can recover them if you close
-  them by accident. GH-7535
-- macOS: Read-only accessibility API integration allows screen readers
-  to read Ghostty's structure and contents. This is also useful for AI software
-  to read Ghostty's contents. This requires accessibility permissions, so it is
-  opt-in. GH-7601
-- macOS: Integration with App Intents enables Ghostty to be automated with
-  Apple Shortcuts. GH-7634
-- macOS: Bell implementation. By default, the bell will bounce the dock icon
-  and put a bell emoji in the title. This is cleared when the terminal is
-  focused or on any input. The bell does not make any audio sounds. These
-  can all be disabled with `bell-features`. GH-7099
-- macOS: Scripts executed from Finder or dropped onto the dock now execute
-  via the login shell and sending `<filepath>; exit` via stdin. This is how
-  the built-in Terminal and other terminals work to allow loading your
-  login scripts. GH-7647
-- macOS: Custom icons are now persisted while Ghostty is not running. GH-8230
-- macOS: Display a native GUI progress bar for `OSC 9;4` progress bar sequences.
-  GH-8477
-- macOS: Add `bring_all_to_front` keybind action to bring all
-  Ghostty windows to the front. GH-4704
-- macOS: Add `reset_window_size` keybind action to reset the window
-  size to its initial configured size. GH-6038
-- macOS: Add `check_for_update` keybind action. GH-7235
-- macOS: Add "Return to Default Size" menu item. GH-1328
-- macOS: `macos-hidden` configuration will hide Ghostty from the
-  dock and tab menu. GH-4538
-- macOS: Clicking links now uses the `NSWorkspace` API rather than
-  the `open` command. This preserves the source application (Ghostty)
-  which other programs can now use to change their behavior if
-  desired. GH-5256
-- macOS: New config `macos-window-buttons` to hide the traffic light
-  buttons. GH-7504
-- macOS: New option `padded-notch` for the existing `macos-non-native-fullscreen`
-  configuration to put the non-native fullscreen window below the notch
-  but still hide the menu bar. GH-5750
-- macOS: New keybind action and menu item `toggle_window_float_on_top` to
-  have a specific terminal window float above all other windows even when
-  unfocused. GH-7237
-- macOS: Equalize splits now works in the quick terminal. GH-7480
-- macOS: `quick-terminal-position=center` now supports resize while retaining
-  the center position. GH-8398
-- macOS: Scripts executed from Finder or dropped onto the dock always
-  require manual confirmation to run. GH-8442
-- macOS: The reset zoom button for splits is now visible with titlebar tabs
-  and a single tab. GH-7502
-- macOS: `window-save-state` now saves terminal titles. GH-7938
-- macOS: `Cmd+h` (macOS hide window) no longer sends `h` if attempting to
-  hide the last visible window. GH-5929
-- macOS: `maximize` configuration now works on macOS. GH-5928
-- macOS: Improve key input handling speed by about 10x. GH-7121
-- macOS: Differentiate between closing a tab vs a window when pressing the
-  red traffic light. GH-7618
-- macOS: Title text is vertically centered with `macos-titlebar-style=tabs`.
-  GH-5777
-- macOS: Ghostty launched via the CLI now comes to the front. GH-8546
-- macOS: focus no longer goes to the first split when toggling
-  non-native fullscreen. GH-6999
-- macOS: `cmd+.` can now be bound. GH-6909
-- macOS: font glyphs constrained to a terminal cell now appear sharper. GH-6914
-- macOS: the `close_window` keybind action now works. GH-7003
-- macOS: quick terminal can appear and disappear more reliably
-  on fullscreen spaces. GH-7070
-- macOS: selection off the left edge of the window no longer
-  scrolls up by one line. GH-7071
-- macOS: New windows created with `macos-titlebar-style=hidden` now cascade
-  their position like other windows. GH-7567
-- macOS: Key input that clears preedit without text shouldn't encode to pty.
-  GH-7226
-- macOS: keyboard shortcuts now work properly with the "Dvorak - QWERTY
-  ⌘" macOS keyboard layout. GH-7315
-- macOS: Round up fractional mouse scroll events, making mice with scroll
-  wheels feel more usable. GH-7185
-- macOS: All split directions are now available in the menubar and
-  context menus. GH-5807
-- macOS: Setting the pwd with OSC 7 now works with macOS's "Private Wi-Fi
-  Address" feature. GH-7029
-- macOS: Resize overlay now uses language-neutral `w x h` format
-  and omits units. GH-7142
-- macOS: "Services -> New Ghostty Window/Tab Here" now works with files.
-  GH-7286
-- macOS: Reliably retain focus when using non-native fullscreen. GH-7279
-- macOS: Dictation now streams pending text in real-time. GH-8490
-- macOS: Dictation icon properly shows the language picker. GH-8490
-- macOS: Dictation icon now properly follows the text as it streams. GH-8490
-- macOS: Fix memory leak that would retain memory of the last closed
-  surface (only one at a time). GH-7507
-- macOS: Fix memory leak where we failed to free CoreText font features. GH-7770
-- macOS: Fix memory leak in fallback discovery font descriptors. GH-7770
-- macOS: Fix memory leak for ObjC blocks. GH-7770
-- macOS: Fix crash that would occur if non-native fullscreen and
-  `fullscreen = true` were both set. GH-7277
-- macOS: If `title` is set, the title is set on the window on load,
-  allowing window managers to see the title sooner. GH-6056
-- macOS: Any keypress with `cmd` pressed is not encoded for legacy
-  key encoding. GH-6057
-- macOS: Invoking `new_tab` in any way within the quick terminal now
-  shows a helpful error rather than creating a new window. Tabs in the
-  quick terminal will be supported in a future release. GH-5939
-- macOS: Closing non-native fullscreen windows no properly restores
-  the menu bar. GH-7525
-- macOS: Dismiss any notifications on window focus. GH-7531
-- macOS: Dismiss any notifications on window close. GH-7531
-- macOS: Dismiss any notifications of an already-focused window after
-  a few seconds. GH-7531
-- font/coretext: improve font search sorting to be more consistent. GH-7483
-- man pages now mention macOS-specific configuration path. GH-5938
-
-### GTK (Linux, FreeBSD)
-
-- GTK: Support for FreeBSD. This work was all driven by a single community
-  member and we are very grateful for their contributions. GH-7606
-- GTK: New icon that matches a wider variety of desktop environments
-  stylistically. This is never going to be perfect due to the diversity of
-  the Linux/BSD ecosystems, but the new icon is a big improvement and makes
-  the app feel less macOS-centric. GH-8038
-- GTK: Configuration can be reloaded by sending `SIGUSR2` to Ghostty. GH-7759
-- GTK: A new `gtk-titlebar-style=tabs` puts the tabs into the titlebar
-  of windows. GH-8166
-- GTK: The quick terminal now works on Linux under Wayland and the
-  `wlr-layer-shell` protocol. GH-4624
-- GTK: `global:` keybinds now work whenever XDG desktop portal
-  is available (almost all desktop environments). GH-6051
-- GTK: Display a native GUI progress bar for `OSC 9;4` progress bar sequences,
-  such as those emitted by systemd. GH-7975
-- GTK: Audio bell support (default off) can be enabled with
-  `bell-features=audio` and setting `bell-audio-path` and
-  `bell-audio-volume`. GH-5326
-- GTK: Install DBus and Systemd activation services for faster startup. GH-7433
-- GTK: OpenGL renderer now supports linear blending for more correct
-  color blending. GH-7620
-- GTK: Register the `X-KDE-Shortcut` key so that a shortcut can be registered
-  on KDE to open Ghostty. GH-7673
-- GTK: Dynamically choose between `io_uring` and `epoll` for the
-  async API on Linux. Previously, this was hardcoded to `io_uring`
-  and epoll-only systems had to build from source. GH-5916
-- GTK: New config `async-backend` can be set to `epoll` to force using
-  epoll instead of io_uring on Linux. This can be useful on kernels where
-  iowait reporting is broken. GH-5916
-- GTK: New config `window-show-tab-bar` customizes when the tab bar
-  is visible. GH-5590
-- GTK: New config `quick-terminal-keyboard-interactivity` to specifically
-  customize the keyboard interactivity setting on Wayland. GH-7477
-- GTK: New keybind action `show_gtk_inspector` to show the GTK inspector
-  since terminal keybinds usually clobber the GTK default. GH-7468
-- GTK: The new tab button now has a dropdown menu to create new splits. GH-7127
-- GTK: A new "remember choice" toggle is added to the clipboard confirmation
-  dialog. GH-6783
-- GTK: A new native GUI element is used to show when a command exits
-  improperly or while `wait-after-command` is set. GH-7836
-- GTK: Support on-screen keyboards. GH-7987
-- GTK: If `title` is set, windows are initialized with the title immediately,
-  rather than after the surface is initialized. This lets window managers
-  read and use this value. GH-8535
-- GTK: Show a native GUI element if the OpenGL renderer fails to initialize
-  rather than a blank window. GH-8390
-- GTK: Escape `(` and `)` when dropping filepaths onto the terminal. GH-6922
-- GTK: `copy-on-select=clipboard` no longer causes toast spam while
-  selecting. The copy only happens when the mouse is released. GH-4800
-- GTK: All split directions are now available in the menubar and
-  context menus. GH-5779
-- GTK: Windows do not request close confirmation for `wait-after-command`.
-  GH-7500
-- GTK: When server-side decorations are used, remove the `solid-csd`
-  CSS class from windows that resulted in a visible border. GH-8127
-- GTK: Fix an issue where the window would sometimes become blank
-  and not close after the last tab was closed. GH-5837
-- GTK: Resize overlay now uses language-neutral `w x h` format
-  and omits units. GH-6013
-- GTK: Clean up surface cgroup properly on close. GH-6766
-- GTK: Reduce flickering/stretching on resize for OpenGL. GH-7155
-- GTK: Detect `GHOSTTY_RESOURCES_DIR` in more installation environments.
-  GH-6814
-- GTK: Fix cases where `xdg-open` calls would leave defunct processes. GH-7657
-  GTK/X11: Fix blur regions when using > 200% scaling. GH-6978
-- font/freetype: true bitmap fonts are now supported. GH-8512
-- font/freetype: fix possible crashes when using a font with no SFNT tables.
-  GH-8483
-- font/freetype: error when loading SVG glyphs, since we don't support them
-  anyways. GH-6824
-- font/freetype: fix data races that could cause crashes in rare scenarios.
-  GH-7238
-- font/freetype: convert more non-UTF-8 encodings of font names to UTF-8.
-  GH-8204
-- packaging: experimental snap packaging is now tested in CI. The
-  published snap image is maintained by an external maintainer for now.
-  GH-3931
-
-### Changes for Package Maintainers
-
-- We now generate source tarballs with some preprocessed files as is
-  standard with many source tarballs (e.g. converting parser `.y` to `.c`).
-  For Ghostty, we preprocess Blueprint `ui` to `xml` files, translations,
-  and GTK resource files. This allows Ghostty to be built on older platforms
-  without access to newer build tools. **Packagers should use the source
-  tarball, not the Git checkout. The `PACKAGING.md` documentation has been
-  updated with this information.** GH-6800
-
-- The GLFW apprt has been deleted. This was never a supported apprt and
-  was only used for development and testing. We warned against packaging GLFW
-  in our `PACKAGING.md` documentation. This is now gone because we don't need
-  it for development or testing anymore. GH-7815
-
-- The "tip" releases do not overwrite previously released tips with the
-  same commit. This ensures that checksums remain stable once a release
-  is cut. For packagers that provide tip packages, this should improve
-  security and compatibility with tooling. Tip releases have always been
-  signed. GH-8549
-
-#### Flatpak/Snap Update
-
-Ghostty 1.2 now comes with a configuration to build for Flatpak as well as
-Snap. We test this for every commit in CI and strive to keep Ghostty
-working via these distribution methods. However, we do not officially
-provide or maintain Flatpak or Snap packages, yet.
-
-This is major progress: Ghostty 1.1.x didn't work at all as a Flatpak
-or Snap package without patches, and the official project made no guarantees
-about maintaining these packages. Now, we at least build and test on these
-platforms, while still falling short of official distribution.
-
-Our major blocker for official distribution is **maintainer interest**
-and release automation. None of the current Ghostty maintainers main the
-Snap or Flatpak builds of Ghostty, and we don't feel confident in our
-ability to maintain these packages long term. If you are interested in
-helping maintain the Flatpak or Snap packages of Ghostty, please join
-Discord and message us in `#packaging`.
-
-## Roadmap
-
-Ghostty 1.3 will continue the focus of making Ghostty the
-["best existing terminal emulator"](https://mitchellh.com/writing/ghostty-1-0-reflection)
-by shipping the last remaining major missing features to achieve
-parity with other popular terminal emulators. Namely, we plan on shipping
-scrollback search and scrollbars for 1.3, at a minimum.[^1]
-
-The primary focus of Ghostty 1.3 will be on desktop application features
-(of which scrollback search and scrollbars are a part). The core terminal
-emulation features of Ghostty have already proven to be very feature
-rich and stable. However, we plan on continuing to expand our VT feature
-support, such as adopting new experimental protocols that have been recently
-released into the ecosystem by others.
-
-To answer common requests, **Windows** and **libghostty as a
-standalone library** are not planned for Ghostty 1.3. These remain part
-of the long term roadmap, but we want to focus on our existing platforms
-and desktop applications first.
-
-### Moving to a March/September Release Cycle
-
-Ghostty will move to a 6-month release cycle for major/minor releases,
-with the next minor release (1.3.0) planned for March 2026. A March/September
-release cycle aligns well with many major Linux distributions and macOS.
-Patch releases (e.g. 1.2.1) will be made as needed on an unscheduled basis.
-
-This is a relatively long release cycle for modern applications, but
-lets the development team focus on large, impactful features with enough
-time to stabilize in tip releases. For packagers, it avoids the churn of
-packaging new releases frequently. And the alignment with major OS releases
-lets us ensure we ship major releases that work well on new OS versions.
-
-For users who are interested in more frequent updates, we recommend using
-the [`tip` release channel](#config-referenceauto-update-channel) on macOS or
-[building from source](#install-release-notes-1-1-0roadmap) frequently on Linux.
-We have thousands of nightly users (thank you for testing!) and the entire
-maintainer team works hard to keep tip releases stable. For the entire 1.1
-to 1.2 development cycle, I can't remember tip releases ever being broken
-for daily use.
-
-[^1]:
-    "Parity" here is used loosely to describe the most popular, frequently
-    used features of other terminal emulators. There is a long tail of features
-    we'll likely never fully implement (and vice versa for our features).
-
-[^2]:
-    I didn't do a full survey of this, but I couldn't find any other
-    terminal emulator that supported both OSC 9 notifications, OSC 777 notifications,
-    _and_ OSC `9;4` progress bars.
-
-
-
-#### 1.1.3
-
-Ghostty 1.1.3 primarily addresses Gnome 48 and GTK 4.18 compatibility issues
-but also includes bug fixes for all platforms. This release contains no
-features or improvements and is only focused on stability and
-compatibility. The next major release (1.2.0) will include new features
-and improvements. This release includes changes from **11 contributors**
-over **21 commits.**
-
-## Highlights
-
-### Gnome 48, GTK 4.18 Compatibility
-
-PR:
-[#6877](https://github.com/ghostty-org/ghostty/pull/6877)
-
-Ghostty 1.1.3 is fully compatible with Gnome 48 and GTK 4.18.
-
-GTK 4.18 changes the default renderer for GTK applications to the
-["ngl" renderer](https://blog.gtk.org/2024/01/28/new-renderers-for-gtk/).
-This change exposed some bugs in Ghostty's rendering code that caused
-major visual glitches that effectively made Ghostty unusable on GTK 4.18
-with prior versions (1.1.2 and earlier).
-
-Since Ghostty now works with all current GTK GSK renderers, the
-`gtk-gsk-renderer` configuration is deprecated and no longer has any effect.
-If users want to force a specific GTK renderer, they can use the
-standard GTK
-[`GSK_RENDERER` environment variable](https://docs.gtk.org/gtk4/running.html#gsk_renderer).
-The configuration option still exists but will be removed in Ghostty
-1.2.0.
-
-## Full List
-
-[Full list of closed issues on GitHub](https://github.com/ghostty-org/ghostty/milestone/6?closed=1).
-
-- OSC 21 (Kitty color protocol): Ghostty no longer sends a response for
-  non-query requests.
-  [#5770](https://github.com/ghostty-org/ghostty/pull/5770)
-- The pty no longer has an initialize size of `0x0`. The size is something
-  non-zero but may still be incorrect due to a race condition between
-  initializing the pty and drawing the GUI window. We do not consider
-  this a bug.
-  [#5776](https://github.com/ghostty-org/ghostty/pull/5776)
-- Increase the maximum number of parameters for CSI sequences to 24.
-  This fixes some SGR sequences that were not working properly in
-  Kakoune.
-  [#5949](https://github.com/ghostty-org/ghostty/pull/5949)
-- The default binding for `equalize_splits` is now usable by default
-  for US (and similar) keyboard layouts. It was previously an impossible
-  binding. The binding is `super+ctrl+shift+plus`.
-  [#5646](https://github.com/ghostty-org/ghostty/pull/5646)
-- The elvish shell integration `sudo` feature now works properly.
-  [#5992](https://github.com/ghostty-org/ghostty/pull/5992)
-
-### macOS
-
-- macOS: The new tab button is now more visible with semi-transparent
-  dark backgrounds.
-  [#5897](https://github.com/ghostty-org/ghostty/pull/5897)
-- macOS: New windows created while the quick terminal is in focused
-  now properly transfer focus to the new window.
-  [#5834](https://github.com/ghostty-org/ghostty/pull/5834)
-- macOS: Fix an issue where the terminal draw area would appear
-  garbled until focused under various conditions, most reliably when
-  a DPI change occurred.
-  [#6008](https://github.com/ghostty-org/ghostty/pull/6008)
-- macOS: Fix an issue where the terminal inspector menu item would
-  become deactivated under certain conditions in the Quick Terminal.
-  [#6024](https://github.com/ghostty-org/ghostty/pull/6024)
-- macOS: The equalize splits keybind and menu item now only affect
-  the focused tab, as expected.
-  [#6080](https://github.com/ghostty-org/ghostty/pull/6080)
-
-### Linux (GTK)
-
-- GTK: Fix various rendering issues with the "ngl" GSK renderer.
-  This resolves compatibility issues with GTK 4.18 and Gnome 48.
-  [#6877](https://github.com/ghostty-org/ghostty/pull/6877)
-- GTK: Treat negative content scale values from GTK as 1.0.
-  This fixes some known default setting issues on Gentoo systems.
-  [#5954](https://github.com/ghostty-org/ghostty/pull/5954)
-- GTK: Make the split drag handle area smaller to allow selecting
-  text on the boundary. This fix isn't perfect but is an improvement.
-  A more comprehensive fix is planned for 1.2.0.
-  [#6000](https://github.com/ghostty-org/ghostty/pull/6000)
-- GTK: The `title` configuration is now respected when a new tab
-  is created from the tab overview.
-  [#6032](https://github.com/ghostty-org/ghostty/pull/6032)
-- GTK: Improve the reliability of Korean input methods, specifically
-  the `fcitx5-hangul` input method.
-  [#6779](https://github.com/ghostty-org/ghostty/pull/6779)
-
-### Changes for Package Maintainers
-
-- The `fetch-zig-cache.sh` script is back in the source tarball.
-  This was erroneously removed in 1.1.1 and 1.1.2.
-  [#5762](https://github.com/ghostty-org/ghostty/pull/5762)
-- A new `build.zig.zon.txt` file is included in the source tarball.
-  This is an easily parsable file that contains the URL of every
-  dependency used to build Ghostty (for all configurations, so this
-  includes optional dependencies).
-  [#5764](https://github.com/ghostty-org/ghostty/pull/5764)
-
-This release still requires Zig 0.13, but note that the next major
-release (1.2.0) will require Zig 0.14. This is just a heads-up for
-package maintainers. The main branch of Ghostty is already updated
-to Zig 0.14 so you can start testing now, if you wish. There is no
-schedule for the 1.2.0 release yet, we expect it to still be months
-away.
-
-Any future patch releases for 1.1.x will continue to require Zig 0.13.
-
-## Roadmap
-
-The focus of our efforts remain on the 1.2.0 release, which is shaping
-up very nicely. We didn't expect to have a 1.1.3 release, but the
-compatibility issues with GTK 4.18 and Gnome 48 were severe enough
-that we felt it was necessary to release a patch.
-
-I don't want to make any promises for any specific features coming in
-1.2.0, but we are working hard to address many of the most requested
-features and improvements.
-
-Ghostty 1.1.x has been a very stable series, and we are in no rush to
-ship 1.2.0, so there is no timeline for that release yet. We will
-cut the release when we feel it is ready. Thank you!
-
-
-
-#### 1.1.2
-
-Ghostty 1.1.2 is a hotfix to fix a critical regression from 1.1.1
-on macOS that caused control-modified keys to not work properly
-in programs using Kitty Keyboard protocol such as Neovim and Fish 4.0.
-
-This was released on the same day as 1.1.1, please see the
-[1.1.1 release notes](#installrelease-notes-111).
-
-> **Note:** **There are no changes in this release for Linux.** Package managers
-> can skip this release and stay on 1.1.1 until the next release if that
-> is more convenient.
-
-
-
-#### 1.1.1
-
-Ghostty 1.1.1 features **two weeks of work** with changes from
-**13 contributors** over **125 commits.** The focus of this release
-is on fixing regressions or bugs introduced as part of the 1.1.0
-release. We've also snuck in some nice improvements to existing
-features.
-
-> **Important:** A critical regression was found in Ghostty 1.1.1 on macOS that caused
-> control-modified keys to not work properly in programs using the Kitty
-> Keyboard protocol such as Neovim and Fish 4.0. This was fixed in
-> [1.1.2](#installrelease-notes-112).
-
-## Highlights
-
-### Server Side Decorations (SSD) on Linux X11
-
-PR:
-[#5533](https://github.com/ghostty-org/ghostty/pull/5533)
-
-Ghostty 1.1.0 introduced support for
-[server-side decorations (SSD) on Linux for Wayland compositors](#install-release-notes-1-1-0server-side-decorations-ssd)-on-linux).
-This allows Ghostty to look and feel
-more like a native application on a wider variety of desktop environments.
-Notably, however, this did not work on X11.
-
-With Ghostty 1.1.1, we've added support for SSD on X11 as well when
-`window-decoration = server`. X11 doesn't provide a standard way to
-tell us if it prefers SSD or client-side decorations (CSD), so SSD on
-X11 only works with the explicit `server` configuration and does not work
-with the `auto` value.
-
-### Continued Input Method Editor (IME) Improvements
-
-PR:
-[#5550](https://github.com/ghostty-org/ghostty/pull/5550)
-[#5448](https://github.com/ghostty-org/ghostty/pull/5448)
-
-A lot of effort went into Ghostty 1.1.0 to improve IME support, but
-ironically broke the scenario where no input method was active (the
-GTK "simple" input method). This has been fixed in 1.1.1.
-A workaround in 1.1.0 was to install `ibus` or `fcitx`. This is no
-longer necessary, and the "simple" input method should work as expected.
-
-Additionally, on macOS, improved IME support regressed the ability for
-certain keyboard layouts to input control characters (e.g. `ctrl+c`).
-This has been fixed in 1.1.1.
-
-### macOS: Renderer Improvements for Intel GPUs
-
-PR:
-[#5625](https://github.com/ghostty-org/ghostty/pull/5625),
-[#5652](https://github.com/ghostty-org/ghostty/pull/5652)
-
-It turns out Ghostty was triggering undefined behavior on macOS
-when using discrete GPUs. Practically, this only affected Intel Macs because
-all Apple Silicon Macs have integrated GPUs and Ghostty will always prefer
-an integrated GPU if available for power efficiency.
-
-The undefined behavior would sometimes work but sometimes result in rendering
-artifacts or other strange visual behaviors. We now properly detect
-discrete GPUs and use the proper APIs and behaviors to avoid undefined
-behavior.
-
-## Full List
-
-[Full list of closed issues on GitHub](https://github.com/ghostty-org/ghostty/milestone/4?closed=1).
-
-In each section, we try to sort improvements before bug fixes.
-
-- `goto_split` and `goto_tab` now work properly with the `performable:`
-  keybind prefix.
-  [#5644](https://github.com/ghostty-org/ghostty/issues/5644)
-- The `+list-actions` CLI command now includes actions that have no
-  associated documentation.
-  [#4958](https://github.com/ghostty-org/ghostty/issues/4958)
-- Added keyboard navigation to the terminal IO window for the
-  terminal inspector.
-  [#3909](https://github.com/ghostty-org/ghostty/issues/3909)
-- Fix a crash that could occur when resetting the terminal with
-  Kitty graphics on the screen.
-  [#5693](https://github.com/ghostty-org/ghostty/issues/5693)
-- Fix a crash that could occur with very large OSC8 hyperlinks. There
-  are likely other scenarios where this crash could be triggered but
-  the entire class of crash has been resolved.
-  [#5666](https://github.com/ghostty-org/ghostty/issues/5666)
-- Fix an issue where the character under the cursor would not be visible
-  when the cursor color matched the background color.
-  [#5570](https://github.com/ghostty-org/ghostty/issues/5570)
-- Fix crashes that could occur when loading themes that were not files.
-  [#5632](https://github.com/ghostty-org/ghostty/issues/5632)
-- iTerm2 color themes updated to
-  [db227d159](https://github.com/mbadolato/iTerm2-Color-Schemes/tree/db227d159adc265818f2e898da0f70ef8d7b580e)
-  [#5511](https://github.com/ghostty-org/ghostty/pull/5511)
-
-### macOS
-
-- macOS: Add a handful of new alternate artist-drawn icon choices.
-  These can be set using the `macos-icon` configuration.
-  [#5696](https://github.com/ghostty-org/ghostty/issues/5696)
-- macOS: Place the window at the location of the last focused window
-  on startup, following the behavior of other native macOS applications.
-  [#5529](https://github.com/ghostty-org/ghostty/issues/5529)
-- macOS: Close confirmation now appears if there is an active but
-  hidden quick terminal that requires close confirmation.
-  [#5450](https://github.com/ghostty-org/ghostty/issues/5450)
-- macOS: Fix control characters not working with certain keyboard layouts.
-  [#5448](https://github.com/ghostty-org/ghostty/issues/5448)
-- macOS: Fix graphical flickering when invoking the `move_tab` keybind.
-  [#5729](https://github.com/ghostty-org/ghostty/issues/5729)
-- macOS: `toggle_visibility` now restores focus to the proper tab
-  when called from a global keybind.
-  [#5692](https://github.com/ghostty-org/ghostty/issues/5692)
-- macOS: Fixed an issue where some command characters such as
-  `cmd+backtick` would leak the unmodified character into the terminal.
-  [#5558](https://github.com/ghostty-org/ghostty/issues/5558)
-- macOS: `toggle_visibility` no longer has any effect while the window
-  is in native fullscreen. Previously, it would cause the window to
-  lose focus.
-  [#5472](https://github.com/ghostty-org/ghostty/issues/5472)
-- macOS: Fix undefined behavior for discrete GPUs.
-  [#5625](https://github.com/ghostty-org/ghostty/issues/5625)
-- macOS: Update our Sparkle dependency to 2.6.4 to fix security issues.
-  [#5598](https://github.com/ghostty-org/ghostty/issues/5598)
-
-### Linux (GTK)
-
-- GTK: Server-side decorations (SSD) now work on X11.
-  [#5533](https://github.com/ghostty-org/ghostty/pull/5533)
-- GTK: Set the `WINDOWID` environment variable to the X11 window ID.
-  [#5650](https://github.com/ghostty-org/ghostty/issues/5650)
-- GTK: Fix incorrect context menu location in certain circumstances.
-  [#5710](https://github.com/ghostty-org/ghostty/issues/5710)
-- GTK: The "simple" input method now works properly.
-  [#5550](https://github.com/ghostty-org/ghostty/pull/5550)
-- GTK: Add option to disable color management to workaround GTK bugs.
-  [#5593](https://github.com/ghostty-org/ghostty/issues/5593)
-- GTK: `window-decoration=none` works properly on GNOME
-  [#5463](https://github.com/ghostty-org/ghostty/pull/5463)
-- GTK: Remove CSD styling such as borders when CSDs are not
-  in use.
-  [#5581](https://github.com/ghostty-org/ghostty/issues/5581)
-- GTK: Nautilus integration now uses a properly named file.
-  [#5469](https://github.com/ghostty-org/ghostty/pull/5469)
-- GTK: Close cgroup file descriptor after clone to prevent a
-  small fd leak.
-  [#5515](https://github.com/ghostty-org/ghostty/issues/5515)
-
-### Changes for Package Maintainers
-
-- A new Zig dependency [`zig-gobject`](https://github.com/ianprime0509/zig-gobject)
-  was introduced. This is licensed 0BSD. The introduction of this dependency
-  does not change the existing process for packaging Ghostty.
-
-## Roadmap
-
-At the time of this release, we do not plan to have followup patch releases.
-We believe the remaining bugs are minor and can be addressed as part of
-a future, larger 1.2.0 release. We will continue to monitor the issue
-tracker and pull requests for any critical issues that may arise.
-
-The focus will shift to the 1.2.0 release. This will be a larger release
-with more significant changes and features. The timeline for this release
-is not yet determined, but is likely to be several months away.
-
-One major breaking change planned with 1.2.0 for Linux is to require
-`libadwaita`. We announced this intention as part of the 1.1.0 release
-and have asked for feedback if this is an issue. Before providing feedback,
-please
-[carefully read the details about this change](#install-release-notes-1-1-0gtk-forcing-a-dependency-on-libadwaita).
-
-
-
-#### 1.1.0
-
-Ghostty 1.1.0 features **1 month of work** with changes from
-**84 contributors** over **564 commits.** The focus of this release
-remains on critical bug fixes and quality of life improvements based
-on feedback from the initial 1.0 release.
-
-## Security
-
-- [GHSA-98wc-794w-gjx3](https://github.com/ghostty-org/ghostty/security/advisories/GHSA-98wc-794w-gjx3).
-  Fixed an issue where Ghostty would leak some file descriptors to the
-  running shell or command.
-
-## Highlights
-
-### Server Side Decorations (SSD) on Linux
-
-PR:
-[#4630](https://github.com/ghostty-org/ghostty/pull/4630),
-[#4723](https://github.com/ghostty-org/ghostty/pull/4723),
-[#5124](https://github.com/ghostty-org/ghostty/pull/5124)
-
-On Linux in particular, window decorations have a wide variety of
-styles and behaviors. Ghostty's previous behavior was to always use
-client-side decorations (CSD), which made Ghostty look and feel too
-much like a "GNOME" application. In particular, Ghostty looked out of
-place on popular desktop environments like KDE Plasma.
-
-Ghostty 1.1 on Linux now supports server-side decorations (SSD) for
-compositors that support it. This allows Ghostty to look and feel more
-like a native application on a wider variety of desktop environments.
-This can be disabled if you prefer CSD or no decorations at all.
-
-<p align="center">
-  <a href="/images/1-1-0/csd.png" target="_blank">
-    <img src="/images/1-1-0/csd.png" width="360" style={{maxWidth: "50%", marginInline: "5px"}} />
-  </a>
-  <a href="/images/1-1-0/ssd.png" target="_blank">
-    <img src="/images/1-1-0/ssd.png" width="360" style={{maxWidth: "50%", marginInline: "5px"}} />
-  </a>
-</p>
-
-(Left/Top: Old Client-Side Decorations, Right/Bottom: New Server-Side Decorations)
-
-The `window-decoration` configuration option now has a new value `auto`
-which will use SSD if the compositor supports it and prefers it. A value
-of `server` will force SSD (if available). A value of `client` will force
-client-side decorations. And a value of `none` will disable decorations
-entirely.
-
-SSD is only supported on Wayland. Ghostty uses the
-[KDE Server Decoration](https://wayland.app/protocols/kde-server-decoration)
-protocol. Despite the name, this protocol is supported on almost every
-major Wayland compositor, not just KDE. For X11, we could not find a
-well-supported protocol for SSD, so we continue to use CSD.
-
-Future versions of Ghostty will continue to improve the native look and
-feel across different desktop environments in Linux to the best of our
-ability and protocol availability. For example, we're looking into native
-menu bars, currently.
-
-> **Important:** Future versions of Ghostty will remove the `gtk-adwaita` option
-> and force a dependency on libadwaita. This is relevant to this change
-> because we found the vast majority of users who wanted SSD were using
-> `gtk-adwaita = false` to achieve this (which only worked in some cases).
-> With the new SSD support, this workaround is no longer necessary.
-> See [the dedication section](#gtk:-forcing-a-dependency-on-libadwaita) for more
-> details.
-
-### Input Method Editor (IME) Improvements
-
-PR:
-[#3567](https://github.com/ghostty-org/ghostty/pull/3567),
-[#4332](https://github.com/ghostty-org/ghostty/pull/4332),
-[#4539](https://github.com/ghostty-org/ghostty/issues/4539),
-[#4854](https://github.com/ghostty-org/ghostty/pull/4854),
-[#4933](https://github.com/ghostty-org/ghostty/pull/4933),
-[#4999](https://github.com/ghostty-org/ghostty/pull/4999)
-
-For both macOS and Linux, we've tested IME with the following
-paradigms: CJK (Chinese, Japanese, Korean), dead keys (such as
-accented characters), emoji, Unicode hex input, and more and
-have massively improved the reliability and consistency of IME
-input.
-
-On Linux, we've tested both `fcitx` and `ibus` under both X11 and
-Wayland. We also tested multiple versions of each (in particular
-versions that are common in LTS distributions). We found a bug in
-ibus 1.5.29 that caused deadkey input to become "stuck" and worked
-around it.
-
-On macOS, we've ensured in particular that the AquaSKK and macSKK
-Japanese language input methods work out of the box, although we've
-also tested other IMEs and found them to work well as well.
-
-### "Performable" Keybindings
-
-PR:
-[#4328](https://github.com/ghostty-org/ghostty/pull/4328)
-
-Keybinds support a new `performable:` prefix. This prefix indicates that
-the keybind should only consume the input if the action is performed.
-
-For example, the keybind below will only consume `ctrl+c` if there is
-text able to be copied. Otherwise, `ctrl+c` will be passed to the shell
-(typically causing an interrupt signal).
-
-```
-keybind = performable:ctrl+c=copy_to_clipboard
-```
-
-> **Note:** Not all actions support `performable:`. Namely, many actions are always
-> performed (e.g. `text`, `new_tab`, etc.). The performable prefix only
-> applies to actions that have a meaningful "perform" state.
-
-### macOS: Alpha Blending Improvements
-
-PR:
-[#4913](https://github.com/ghostty-org/ghostty/pull/4913),
-[#5401](https://github.com/ghostty-org/ghostty/pull/5401)
-
-Alpha blending is the process of determining the result when a semi-transparent
-foreground color is placed in front of a background color. This affects the
-edges of text, and any images (displayed with Kitty Graphic Protocol) which
-have transparency in them.
-
-Before, this was performed by blending colors in the sRGB color space, which
-causes darkening around the edges of text when the foreground and background
-colors are different highly saturated colors. With Ghostty 1.1 on macOS, alpha
-blending is now performed in the P3 color space by default, which reduces the
-darkening issue thanks to the wider gamut and matches the appearance of native
-macOS applications like Terminal.app and TextEdit.
-
-Additionally, a configuration, `alpha-blending`, has been added to control this.
-The default is `native`, which has been described, but two more options are
-available:
-
-- `linear` performs blending in a linear color space, which is technically
-correct but has downsides like dark text seeming too thin and light text
-seeming too thick.
-- `linear-corrected` is like `linear` but applies a correction step to text
-which makes it appear extremely close to `native`, but without _any_ darkening
-problems.
-
-Below you can compare (from left to right) the old blending, the new `native`
-blending, `linear` blending, and `linear-corrected` blending. You may have to
-zoom in to see the differences correctly.
-
-<p align="center">
-  <img src="/images/1-1-0/srgb_blending.png" width="180" style={{maxWidth: "20%", marginInline: "5px"}} />
-  <img src="/images/1-1-0/p3_blending.png"  width="180" style={{maxWidth: "20%", marginInline: "5px"}} />
-  <img src="/images/1-1-0/linear_blending.png" width="180" style={{maxWidth: "20%", marginInline: "5px"}} />
-  <img src="/images/1-1-0/linear-corrected_blending.png" width="180" style={{maxWidth: "20%", marginInline: "5px"}} />
-</p>
-
-This is currently only available on macOS, but work is underway which should
-bring it to Linux as well in the future.
-
-### macOS: Quick Terminal Improvements
-
-PR:
-[#4049](https://github.com/ghostty-org/ghostty/pull/4049),
-[#4501](https://github.com/ghostty-org/ghostty/pull/4501),
-[#4999](https://github.com/ghostty-org/ghostty/pull/4999),
-[#5361](https://github.com/ghostty-org/ghostty/pull/5361)
-
-The quick terminal now works with native fullscreen windows,
-space changes while the quick terminal is open, IME widgets, left/right
-docks, and more.
-
-A new configuration `quick-terminal-space-behavior` has been added to
-control how the quick terminal reacts to changing macOS spaces while it
-is open. The default behavior is to follow the active space (`move`).
-You can also set it to `remain` to stay on the space it was opened on.
-
-## Full List
-
-[Full list of closed issues on GitHub](https://github.com/ghostty-org/ghostty/milestone/3?closed=1).
-
-In each section, we try to sort improvements before bug fixes.
-
-- Add the new `performable:` prefix to keybindings to only consume
-  the input if the action is performed. See
-  ["Performable" Keybindings](#%22performable%22-keybindings).
-  [#4328](https://github.com/ghostty-org/ghostty/pull/4328)
-- `shell-integration-features` now sets the proper environment variables
-  even when `shell-integration` is disabled. This is useful for environments
-  that manually source shell integration.
-  [#5046](https://github.com/ghostty-org/ghostty/pull/5046)
-- A new keybinding action `copy_url_to_clipboard` is available to copy
-  the URL (if any) under the cursor to the clipboard.
-  [#4633](https://github.com/ghostty-org/ghostty/pull/4633)
-- A new keybinding action `close_tab` can be used to close the tab and
-  all splits within the tab. This works on both macOS and GTK builds.
-  [#4331](https://github.com/ghostty-org/ghostty/pull/4331)
-- Update default `ctrl+shift+j`/`ctrl+shift+alt+j` keybindings to capture full
-  screen contents.
-  [#5285](https://github.com/ghostty-org/ghostty/pull/5285)
-- IPv6 URLs are now automatically turned into hyperlinks.
-  [#4743](https://github.com/ghostty-org/ghostty/issues/4743)
-- Filepaths without an explicit `file://` protocol can now be clicked
-  like any other hyperlink.
-  [#4713](https://github.com/ghostty-org/ghostty/issues/4713)
-- New configuration `split-divider-color` to explicitly set the divider
-  color for splits. If this is not set, the previous default behavior of
-  automatically determining the color based on your terminal background
-  color is used.
-  [#4236](https://github.com/ghostty-org/ghostty/issues/4326)
-- The `palette` configuration option now allows binary, octal, and hexadecimal
-  keys.
-  [#4298](https://github.com/ghostty-org/ghostty/issues/4298)
-- `goto_split` keybind parameter `top` and `bottom` have been renamed to
-  `up` and `down`, respectively. The old names are still supported for
-  backwards compatibility.
-  [#3427](https://github.com/ghostty-org/ghostty/pull/3427)
-- bash: use `\w` instead of `$PWD` for abbreviated titles.
-  [#4656](https://github.com/ghostty-org/ghostty/pull/4656)
-- bash: drop dependency on `sed`, which significantly reduces
-  per-prompt overhead
-  [#5141](https://github.com/ghostty-org/ghostty/pull/5141),
-  [#5142](https://github.com/ghostty-org/ghostty/pull/5142)
-- fish: fix sudo integration
-  [#5276](https://github.com/ghostty-org/ghostty/pull/5276)
-- Fix scenario where CPU would spin at 100% if `wait-after-command` was enabled.
-  [#4884](https://github.com/ghostty-org/ghostty/pull/4884)
-- Fix a possible memory corruption race condition when the renderer grid
-  size and terminal grid size mismatched.
-  [#5265](https://github.com/ghostty-org/ghostty/pull/5265)
-- Triple-click-and-drag now works when the triple click starts from a
-  blank line.
-  [#5068](https://github.com/ghostty-org/ghostty/pull/5068)
-- `super+triple-click` properly selects command output if the command line
-  wrapped.
-  [#5373](https://github.com/ghostty-org/ghostty/issues/5373)
-- vt: Fix incorrect alpha blending for Kitty image protocol.
-  [#5189](https://github.com/ghostty-org/ghostty/pull/5189)
-- vt: More robust and correct handling of mixed semicolon and colon
-  usage in SGR sequences. Practically, fixes some styling within the
-  Kakoune editor.
-  [#5022](https://github.com/ghostty-org/ghostty/pull/5022)
-- The `cursor-invert-fg-bg` option now works well with the invert VT sequence.
-  [#4777](https://github.com/ghostty-org/ghostty/issues/4777)
-- Remove `VTE_VERSION` from environment prior to executing shell. This
-  fixes issues where VTE's shell integration would mistakenly think Ghostty
-  was libvte-based.
-  [#4710](https://github.com/ghostty-org/ghostty/issues/4710)
-- Fix an issue that didn't allow an initial window size smaller than
-  `640x480`
-  [#4688](https://github.com/ghostty-org/ghostty/issues/4688)
-- vt: ConEmu OSC `9;4` parsing better matches ConEmu logic, fixing an
-  issue with some versions of systemd.
-  [#4727](https://github.com/ghostty-org/ghostty/issues/4727)
-- The `unbind` keybind action now also unbinds any matching physical
-  mapping.
-  [#4703](https://github.com/ghostty-org/ghostty/issues/4703)
-- Non-existent `config-file` now properly shows an error when `theme`
-  is also set.
-  [#4509](https://github.com/ghostty-org/ghostty/issues/4509)
-- vt: ConEmu OSC `9;1`, `9;2`, `9;3`, `9;5` are now parsed and ignored so they
-  don't conflict with OSC 9 desktop notifications.
-  [#4644](https://github.com/ghostty-org/ghostty/issues/4644),
-  [#4327](https://github.com/ghostty-org/ghostty/issues/4327),
-  [#4948](https://github.com/ghostty-org/ghostty/issues/4948),
-  [#4447](https://github.com/ghostty-org/ghostty/issues/4447)
-- Inspector: Memory values now specify units rather than raw bytes
-  [#4549](https://github.com/ghostty-org/ghostty/issues/4549)
-- Fix control sequence (e.g. `ctrl+c`) encoding in legacy mode for
-  various keyboard layouts such as Russian.
-  [#4518](https://github.com/ghostty-org/ghostty/issues/4518)
-- vt: Kitty graphics protocol temporary files must be named according to
-  the specification.
-  [#4451](https://github.com/ghostty-org/ghostty/issues/4451)
-- The default file limit (`RLIMIT_NOFILE`) is restored for the executed
-  shell or command.
-  [#4241](https://github.com/ghostty-org/ghostty/issues/4241)
-- Multiple `font-feature` values can be comma-separated. Previously,
-  you had to repeat `font-feature` multiple times. This is still supported.
-  [#3128](https://github.com/ghostty-org/ghostty/issues/3128)
-- vt: CSI intermediate bytes are now validated for all supported CSI
-  sequences.
-  [#3122](https://github.com/ghostty-org/ghostty/issues/3122)
-- Selected text no longer remains after a `clear_screen` keybinding.
-  [#3414](https://github.com/ghostty-org/ghostty/issues/3414)
-- Tilde (`~`) in filepaths now expands to the user's home directory
-  in path-typed configuration values.
-  [#3328](https://github.com/ghostty-org/ghostty/issues/3328)
-- Cache data now respects `XDG_CACHE_HOME`.
-  [#3458](https://github.com/ghostty-org/ghostty/pull/3458)
-- Default configuration file will now be created even if the parent
-  directories do not exist.
-  [#4295](https://github.com/ghostty-org/ghostty/pull/4295)
-- Inspector: Font size now shows fractional values.
-  [#4371](https://github.com/ghostty-org/ghostty/pull/4371)
-
-### macOS
-
-- macOS: Consistent and correct alpha blending for correct colors.
-  Options for matching Apple-style alpha blending as well as an
-  experimental "linear" blending mode that we think produces better
-  results for certain foreground/background color combinations.
-  See [macOS Alpha Blending Improvements](#macos-alpha-blending-improvements).
-  [#4913](https://github.com/ghostty-org/ghostty/pull/4913)
-- macOS: New config option `quick-terminal-space-behavior` to configure
-  how the quick terminal reacts to changing macOS spaces while it is open.
-  The default behavior is to follow the active space (remain open).
-  [#4049](https://github.com/ghostty-org/ghostty/pull/4049)
-- macOS: Selection clipboard is now supported. The `copy-on-select` option
-  now defaults to true for macOS. A new "Paste Selection" menu item is
-  available on macOS. This behavior matches Terminal.app.
-  [#4733](https://github.com/ghostty-org/ghostty/pull/4733)
-- macOS: A very short delay has been introduced for the default window
-  title to prevent a FOUC ("flash of unknown content") for new surfaces.
-  [#4799](https://github.com/ghostty-org/ghostty/pull/4799)
-- macOS: `font-thicken` now accepts an optional numeric value to adjust
-  the thickening factor.
-  [#4531](https://github.com/ghostty-org/ghostty/issues/4531)
-- macOS: Explicit Ghostty keybindings now take priority over
-  system keybindings (e.g. `cmd+h` can now be bound).
-  [#4591](https://github.com/ghostty-org/ghostty/issues/4591)
-- macOS: Non-boolean `font-feature` values such as `cv02 = 2` are now
-  supported.
-  [#3128](https://github.com/ghostty-org/ghostty/issues/3128)
-- macOS: Cache data now uses macOS system APIs to store data in the
-  OS-configured cache directory (typically `~/Library/Caches`).
-  [#3458](https://github.com/ghostty-org/ghostty/pull/3458)
-- macOS: Autohide the dock if the quick terminal would overlap with it.
-  [#5361](https://github.com/ghostty-org/ghostty/pull/5361)
-- macOS: Fix zombie processes leaking when the shell or command exits
-  before the containing UI is closed.
-  [#4554](https://github.com/ghostty-org/ghostty/pull/4554)
-- macOS: Hyperlinks in the top-left no loner appear hovered when
-  command is held anywhere outside the window.
-  [#5252](https://github.com/ghostty-org/ghostty/pull/5252)
-- macOS: When `macos-titlebar-style = hidden`, the titlebar area
-  can no longer be used to drag the window. You must now use option+drag
-  (standard macOS bindings) in the resize area.
-  [#2523](https://github.com/ghostty-org/ghostty/pull/2523)
-- macOS: Closing a tab with Stage Manager enabled no longer causes
-  Ghostty to lose focus.
-  [#5108](https://github.com/ghostty-org/ghostty/pull/5108)
-- macOS: Fix "background flash" for new and resized terminals.
-  [#5083](https://github.com/ghostty-org/ghostty/pull/5083)
-- macOS: Filepaths are shell escaped when files, URLs, are pasted.
-  [#5036](https://github.com/ghostty-org/ghostty/pull/5036)
-- macOS: Quick terminal no longer covers IME widget.
-  [#4999](https://github.com/ghostty-org/ghostty/pull/4999)
-- macOS: Text can now be dragged onto the terminal.
-  [#4932](https://github.com/ghostty-org/ghostty/pull/4932)
-- macOS: IME window position is now correct when `window-padding` is set.
-  [#4933](https://github.com/ghostty-org/ghostty/pull/4933)
-- macOS: Pasting multiple files now separates their path by a space
-  instead of a newline.
-  [#4956](https://github.com/ghostty-org/ghostty/pull/4956)
-- macOS: `toggle_visibility` no longer separates tabs from their parent
-  window.
-  [#4329](https://github.com/ghostty-org/ghostty/pull/4329)
-- macOS: Control-characters such as `ctrl+h` now work as expected for
-  input method editors (IME).
-  [#4854](https://github.com/ghostty-org/ghostty/pull/4854)
-- macOS: Fix crash when `window-step-resize` was used in conjunction with
-  an overly large initial window size.
-  [#4801](https://github.com/ghostty-org/ghostty/pull/4801)
-- macOS: Quick terminal now properly overlays native fullscreen windows.
-  [#4049](https://github.com/ghostty-org/ghostty/pull/4049)
-- macOS: Add strings for more macOS system permission requests that can
-  be triggered by child processes (e.g. Bluetooth access).
-  [#4668](https://github.com/ghostty-org/ghostty/issues/4668)
-- macOS: `new_tab` keybinding without any windows creates a new window.
-  [#4691](https://github.com/ghostty-org/ghostty/issues/4691)
-- macOS: Fix a retain cycle that prevented the `NSWindow` from being
-  released when closed.
-  [#4689](https://github.com/ghostty-org/ghostty/issues/4689)
-- macOS: Preedit text no longer disappears when a modifier key is pressed.
-  [#4634](https://github.com/ghostty-org/ghostty/issues/4634)
-- macOS: AquaSKK/macSKK Japanese language input methods now work.
-  [#4539](https://github.com/ghostty-org/ghostty/issues/4539)
-- macOS: Quick terminal now appears in the correct location with certain
-  multi-monitor configurations.
-  [#4501](https://github.com/ghostty-org/ghostty/issues/4501)
-- macOS: `command+<key>` release events are now properly encoded for
-  the Kitty keyboard protocol.
-  [#4591](https://github.com/ghostty-org/ghostty/issues/4591)
-- macOS: `cmd+period` and other keybinds can now be bound.
-  [#4591](https://github.com/ghostty-org/ghostty/issues/4591)
-- macOS: Window borders with dark mode now match macOS styling.
-  [#4308](https://github.com/ghostty-org/ghostty/issues/4308)
-- macOS: Auto-update no longer defaults to on. On first run, Ghostty will
-  ask for your permission to check for updates. The `auto-update` option
-  can still be used to configure this.
-  [#4433](https://github.com/ghostty-org/ghostty/issues/4433)
-- macOS: New configurations `window-position-x` and `window-position-y`
-  can be used to set the initial window position.
-  [#3929](https://github.com/ghostty-org/ghostty/issues/3929)
-- macOS: `macos-titlebar-style = hidden` restores properly after exiting
-  non-native fullscreen.
-  [#3535](https://github.com/ghostty-org/ghostty/issues/3535)
-
-### Linux (GTK)
-
-- GTK: Support for server-side decorations (SSD) has been added.
-  This utilizes the existing `window-decoration` configuration option.
-  The new value is `auto` which will use SSD if the compositor supports
-  it and prefers it. A value of `server` will force SSD (if available).
-  A value of `client` will force client-side decorations. And a value
-  of `none` will disable decorations entirely.
-  See [Server Side Decorations (SSD) on Linux](#server-side-decorations-(ssd)-on-linux).
-  [#4630](https://github.com/ghostty-org/ghostty/pull/4630)
-- GTK(X11): `background-blur` is now supported for any window manager
-  that respects the `_KDE_NET_WM_BLUR_BEHIND_REGION` atom.
-  [#4403](https://github.com/ghostty-org/ghostty/issues/4403)
-- GTK(Wayland): `background-blur` is now supported for any compositor
-  supporting the `org_kde_kwin_blur_manager` protocol (namely, KDE).
-  [#4403](https://github.com/ghostty-org/ghostty/issues/4403)
-- GTK: Add new configuration `app-notifications` to control what toasts
-  are shown.
-  [#4460](https://github.com/ghostty-org/ghostty/pull/4460)
-- GTK: Multiple `custom-shader` values are now supported (matching macOS)
-  [#5037](https://github.com/ghostty-org/ghostty/pull/5037)
-- GTK: A new configuration option `gtk-titlebar-hide-when-maximized`
-  (default false) added to hide the titlebar when the window is maximized
-  (not fullscreen).
-  [#3381](https://github.com/ghostty-org/ghostty/pull/3381)
-- GTK: Ghostty can now be pinned in the dock or task manager for
-  supported desktop environments.
-  [#4930](https://github.com/ghostty-org/ghostty/pull/4930)
-- GTK: Dropping files and selected text now works and matches
-  macOS.
-  [#4211](https://github.com/ghostty-org/ghostty/pull/4211)
-- "Open in Ghostty" shortcut for Nautilus is now available
-  [#4816](https://github.com/ghostty-org/ghostty/pull/4816)
-
-- GTK: Fix adwaita tab bars appearing above the titlebar in some
-  older versions of libadwaita.
-  [#5410](https://github.com/ghostty-org/ghostty/issues/5410)
-- GTK: Fix slow startup times when XDG desktop portal is not available.
-  [#5064](https://github.com/ghostty-org/ghostty/pull/5064)
-- GTK: `fcitx` and `ibus` under both X11 and Wayland work.
-  [#4332](https://github.com/ghostty-org/ghostty/pull/4332)
-- GTK: Workaround bug in `ibus` 1.5.29 that caused deadkey input to
-  become "stuck."
-  [#3567](https://github.com/ghostty-org/ghostty/pull/3567)
-- GTK(X11): When a new window is initially maximized, the `_NET_WM_STATE`
-  atom is properly set so the titlebar properly reflects the maximized
-  state.
-  [#4646](https://github.com/ghostty-org/ghostty/pull/4646)
-- GTK: `last_tab` keybind action works
-  [#5004](https://github.com/ghostty-org/ghostty/pull/5004)
-- GTK: The titlebar is automatically hidden when the window is fullscreen
-  (and restored when the window exits fullscreen).
-  [#5008](https://github.com/ghostty-org/ghostty/pull/5008)
-- GTK: Mouse no longer appears when the title changes and
-  `mouse-hide-while-typing` is set.
-  [#3345](https://github.com/ghostty-org/ghostty/pull/3345)
-- GTK: Fix segfault that would happen with older libadwaita versions
-  when `ctrl+d` was used to exit a window.
-  [#4971](https://github.com/ghostty-org/ghostty/pull/4971)
-- GTK: Ensure close confirmation appears in more scenarios such as
-  pressing the "X" in the tab bar.
-  [#4234](https://github.com/ghostty-org/ghostty/pull/4234)
-- GTK: OpenGL debug logging is now disabled by default for release
-  builds but can be configured to be turned back on.
-  [#4662](https://github.com/ghostty-org/ghostty/pull/4662)
-- GTK: Windows with libadwaita enabled can now be sized smaller than
-  482x322.
-  [#4836](https://github.com/ghostty-org/ghostty/pull/4836)
-- GTK: Fix a handful of cases where compile-time version checks were
-  done instead of runtime, disabling behavior when we shouldn't have.
-  [#4783](https://github.com/ghostty-org/ghostty/issues/4783)
-- GTK: `window-title-font-family` now works (previously this was macOS-only)
-  [#4560](https://github.com/ghostty-org/ghostty/issues/4560)
-- GTK: Menu separator colors now match the system theme.
-  [#4421](https://github.com/ghostty-org/ghostty/issues/4421)
-- GTK: Fix issues with fractional scaling. The terminal should now appear
-  crisp on GTK displays with fractional scaling.
-  [#4255](https://github.com/ghostty-org/ghostty/issues/4255)
-- GTK: A new configuration `gtk-custom-css` allows loading custom CSS
-  to theme GTK elements.
-  [#4200](https://github.com/ghostty-org/ghostty/issues/4200)
-- GTK: `focus-follows-mouse` works properly with `goto_split` keybindings.
-  [#3229](https://github.com/ghostty-org/ghostty/issues/3229)
-- GTK: Use `gtk-xft-dpi` for font scaling on Wayland (previously
-  we only used the value for X11). This allows the GNOME "Large Text"
-  setting to work properly.
-  [#4424](https://github.com/ghostty-org/ghostty/pull/4424)
-- GTK: `ctrl+insert` and `shift+insert` bindings have been added as
-  secondary defaults for `copy` and `paste`, respectively.
-  [#2870](https://github.com/ghostty-org/ghostty/pull/2870)
-- GTK: Paste preview text is now monospace.
-  [#4227](https://github.com/ghostty-org/ghostty/pull/4227)
-
-### Changes for Package Maintainers
-
-> **Note:** All of the build changes are minor and should not impact previously
-> functional builds. Feel free to ignore these changes unless you're
-> simply curious about them.
-
-- Build: `-Dstrip` can be used to control binary stripping. Previously,
-  we automatically stripped release binaries. This can now be configured.
-  [#3945](https://github.com/ghostty-org/ghostty/issues/3945)
-- Build: `-Dsentry` can be used to explicitly enable or disable Sentry.
-  Linux builds by default have Sentry disabled. macOS builds by default
-  have Sentry enabled. Sentry only collects crash logs locally, it does
-  not transmit them via the network.
-  [#3934](https://github.com/ghostty-org/ghostty/issues/3934)
-- Build: Terminfo/Termcap sources are no longer installed by default.
-  Note the _compiled_ version is still properly installed so the terminfo
-  is available. Build flags `-Demit-terminfo` and `-Demit-termcap` can be
-  used to emit the source files.
-  [#5311](https://github.com/ghostty-org/ghostty/pull/5311)
-- Build: Fix incorrect libadwaita pkg-config name.
-  [#4818](https://github.com/ghostty-org/ghostty/pull/4818)
-
-## Roadmap
-
-We plan to release a version 1.1.1 to address some additional bugs that
-didn't quite make the 1.1.0 release. We don't expect this release to happen
-quickly unless any critical issues or regressions are raised. Therefore,
-we recommend all package managers to upgrade to 1.1.0 as quickly as possible.
-
-The focus for the next release will be to continue to resolve some issues
-with certain keyboard layouts along with some fundamental issues with
-`window-step-resize` on macOS. Additional unplanned functionality may
-be introduced if unexpected contributors appear (thank you!).
-
-We're reaching general wide-scale stability since our initial 1.0 release.
-I expect soon we'll move to even longer release cycles (months long) to
-allow the development team to focus on larger, more impactful features.
-
-### GTK: Forcing a Dependency on libadwaita
-
-Starting with Ghostty 1.2, we plan to remove the `gtk-adwaita` option
-and force a dependency on libadwaita. libadwaita is defaulted to on
-already so unless you've explicitly disabled it, this change should
-not affect you.
-
-> **Important:** **I expect for some this will be a controversial decision**,
-> so please read this section carefully to understand
-> our motivation and the diligence we've done in making this decision. If you
-> still have concerns, please reach out to us on GitHub or Discord.
-
-The primary use case for `gtk-adwaita = false` in earlier versions of Ghostty
-was to use it in concert with `window-decoration = none` to force some
-compositors to use server-side decorations (SSD). Note this didn't work
-in all cases and was never an explicit configuration goal; it just happened
-to work in some cases. With the introduction of
-[explicit SSD support](#server-side-decorations-(ssd)-on-linux)
-in Ghostty 1.1, _this workaround is no longer necessary_.
-
-Another use case for `gtk-adwaita = false` was in relation to theming.
-Ghostty 1.1 introduces a
-[`gtk-custom-css` option](https://github.com/ghostty-org/ghostty/issues/4200)
-to easily inject custom CSS to theme GTK elements. We also introduced
-more easily targetable class names across our GTK widgets. You could always
-use system-wide CSS to theme Ghostty, but this new option makes it easier
-to test and apply custom CSS specific to Ghostty.
-
-For Ghostty maintainers, maintaining "classic GTK" and "libadwaita" code
-paths is a significant burden, especially in addition to differences in
-behavior across GTK and Adwaita versions and the complex interactions
-of various Ghostty configurations (all the `gtk-` and `adw-` prefixed
-options). This has led to a number of bugs and regressions that are
-difficult to fix and test without expensive and complex CI setups.
-
-With the SSD support in Ghostty 1.1 and the primary use case for
-`gtk-adwaita = false` no longer necessary, we believe now is a good
-time to make this change. We believe this will result in a more stable,
-more maintainable, and more feature-rich Ghostty in the future (the last
-point because we can go all-in on libadwaita features).
-
-To better feel confident in this decision, we've also reached out directly
-to non-GNOME users of Ghostty as well as non-Ghostty users who complained
-about the look and feel of Ghostty (namely: bloggers, streamers, and
-YouTubers). The feedback was unanimously supportive of this change,
-understanding the reasoning and the benefits it would bring and acknowledging
-that explicit SSD support addresses the major concerns.
-
-If you have strong opinions on this change, please reach out to us
-on Discord or GitHub. Please justify your argument with specific use cases
-and scenarios where this change would negatively impact you. Please do not
-just say "I don't like it" without providing a reason; it's not helpful.
-We are open to feedback and will consider it carefully. Thank you!
-
-
-
-#### 1.0.1
-
-## Security
-
-- [GHSA-5hcq-3j4q-4v6p](https://github.com/ghostty-org/ghostty/security/advisories/GHSA-5hcq-3j4q-4v6p).
-  Fixed a security vulnerability where Ghostty was improperly handling
-  window title sequences in such a way that could lead to arbitrary code
-  execution (required user interaction).
-
-- [GHSA-hfg5-8q2c-crhc](https://github.com/ghostty-org/ghostty/security/advisories/GHSA-hfg5-8q2c-crhc).
-  The file created with `write_*_file` keybind actions previously defaulted to
-  mode `0644` allowing any local user to read the file. The file now defaults
-  to mode `0600` to prevent unauthorized access.
-
-## Highlights
-
-### Default Configuration File
-
-PR: [#3460](https://github.com/ghostty-org/ghostty/pull/3460)
-
-Ghostty will now create a default configuration file on launch if no
-non-empty configuration files are found. In line with our
-[zero configuration philosophy](#configzero-configuration-philosophy),
-the default configuration file only has comments, but the comments help
-educate users on file location, syntax, and documentation.
-
-For the 1.0.0 release, we noticed there was a significant amount of confusion
-about where the configuration file was located, how to edit it, and what
-options were available. This change is intended to help users better
-understand how to configure Ghostty.
-
-### Bitmap Font Support
-
-PR: [#4115](https://github.com/ghostty-org/ghostty/pull/4115) (CoreText),
-[#3837](https://github.com/ghostty-org/ghostty/pull/3837) (Freetype)
-
-Ghostty now supports bitmap fonts on both macOS and Linux. Bitmap fonts
-must still be in truetype format, but may contain bitmaps for each glyph
-instead of outlines.
-
-### macOS: "Settings" Improvements
-
-PR: [#4004](https://github.com/ghostty-org/ghostty/pull/4004)
-
-The "Settings" menu option (`open_config` keybinding action) has
-improved in several ways.
-
-First, Ghostty now finds the first non-empty configuration file to open
-if one exists. Previously, Ghostty would always open the XDG configuration
-path first, even if the AppSupport path existed. This led to confusion because
-the AppSupport path overrides the XDG path. Now, Ghostty will open the
-AppSupport path if it exists, and if not, it will open the XDG path.
-
-Second, Ghostty now properly prioritizes opening the AppSupport path over
-the XDG path if neither path exists. This is important because the AppSupport
-path overrides all other paths on macOS.
-
-Third, Ghostty now uses the `-t` flag with `open` to open the configuration
-file in a text editor.
-
-> **Note:** A future update will allow users to use their `$EDITOR` to open the
-> configuration file. And another future update will allow users to use
-> a GUI to modify the configuration file.
-
-## Improvements
-
-- Color values now accept shorthand hex values (e.g. `#ABC`).
-  [#4111](https://github.com/ghostty-org/ghostty/issues/4111)
-- `confirm-close-surface` can now be set to `always` to always show the
-  confirmation dialog when closing a window.
-  [#3700](https://github.com/ghostty-org/ghostty/pull/3700)
-- macOS: Add "terminal" keyword to the Spotlight search metadata.
-  [#3745](https://github.com/ghostty-org/ghostty/pull/3745)
-- GTK: Add `window-titlebar-foreground` and `window-titlebar-background`
-  configuration options.
-  [#3806](https://github.com/ghostty-org/ghostty/pull/3806)
-- Bundled iTerm2 color schemes updated to
-  [e030599a](https://github.com/mbadolato/iTerm2-Color-Schemes/tree/e030599a6a6e19fcd1ea047c7714021170129d56).
-
-## Bug Fixes
-
-[Full list of closed issues on GitHub](https://github.com/ghostty-org/ghostty/milestone/2?closed=1).
-
-- keybinds with triggers that map to a key are now treated as a translated
-  key and not a unicode trigger, i.e. `cmd+1` now works in addition to
-  `cmd+one` and `cmd+.` is the same as `cmd+period`.
-  [#4147](https://github.com/ghostty-org/ghostty/pull/4147)
-- `write_selection_file` would sometimes write empty contents.
-  [#4078](https://github.com/ghostty-org/ghostty/pull/4078)
-- Hyperlinks within TUI applications are more stable.
-  [#3903](https://github.com/ghostty-org/ghostty/pull/3903)
-- Reloading configuration no longer overrides OSC 10/11/12.
-  [#3228](https://github.com/ghostty-org/ghostty/pull/3228)
-- `scrollback-limit` configuration now accepts numbers larger than 32-bit.
-  [#3906](https://github.com/ghostty-org/ghostty/pull/3906)
-- Fix issues `background-opacity` on both macOS and Linux.
-  [#3347](https://github.com/ghostty-org/ghostty/pull/3347)
-- Fix a crash that could happen if `--font-family=""` was set specifically
-  on the command-line.
-  [#4151](https://github.com/ghostty-org/ghostty/pull/4151)
-- vt: mode 2031 DSR reports are no longer sent for OSC 10/11/12 in
-  accordance with the updated specification.
-  [#3994](https://github.com/ghostty-org/ghostty/pull/3994)
-- vt: fix direct-color parsing edge cases
-  [#4216](https://github.com/ghostty-org/ghostty/pull/4216)
-- bash: shell integration works better with `sudo` aliases.
-  [#4080](https://github.com/ghostty-org/ghostty/pull/4080)
-
-### macOS
-
-- macOS: Fixed a resource leak where windows were not fully destroyed.
-  [#4128](https://github.com/ghostty-org/ghostty/pull/4128)
-- macOS: Fixed an issue where `toggle_visibility` would bring up unusable
-  "ghost windows" in certain circumstances. [#3219](https://github.com/ghostty-org/ghostty/issues/3219)
-- macOS: Quick Terminal now works with `focus-follows-mouse`.
-  [#3337](https://github.com/ghostty-org/ghostty/issues/3337)
-- macOS: Titlebar is now opaque like the rest of Ghostty when fullscreen.
-  [#3834](https://github.com/ghostty-org/ghostty/pull/3834)
-- macOS: Exiting fullscreen now restores proper background opacity.
-  [#3553](https://github.com/ghostty-org/ghostty/issues/3553)
-- macOS: `open_config` action now prefers AppSupport path over XDG to
-  match loading priority.
-  [#3953](https://github.com/ghostty-org/ghostty/issues/3953)
-- macOS: `open_config` action now uses the `-t` flag with `open` so
-  that a text editor opens.
-  [#3284](https://github.com/ghostty-org/ghostty/issues/3284)
-- macOS: Fixed an issue that would sometimes cause the quick terminal
-  to consume 100% CPU, causing significant battery drain. The quick
-  terminal now idles with no CPU usage.
-  [#4055](https://github.com/ghostty-org/ghostty/pull/4055)
-- macOS: App bundle now contains the `nvim` directory.
-  [#3966](https://github.com/ghostty-org/ghostty/issues/3966)
-- macOS: Help menu item opens the Ghostty documentation.
-  [#3990](https://github.com/ghostty-org/ghostty/pull/3990)
-- macOS: Blur radius being unset now properly reloads at runtime.
-  [#3954](https://github.com/ghostty-org/ghostty/pull/3954)
-- macOS: Fix startup crash when `$HOME` was not writable.
-  [#3949](https://github.com/ghostty-org/ghostty/pull/3949)
-
-### Linux (GTK)
-
-- GTK: Detect proper system color scheme on older GTK versions by falling
-  back to a deprecated API if the recommended one is not available.
-  [#4035](https://github.com/ghostty-org/ghostty/pull/4035)
-- GTK: Fixed a broken window when both `gtk-titlebar=false` and
-  `gtk-tabs-location=hidden`.
-  [#3178](https://github.com/ghostty-org/ghostty/issues/3178)
-- GTK: Fix version comparison that was incorrectly detecting minimum
-  GTK versions for some features.
-  [#3977](https://github.com/ghostty-org/ghostty/pull/3977)
-- GTK: Install the 1024x1024 app icon for supporting desktop environments.
-  [#4003](https://github.com/ghostty-org/ghostty/pull/4003)
-- GTK: Fix artifacting issues when `window-decoration=false` and
-  `gtk-titlebar=true`.
-  [#3999](https://github.com/ghostty-org/ghostty/pull/3999)
-- GTK: Tab overview is now styled when `window-theme=ghostty`
-  (requires libadwaita 1.8).
-  [#3920](https://github.com/ghostty-org/ghostty/pull/3920)
-- GTK: Tab overview works even when `gtk-titlebar=false`.
-  [#3940](https://github.com/ghostty-org/ghostty/pull/3940)
-- GTK: Add a small delay to title changes to avoid flickering.
-  [#3746](https://github.com/ghostty-org/ghostty/pull/3746)
-- GTK: Add `xdg-terminal-exec` fields to the desktop file.
-  [#3853](https://github.com/ghostty-org/ghostty/pull/3853)
-- GTK: Support building against libgtk without X11 support.
-  [#3748](https://github.com/ghostty-org/ghostty/pull/3748)
-- GTK: Fix possible segfault when closing surfaces.
-  [#3694](https://github.com/ghostty-org/ghostty/pull/3694)
-
-## Changes for Package Maintainers
-
-- The Ghostty source tarball is now named `ghostty-${VERSION}.tar.gz`
-  (from `ghostty-source.tar.gz`) and extracts to a directory named
-  `ghostty-${VERSION}` (from `ghostty-source`). This better aligns with
-  standard source tarball conventions. The `PACKAGING.md` file has been
-  updated to reflect this change.
-  [#3490](https://github.com/ghostty-org/ghostty/pull/3490)
-- `DESTDIR` now works properly as documented in `PACKAGING.md`.
-  [#3426](https://github.com/ghostty-org/ghostty/pull/3426)
-
-## Known Issues
-
-Ghostty 1.0.1 still contains many known issues, but is considered stable
-for general, professional use.
-
-We are working hard to triage and resolve these issues. This release addresses
-what we felt were the most critical issues, especially given many people are
-about to return from holiday and get back to work.
-Please see the GitHub discussions and issue tracker for more information
-on known or newly discovered issues.
-
-## Roadmap
-
-We plan to release a version 1.0.2 in the near future. We don't want to
-get in the habit of releasing too many patch versions, but there are still
-a number of important issues discovered from our initial public release that
-we feel are important to resolve as quickly as possible.
-
-The major categories of issues we are looking into for 1.0.2 are keyboard
-input issues especially with non-US keyboard layouts, xterm compatibility
-issues, and GUI issues on both Linux and macOS.
-
-Long term, we plan to follow a general pattern of only releasing one or
-two patch versions after a significant release, followed by a months-long
-period of development towards the next significant release[^1]. This pattern
-will allow package maintainers to keep up with our releases and get them into
-distribution channels without too much churn, and allow maintainers to focus
-on new features and improvements.
-
-[^1]: Barring any critical issues or security advisories that require
-      immediate attention.
-
-
-
+<a id="config"></a>
 ## Configuration
 
 
+<a id="config"></a>
 ### Configuration
 
 ## Zero Configuration Philosophy
@@ -3699,7 +1089,7 @@ options besides the website. All locations are identical (they're all
 generated from the same source).
 
 > **Tip:** The online reference documentation
-> [is available here](#config-option-reference).
+> [is available here](#config-reference).
 
 1. There are HTML and Markdown formatted docs in the
    `$prefix/share/ghostty/docs` directory. This directory is created
@@ -3730,7 +1120,8 @@ generated from the same source).
 
 
 
-### Option Reference
+<a id="config-reference"></a>
+### Reference
 
 This is a reference of all Ghostty configuration options. These
 options are ordered roughly by how common they are to be used
@@ -7030,9 +4421,11 @@ This only works on macOS since only macOS has an auto-update feature.
 
 
 
+<a id="config-keybind"></a>
 ### Keybindings
 
 
+<a id="config-keybind"></a>
 #### Custom Keybindings
 
 Ghostty supports flexible, custom keybindings through the
@@ -7179,7 +4572,7 @@ requires a parameter.
 
 Here are some common actions that can be used in keybinds.
 Please view the
-[full list of actions](#configkeybind-action-reference)
+[full list of actions](#config-keybind-reference)
 for a complete list. Ghostty supports dozens of actions.
 
 | Action | Description |
@@ -7192,6 +4585,7 @@ for a complete list. Ghostty supports dozens of actions.
 
 
 
+<a id="config-keybind-sequence"></a>
 #### Trigger Sequences
 
 Ghostty supports keybindings that require a sequence of triggers
@@ -7237,7 +4631,8 @@ A trigger sequence has some special handling:
 
 
 
-#### Action Reference
+<a id="config-keybind-reference"></a>
+#### Keybinding Action Reference
 
 This is a reference of all Ghostty keybinding actions.
 
@@ -7755,9 +5150,11 @@ The value determines the crash location:
 
 
 
+<a id="linux"></a>
 ## Linux
 
 
+<a id="linux"></a>
 ### Linux
 
 Ghostty works really hard to "just work" on Linux, with detection
@@ -7829,7 +5226,8 @@ more likely to be flexible with other dependencies.
 
 
 
-### Systemd and D-Bus
+<a id="linux-systemd"></a>
+### Systemd and D-Bus Integration
 
 If properly installed[^1], Ghostty comes with several systemd units.
 Running Ghostty via these systemd units is the recommended way to
@@ -7838,7 +5236,7 @@ systemd integrations are: instantaneous launching[^2] and centralized
 logging.
 
 If you are on a system with `systemd` and you installed Ghostty
-via a system package or [as documented](#install-build-from-source),
+via a system package or [as documented](#install-build),
 then Ghostty should _just work_. You don't have to read this
 documentation unless you want to understand how this all works or
 if you're troubleshooting.
@@ -8116,9 +5514,11 @@ $PREFIX/lib/systemd/user/app-com.mitchellh.ghostty-debug.service
 
 
 
+<a id="features"></a>
 ## Features
 
 
+<a id="features"></a>
 ### Features
 
 Ghostty is a very feature-rich terminal.
@@ -8176,7 +5576,7 @@ features that Ghostty supports:
 
 ### Platform-Native Features
 
-One of the primary [design goals](#about-ghostty) of Ghostty is to
+One of the primary [design goals](#about) of Ghostty is to
 look, feel, and behave like a purpose-built native application
 on each platform.
 Here is a list of some of the platform-native features that Ghostty has.
@@ -8236,6 +5636,7 @@ the behavior is questionable or not widely accepted.
 
 
 
+<a id="features-theme"></a>
 ### Color Theme
 
 ## Built-in Themes
@@ -8353,6 +5754,7 @@ selection-foreground = #c6d0f5
 
 
 
+<a id="features-shell-integration"></a>
 ### Shell Integration
 
 ## Features
@@ -8442,7 +5844,7 @@ is running from.
 On Linux, this should automatically work if you run from the `zig-out`
 directory tree structure (a standard FHS-style tree) or run from a
 properly installed location via `-p` (see
-[build from source](#install-build-from-source)).
+[build from source](#install-build)).
 
 You may also manually set the `GHOSTTY_RESOURCES_DIR` to point to the
 `zig-out/share/ghostty` contents. To validate this directory the file
@@ -8499,9 +5901,11 @@ the Ghostty shell-specific code as shown in the previous section.
 
 
 
+<a id="vt"></a>
 ## Terminal API (VT)
 
 
+<a id="vt"></a>
 ### Terminal API (VT)
 
 Programs running in terminals use **control sequences** to interact with the
@@ -8511,13 +5915,14 @@ interprets as commands. This is sometimes referred as **VT sequences** or
 
 For a full list of supported sequences, see the
 [reference](#vt-reference). For a conceptual overview
-of control sequences, see the [concepts page](#vtconcepts-control-sequences).
+of control sequences, see the [concepts page](#vt-concepts-sequences).
 The current page will give an overview of Ghostty's control
 sequence support.
 
 
 
-### Reference
+<a id="vt-reference"></a>
+### VT Sequence Reference
 
 This page lists many of the VT sequences that Ghostty supports.
 
@@ -8532,54 +5937,56 @@ introduce better organization and search capabilities.
 
 | Name | Syntax | Description |
 |------|------|-------------|
-| [BEL](#vtcontrol-bell-bel) | `0x07`  | Alert the user (beep) |
-| [BS](#vtcontrol-backspace-bs) | `0x08`  | Move cursor backward one position |
-| [TAB](#vtcontrol-tab-tab) | `0x09`  | Move cursor right to the next tab stop |
-| [LF](#vtcontrol-linefeed-lf) | `0x0A`  | Move cursor down one line, scrolling if necessary |
-| [CR](#vtcontrol-carriage-return-cr) | `0x0D`  | Move cursor to the left margin |
-| [DECSC](#vtesc-save-cursor-decsc) | `ESC 7` | Save cursor |
-| [DECRC](#vtesc-restore-cursor-decrc) | `ESC 8` | Restore cursor |
-| [IND](#vtesc-index-ind) | `ESC D` | Move cursor down, scrolling if necessary |
-| [RI](#vtesc-reverse-index-ri) | `ESC M` | Move cursor up, scrolling if necessary |
-| [RIS](#vtesc-reset-to-initial-state-ris) | `ESC c` | Full reset |
-| [DECSCUSR](#vtcsi-set-cursor-style-decscusr) | `CSI Pn " " q` | Set cursor style |
-| [DECKPAM](#vtesc-keypad-application-mode-deckpam) | `ESC =` | Set numeric keypad to application mode |
-| [DECKPNM](#vtesc-keypad-numeric-mode-deckpnm) | `ESC >` | Set numeric keypad to numeric mode |
-| [DECALN](#vtesc-screen-alignment-test-decaln) | `ESC # 8` | Screen alignment test |
-| [CUU](#vtcsi-cursor-up-cuu) | `CSI Pn A` | Move cursor up |
-| [CUD](#vtcsi-cursor-down-cud) | `CSI Pn B` | Move cursor down |
-| [CUF](#vtcsi-cursor-forward-cuf) | `CSI Pn C` | Move cursor right |
-| [CUB](#vtcsi-cursor-backward-cub) | `CSI Pn D` | Move cursor left |
-| [CNL](#vtcsi-cursor-next-line-cnl) | `CSI Pn E` | Move cursor down `n` lines and to the leftmost column |
-| [CPL](#vtcsi-cursor-preceding-line-cpl) | `CSI Pn F` | Move cursor up `n` lines and to the leftmost column |
-| [CUP](#vtcsi-cursor-position-cup) | `CSI Py ; Px H` | Move cursor to the specified row and column |
-| [CHT](#vtcsi-cursor-horizontal-tabulation-cht) | `CSI Pn I` | Move cursor right `n` tabs |
-| [ED](#vtcsi-erase-in-display-ed) | `CSI Pn J` | Erase display |
-| [EL](#vtcsi-erase-in-line-el) | `CSI Pn K` | Erase line |
-| [DL](#vtcsi-delete-line-dl) | `CSI Pn M` | Delete `n` lines at the cursor |
-| [IL](#vtcsi-insert-line-il) | `CSI Pn L` | Insert `n` lines at the cursor |
-| [DCH](#vtcsi-delete-character-dch) | `CSI Pn P` | Delete `n` characters at the cursor |
-| [SU](#vtcsi-scroll-up-su) | `CSI Pn S` | Scroll up `n` lines |
-| [SD](#vtcsi-scroll-down-sd) | `CSI Pn T` | Scroll down `n` lines |
-| [ECH](#vtcsi-erase-character-ech) | `CSI Pn X` | Erase `n` characters at the cursor |
-| [CBT](#vtcsi-cursor-backward-tabulation-cbt) | `CSI Pn Z` | Move cursor left `n` tabs |
-| [HPR](#vtcsi-horizontal-position-relative-hpr) | `CSI Pn a` | Move cursor to a column relative to the cursor |
-| [REP](#vtcsi-repeat-rep) | `CSI Pn b` | Repeat the preceding character `n` times |
-| [VPA](#vtcsi-vertical-position-absolute-vpa) | `CSI Py d` | Move cursor to the specified row |
-| [VPR](#vtcsi-vertical-position-relative-vpr) | `CSI Pn e` | Move cursor down `n` rows relative to the cursor |
-| [TBC](#vtcsi-tab-clear-tbc) | `CSI Pn g` | Clear one or all tab stops |
-| [DSR](#vtcsi-device-status-report-dsr) | `CSI Pn n` | Device status report |
-| [DECSTBM](#vtcsi-set-top-and-bottom-margins-decstbm) | `CSI Pt ; Pb r` | Set top and bottom margins |
-| [DECSLRM](#vtcsi-set-left-and-right-margins-decslrm) | `CSI Pl ; Pr s` | Set left and right margins |
-| [ICH](#vtcsi-insert-character-ich) | `CSI Pn @` | Insert `n` characters at the cursor |
-| [HPA](#vtcsi-horizontal-position-absolute-hpa) | `CSI Px ` ` | Move cursor to the specified column |
-| [XTSHIFTESCAPE](#vtcsi-shift-escape-behavior-xtshiftescape) | `CSI > Pn s` | Configure `shift` modifier behavior with mouse reports |
+| [BEL](#vt-control-bel) | `0x07`  | Alert the user (beep) |
+| [BS](#vt-control-bs) | `0x08`  | Move cursor backward one position |
+| [TAB](#vt-control-tab) | `0x09`  | Move cursor right to the next tab stop |
+| [LF](#vt-control-lf) | `0x0A`  | Move cursor down one line, scrolling if necessary |
+| [CR](#vt-control-cr) | `0x0D`  | Move cursor to the left margin |
+| [DECSC](#vt-esc-decsc) | `ESC 7` | Save cursor |
+| [DECRC](#vt-esc-decrc) | `ESC 8` | Restore cursor |
+| [IND](#vt-esc-ind) | `ESC D` | Move cursor down, scrolling if necessary |
+| [RI](#vt-esc-ri) | `ESC M` | Move cursor up, scrolling if necessary |
+| [RIS](#vt-esc-ris) | `ESC c` | Full reset |
+| [DECSCUSR](#vt-csi-decscusr) | `CSI Pn " " q` | Set cursor style |
+| [DECKPAM](#vt-esc-deckpam) | `ESC =` | Set numeric keypad to application mode |
+| [DECKPNM](#vt-esc-deckpnm) | `ESC >` | Set numeric keypad to numeric mode |
+| [DECALN](#vt-esc-decaln) | `ESC # 8` | Screen alignment test |
+| [CUU](#vt-csi-cuu) | `CSI Pn A` | Move cursor up |
+| [CUD](#vt-csi-cud) | `CSI Pn B` | Move cursor down |
+| [CUF](#vt-csi-cuf) | `CSI Pn C` | Move cursor right |
+| [CUB](#vt-csi-cub) | `CSI Pn D` | Move cursor left |
+| [CNL](#vt-csi-cnl) | `CSI Pn E` | Move cursor down `n` lines and to the leftmost column |
+| [CPL](#vt-csi-cpl) | `CSI Pn F` | Move cursor up `n` lines and to the leftmost column |
+| [CUP](#vt-csi-cup) | `CSI Py ; Px H` | Move cursor to the specified row and column |
+| [CHT](#vt-csi-cht) | `CSI Pn I` | Move cursor right `n` tabs |
+| [ED](#vt-csi-ed) | `CSI Pn J` | Erase display |
+| [EL](#vt-csi-el) | `CSI Pn K` | Erase line |
+| [DL](#vt-csi-dl) | `CSI Pn M` | Delete `n` lines at the cursor |
+| [IL](#vt-csi-il) | `CSI Pn L` | Insert `n` lines at the cursor |
+| [DCH](#vt-csi-dch) | `CSI Pn P` | Delete `n` characters at the cursor |
+| [SU](#vt-csi-su) | `CSI Pn S` | Scroll up `n` lines |
+| [SD](#vt-csi-sd) | `CSI Pn T` | Scroll down `n` lines |
+| [ECH](#vt-csi-ech) | `CSI Pn X` | Erase `n` characters at the cursor |
+| [CBT](#vt-csi-cbt) | `CSI Pn Z` | Move cursor left `n` tabs |
+| [HPR](#vt-csi-hpr) | `CSI Pn a` | Move cursor to a column relative to the cursor |
+| [REP](#vt-csi-rep) | `CSI Pn b` | Repeat the preceding character `n` times |
+| [VPA](#vt-csi-vpa) | `CSI Py d` | Move cursor to the specified row |
+| [VPR](#vt-csi-vpr) | `CSI Pn e` | Move cursor down `n` rows relative to the cursor |
+| [TBC](#vt-csi-tbc) | `CSI Pn g` | Clear one or all tab stops |
+| [DSR](#vt-csi-dsr) | `CSI Pn n` | Device status report |
+| [DECSTBM](#vt-csi-decstbm) | `CSI Pt ; Pb r` | Set top and bottom margins |
+| [DECSLRM](#vt-csi-decslrm) | `CSI Pl ; Pr s` | Set left and right margins |
+| [ICH](#vt-csi-ich) | `CSI Pn @` | Insert `n` characters at the cursor |
+| [HPA](#vt-csi-hpa) | `CSI Px ` ` | Move cursor to the specified column |
+| [XTSHIFTESCAPE](#vt-csi-xtshiftescape) | `CSI > Pn s` | Configure `shift` modifier behavior with mouse reports |
 
 
 
+<a id="vt-concepts"></a>
 ### Concepts
 
 
+<a id="vt-concepts-sequences"></a>
 #### Control Sequences
 
 Control sequences are used to do things like move the cursor, change
@@ -8617,8 +6024,8 @@ control sequences grouped by type.
 
 Control characters are single byte characters that have a special
 meaning. They have no encoding format; you send the bytes as-is.
-For example, [backspace](#vtcontrol-backspace-bs) is `0x08`,
-[linefeed](#vtcontrol-linefeed-lf) is `0x0A`, etc.
+For example, [backspace](#vt-control-bs) is `0x08`,
+[linefeed](#vt-control-lf) is `0x0A`, etc.
 
 There are very few control characters, but they're important
 to be aware of because the single byte value impacts the terminal
@@ -8703,6 +6110,7 @@ ST = "0x1B" "0x5C"
 
 
 
+<a id="vt-concepts-cursor"></a>
 #### Cursor
 
 The cursor is always present in a terminal and is located at
@@ -8713,10 +6121,10 @@ has a cursor, and it is always located at some active position.
 The cursor most commonly is associated with where the next
 printed character will be placed. However, the cursor is also
 used for location-sensitive control sequences. For example,
-when an [erase line control sequence](#vtcsi-erase-in-line-el) is
+when an [erase line control sequence](#vt-csi-el) is
 executed, the cursor determines the first line to erase.
 
-The terminal has a single cursor [per screen](#vtconcepts-screen).
+The terminal has a single cursor [per screen](#vt-concepts-screen).
 **Note that this document is about the cursor as it relates
 to the [terminal API](#vt).** Applications such as editors may
 have their own concept known as a "cursor" that is completely
@@ -8740,15 +6148,15 @@ the pending wrap state, and then print the character[^1].
 
 The pending wrap state may feel like an obvious and inconsequential
 feature, but it has a significant (but subtle) impact on cursor
-behavior. For example, print followed by [backspace](#vtcontrol-backspace-bs)
+behavior. For example, print followed by [backspace](#vt-control-bs)
 behaves differently depending on if you're printing in the rightmost
 column of the screen or not.
 
 If you print a character in any column other than the rightmost column
-and then send a [backspace](#vtcontrol-backspace-bs) control character, the
+and then send a [backspace](#vt-control-bs) control character, the
 cursor will move back on top of the most recently printed character.
 But if you print a character in the rightmost column and then send a
-[backspace](#vtcontrol-backspace-bs) control character, the cursor will move
+[backspace](#vt-control-bs) control character, the cursor will move
 to the left of the character most recently printed. This is the
 source of [bugs in multiple popular shell prompts](https://github.com/ghostty-org/ghostty/issues/884).
 
@@ -8762,28 +6170,32 @@ can change this behavior.
 
 
 
+<a id="vt-concepts-screen"></a>
 #### Screen
 
 TODO
 
 
 
+<a id="vt-control"></a>
 ### Control
 
 
+<a id="vt-control-bs"></a>
 #### Backspace (BS)
 
-<VTSequence sequence="BS" />
+**Sequence:** `BS`
 
-This sequence performs [cursor backward (CUB)](#vtcsi-cursor-backward-cub)
+This sequence performs [cursor backward (CUB)](#vt-csi-cub)
 with `Pn = 1`. There is no additional or different behavior for
 using `BS`.
 
 
 
+<a id="vt-control-bel"></a>
 #### Bell (BEL)
 
-<VTSequence sequence="BEL" />
+**Sequence:** `BEL`
 
 The purpose of the bell sequence is to raise the attention
 of the user.
@@ -8823,9 +6235,10 @@ terminator, Ghostty will terminate any responses with the
 
 
 
+<a id="vt-control-cr"></a>
 #### Carriage Return (CR)
 
-<VTSequence sequence="CR" />
+**Sequence:** `CR`
 
 This sequence always unsets the pending wrap state.
 
@@ -8913,32 +6326,36 @@ printf "X"
 
 
 
+<a id="vt-control-lf"></a>
 #### Linefeed (LF)
 
-<VTSequence sequence="LF" />
+**Sequence:** `LF`
 
-This is an alias for [index (IND)](#vtesc-index-ind).
+This is an alias for [index (IND)](#vt-esc-ind).
 
 If [linefeed mode (mode 20)](#TODO) is enabled, perform a
-[carriage return](#vtcontrol-carriage-return-cr) after the IND operation.
+[carriage return](#vt-control-cr) after the IND operation.
 
 
 
+<a id="vt-control-tab"></a>
 #### Tab (TAB)
 
-<VTSequence sequence="TAB" />
+**Sequence:** `TAB`
 
-This is an alias for [cursor horizontal tabulation (CHT)](#vtcsi-cursor-horizontal-tabulation-cht) with
+This is an alias for [cursor horizontal tabulation (CHT)](#vt-csi-cht) with
 `n = 1`.
 
 
 
+<a id="vt-esc"></a>
 ### ESC
 
 
+<a id="vt-esc-decaln"></a>
 #### Screen Alignment Test (DECALN)
 
-<VTSequence sequence={["ESC", "#", "8"]} />
+**Sequence:** `ESC # 8`
 
 Reset the top, bottom, left, and right margins and unset [origin mode](#TODO).
 The cursor is moved to the top-left corner of the screen.
@@ -8980,9 +6397,10 @@ printf "\033[T"
 
 
 
+<a id="vt-esc-deckpam"></a>
 #### Keypad Application Mode (DECKPAM)
 
-<VTSequence sequence={["ESC", "="]} />
+**Sequence:** `ESC =`
 
 Set the numeric keypad to application mode.
 
@@ -8990,30 +6408,33 @@ This page is a work-in-progress.
 
 
 
+<a id="vt-esc-deckpnm"></a>
 #### Keypad Numeric Mode (DECKPNM)
 
-<VTSequence sequence={["ESC", ">"]} />
+**Sequence:** `ESC >`
 
 Set the numeric keypad to numeric mode.
 
 
 
+<a id="vt-esc-decrc"></a>
 #### Restore Cursor (DECRC)
 
-<VTSequence sequence={["ESC", "8"]} />
+**Sequence:** `ESC 8`
 
 If a cursor was never previously saved, this sets all the typically saved
 values to their default values.
 
 ## Validation
 
-Validation is shared with [Save Cursor (DECSC)](#vtesc-save-cursor-decsc).
+Validation is shared with [Save Cursor (DECSC)](#vt-esc-decsc).
 
 
 
+<a id="vt-esc-decsc"></a>
 #### Save Cursor (DECSC)
 
-<VTSequence sequence={["ESC", "7"]} />
+**Sequence:** `ESC 7`
 
 The following attributes are saved:
 
@@ -9092,9 +6513,10 @@ The "A" and "X" should have identical styling.
 
 
 
+<a id="vt-esc-ind"></a>
 #### Index (IND)
 
-<VTSequence sequence={["ESC", "D"]} />
+**Sequence:** `ESC D`
 
 This sequence always unsets the pending wrap state.
 
@@ -9105,7 +6527,7 @@ the [primary screen](#TODO), this may create scrollback. See the
 [scroll](#TODO) documentation for more details.
 
 If the cursor is outside of the scroll region or not on the bottom
-margin of the scroll region, perform the [cursor down](#vtcsi-cursor-down-cud) operation with
+margin of the scroll region, perform the [cursor down](#vt-csi-cud) operation with
 `n = 1`.
 
 This sequence will only scroll when the cursor is exactly on the bottom
@@ -9250,18 +6672,19 @@ printf "\033D" # index
 
 
 
+<a id="vt-esc-ri"></a>
 #### Reverse Index (RI)
 
-<VTSequence sequence={["ESC", "M"]} />
+**Sequence:** `ESC M`
 
 This sequence does not unset the pending wrap state.
 
-If the cursor is exactly on the [top margin](#vtcsi-set-top-and-bottom-margins-decstbm) and is within
-[left and right margins](#vtcsi-set-left-and-right-margins-decslrm), invoke [scroll down (SD)](#vtcsi-scroll-down-sd)
+If the cursor is exactly on the [top margin](#vt-csi-decstbm) and is within
+[left and right margins](#vt-csi-decslrm), invoke [scroll down (SD)](#vt-csi-sd)
 with `n = 1`. The operation is complete.
 
 Otherwise, scrolling isn't necessary. Perform a
-[cursor up](#vtcsi-cursor-up-cuu) operation with `n = 1`.
+[cursor up](#vt-csi-cuu) operation with `n = 1`.
 
 ## Validation
 
@@ -9387,9 +6810,10 @@ Cursor on the `A`.
 
 
 
-#### Reset to Initial State (RIS)
+<a id="vt-esc-ris"></a>
+#### Full Reset (RIS)
 
-<VTSequence sequence={["ESC", "c"]} />
+**Sequence:** `ESC c`
 
 The full reset operation does the following:
 
@@ -9401,7 +6825,7 @@ The full reset operation does the following:
 - Reset charsets to the default
 - Reset [cursor key mode (DECCKM)](#TODO)
 - Reset [disable keyboard input (KAM)](#TODO)
-- Reset [application keypad mode](#vtesc-keypad-numeric-mode-deckpnm)
+- Reset [application keypad mode](#vt-esc-deckpnm)
 - Reset xterm keyboard modifier state to the default
 - Disable cursor [protected attribute](#TODO)
 - Disable any [protected area](#TODO)
@@ -9416,12 +6840,14 @@ The full reset operation does the following:
 
 
 
+<a id="vt-csi"></a>
 ### CSI
 
 
+<a id="vt-csi-cbt"></a>
 #### Cursor Backward Tabulation (CBT)
 
-<VTSequence sequence={["CSI", "Pn", "Z"]} />
+**Sequence:** `CSI Pn Z`
 
 The leftmost valid column for this operation is the first column. If
 [origin mode](#TODO) is enabled, then the leftmost valid column for this
@@ -9433,7 +6859,7 @@ the leftmost valid column and the operation completes. Repeat this process
 `n` times.
 
 Tabstops are dynamic and can be set with escape sequences such as
-[horizontal tab set (HTS)](#TODO), [tab clear (TBC)](#vtcsi-tab-clear-tbc), etc.
+[horizontal tab set (HTS)](#TODO), [tab clear (TBC)](#vt-csi-tbc), etc.
 A terminal emulator may default tabstops at any interval, though an interval
 of 8 spaces is most common.
 
@@ -9501,9 +6927,10 @@ printf "A"
 
 
 
+<a id="vt-csi-cht"></a>
 #### Cursor Horizontal Tabulation (CHT)
 
-<VTSequence sequence={["CSI", "Pn", "I"]} />
+**Sequence:** `CSI Pn I`
 
 The parameter `n` must be an integer greater than or equal to 1. If `n` is less than
 or equal to 0, adjust `n` to be 1. If `n` is omitted, `n` defaults to 1.
@@ -9518,7 +6945,7 @@ the rightmost valid column and the operation completes. Repeat this process
 `n` times.
 
 Tabstops are dynamic and can be set with escape sequences such as
-[horizontal tab set (HTS)](#TODO), [tab clear (TBC)](#vtcsi-tab-clear-tbc), etc.
+[horizontal tab set (HTS)](#TODO), [tab clear (TBC)](#vt-csi-tbc), etc.
 A terminal emulator may default tabstops at any interval, though an interval
 of 8 spaces is most common.
 
@@ -9570,35 +6997,38 @@ printf "A"
 
 
 
+<a id="vt-csi-cnl"></a>
 #### Cursor Next Line (CNL)
 
-<VTSequence sequence={["CSI", "Pn", "E"]} />
+**Sequence:** `CSI Pn E`
 
 The parameter `n` must be an integer greater than or equal to 1.
 If `n` is less than or equal to 0, adjust `n` to be 1. If `n` is
 omitted, `n` defaults to 1.
 
 The logic of this sequence is identical to
-[Cursor Down (CUD)](#vtcsi-cursor-down-cud)
-followed by [Carriage Return (CR)](#vtcontrol-carriage-return-cr).
+[Cursor Down (CUD)](#vt-csi-cud)
+followed by [Carriage Return (CR)](#vt-control-cr).
 
 
 
-#### Cursor Preceding Line (CPL)
+<a id="vt-csi-cpl"></a>
+#### Cursor Previous Line (CPL)
 
-<VTSequence sequence={["CSI", "Pn", "F"]} />
+**Sequence:** `CSI Pn F`
 
 The parameter `n` must be an integer greater than or equal to 1. If `n` is less than
 or equal to 0, adjust `n` to be 1. If `n` is omitted, `n` defaults to 1.
 
-The logic of this sequence is identical to [Cursor Up (CUU)](#vtcsi-cursor-up-cuu)
-followed by [Carriage Return (CR)](#vtcontrol-carriage-return-cr).
+The logic of this sequence is identical to [Cursor Up (CUU)](#vt-csi-cuu)
+followed by [Carriage Return (CR)](#vt-control-cr).
 
 
 
+<a id="vt-csi-cub"></a>
 #### Cursor Backward (CUB)
 
-<VTSequence sequence={["CSI", "Pn", "D"]} />
+**Sequence:** `CSI Pn D`
 
 The parameter `n` must be an integer greater than or equal to 1. If `n` is less than
 or equal to 0, adjust `n` to be 1. If `n` is omitted, `n` defaults to 1.
@@ -9777,9 +7207,10 @@ printf "X"
 
 
 
+<a id="vt-csi-cud"></a>
 #### Cursor Down (CUD)
 
-<VTSequence sequence={["CSI", "Pn", "B"]} />
+**Sequence:** `CSI Pn B`
 
 The parameter `n` must be an integer greater than or equal to 1. If `n` is less than
 or equal to 0, adjust `n` to be 1. If `n` is omitted, `n` defaults to 1.
@@ -9851,9 +7282,10 @@ printf "X"
 
 
 
+<a id="vt-csi-cuf"></a>
 #### Cursor Forward (CUF)
 
-<VTSequence sequence={["CSI", "Pn", "C"]} />
+**Sequence:** `CSI Pn C`
 
 The parameter `n` must be an integer greater than or equal to 1. If `n` is less than
 or equal to 0, adjust `n` to be 1. If `n` is omitted, `n` defaults to 1.
@@ -9933,9 +7365,10 @@ printf "X"
 
 
 
+<a id="vt-csi-cup"></a>
 #### Cursor Position (CUP)
 
-<VTSequence sequence={["CSI", "Py", ";", "Px", "H"]} />
+**Sequence:** `CSI Py ; Px H`
 
 The parameters `y` and `x` must be integers greater than or equal to 1.
 If either is less than or equal to 0, adjust that parameter to be 1.
@@ -10059,9 +7492,10 @@ printf "X"
 
 
 
+<a id="vt-csi-cuu"></a>
 #### Cursor Up (CUU)
 
-<VTSequence sequence={["CSI", "Pn", "A"]} />
+**Sequence:** `CSI Pn A`
 
 The parameter `n` must be an integer greater than or equal to 1. If `n` is less than
 or equal to 0, adjust `n` to be 1. If `n` is omitted, `n` defaults to 1.
@@ -10136,9 +7570,10 @@ printf "X"
 
 
 
+<a id="vt-csi-dch"></a>
 #### Delete Character (DCH)
 
-<VTSequence sequence={["CSI", "Pn", "P"]} />
+**Sequence:** `CSI Pn P`
 
 The parameter `n` must be an integer greater than or equal to 1. If `n` is less than
 or equal to 0, adjust `n` to be 1. If `n` is omitted, `n` defaults to 1.
@@ -10151,7 +7586,7 @@ region if it is left of the [left margin](#TODO), or right of the
 This sequence unsets the pending wrap state. This sequence does _not_ unset
 the pending wrap state if the cursor position is outside of the current
 scroll region. This has to be called out explicitly because this behavior
-differs from [Insert Character (ICH)](#vtcsi-insert-character-ich).
+differs from [Insert Character (ICH)](#vt-csi-ich).
 
 Only cells within the scroll region are deleted or shifted. Cells to the
 right of the right margin are unmodified.
@@ -10240,9 +7675,10 @@ printf "\033[P"
 
 
 
+<a id="vt-csi-decscusr"></a>
 #### Set Cursor Style (DECSCUSR)
 
-<VTSequence sequence={["CSI", "Pn", " ", "q"]} />
+**Sequence:** `CSI Pn  q`
 
 If `n` is omitted, `n` defaults to `0`. `n` must be an integer between
 0 and 6 (inclusive). The mapping of `n` to cursor style is below:
@@ -10263,13 +7699,14 @@ configuration.
 
 
 
+<a id="vt-csi-decslrm"></a>
 #### Set Left and Right Margins (DECSLRM)
 
-<VTSequence sequence={["CSI", "Pl", ";", "Pr", "s"]} />
+**Sequence:** `CSI Pl ; Pr s`
 
 Sets the left and right margins, otherwise known as the scroll region.
 To learn more about scroll regions in general, see
-[Set Top and Bottom Margins](#vtcsi-set-top-and-bottom-margins-decstbm).
+[Set Top and Bottom Margins](#vt-csi-decstbm).
 
 Parameters `l` and `r` are integer values. If either value is zero the
 value will be reset to default values. The default value for `l` is `1`
@@ -10384,9 +7821,10 @@ printf "\033[X"
 
 
 
+<a id="vt-csi-decstbm"></a>
 #### Set Top and Bottom Margins (DECSTBM)
 
-<VTSequence sequence={["CSI", "Pt", ";", "Pb", "r"]} />
+**Sequence:** `CSI Pt ; Pb r`
 
 Parameters `t` and `b` are integer values. If either value is zero the
 value will be reset to default values. The default value for `t` is `1`
@@ -10411,7 +7849,7 @@ the full screen.
 
 The top and bottom margin constitute what is known as the _scroll region_.
 The scroll region impacts the operation of many sequences such as
-[insert line](#vtcsi-insert-line-il), [cursor down](#vtcsi-cursor-down-cud), etc. Scroll regions are
+[insert line](#vt-csi-il), [cursor down](#vt-csi-cud), etc. Scroll regions are
 an effective and efficient way to constraint terminal modifications to a
 rectangular region of the screen.
 
@@ -10494,9 +7932,10 @@ printf "\033[T"
 
 
 
+<a id="vt-csi-dl"></a>
 #### Delete Line (DL)
 
-<VTSequence sequence={["CSI", "Pn", "M"]} />
+**Sequence:** `CSI Pn M`
 
 The parameter `n` must be an integer greater than or equal to 1. If `n` is less than
 or equal to 0, adjust `n` to be 1. If `n` is omitted, `n` defaults to 1.
@@ -10605,9 +8044,10 @@ printf "\033[M"
 
 
 
+<a id="vt-csi-dsr"></a>
 #### Device Status Report (DSR)
 
-<VTSequence sequence={["CSI", "Pn", "n"]} />
+**Sequence:** `CSI Pn n`
 
 Request information from the terminal depending on the value of `n`.
 
@@ -10652,9 +8092,10 @@ printf "\033[6n"
 
 
 
+<a id="vt-csi-ech"></a>
 #### Erase Character (ECH)
 
-<VTSequence sequence={["CSI", "Pn", "X"]} />
+**Sequence:** `CSI Pn X`
 
 The parameter `n` must be an integer greater than or equal to 1. If `n` is less than
 or equal to 0, adjust `n` to be 1. If `n` is omitted, `n` defaults to 1.
@@ -10809,9 +8250,10 @@ The cursor remains at `A`.
 
 
 
-#### Erase in Display (ED)
+<a id="vt-csi-ed"></a>
+#### Erase Display (ED)
 
-<VTSequence sequence={["CSI", "Pn", "J"]} />
+**Sequence:** `CSI Pn J`
 
 If `n` is unset, the value of `n` is 0. The only valid values for `n` are
 0, 1, 2, or 3. If any other value of `n` is given, do not execute this sequence.
@@ -10825,7 +8267,7 @@ If [Select Character Selection Attribute (DECSCA)](#TODO) is enabled
 or was the most recently enabled protection mode on the currently active screen,
 protected attributes are ignored. Otherwise, protected attributes will be
 respected. For more details on this specific logic for protected attribute
-handling, see [Erase Character (ECH)](#vtcsi-erase-character-ech).
+handling, see [Erase Character (ECH)](#vt-csi-ech).
 
 For all operations, if a multi-cell character would be split, erase the full multi-cell
 character. For example, if "橋" is printed and the erase would only erase the
@@ -10947,9 +8389,10 @@ printf "\033[2J"
 
 
 
-#### Erase in Line (EL)
+<a id="vt-csi-el"></a>
+#### Erase Line (EL)
 
-<VTSequence sequence={["CSI", "Pn", "K"]} />
+**Sequence:** `CSI Pn K`
 
 If `n` is unset, the value of `n` is 0. The only valid values for `n` are
 0, 1, or 2. If any other value of `n` is given, do not execute this sequence.
@@ -10963,14 +8406,14 @@ If [Select Character Selection Attribute (DECSCA)](#TODO) is enabled
 or was the most recently enabled protection mode on the currently active screen,
 protected attributes are ignored. Otherwise, protected attributes will be
 respected. For more details on this specific logic for protected attribute
-handling, see [Erase Character (ECH)](#vtcsi-erase-character-ech).
+handling, see [Erase Character (ECH)](#vt-csi-ech).
 
 For all operations, if a multi-cell character would be split, erase the full multi-cell
 character. For example, if "橋" is printed and the erase would only erase the
 first or second cell of the two-cell character, both cells should be erased.
 
 If `n` is `0`, perform an **erase line right** operation. Erase line right
-is equivalent to [Erase Character (ECH)](#vtcsi-erase-character-ech) with `n` set to the total
+is equivalent to [Erase Character (ECH)](#vt-csi-ech) with `n` set to the total
 remaining columns from the cursor to the end of the line (and including
 the cursor). If the line is softwrapped, only the single row is erased;
 it does not erase through the wrap. Further, the wrap state of the row is
@@ -11173,11 +8616,12 @@ The entire line should have a red background.
 
 
 
+<a id="vt-csi-hpa"></a>
 #### Horizontal Position Absolute (HPA)
 
-<VTSequence sequence={["CSI", "Px", "`"]} />
+**Sequence:** `CSI Px ``
 
-This sequence performs [cursor position (CUP)](#vtcsi-cursor-position-cup) with `x` set
+This sequence performs [cursor position (CUP)](#vt-csi-cup) with `x` set
 to the parameterized value and `y` set to the current cursor position.
 There is no additional or different behavior for using `HPA`.
 
@@ -11188,11 +8632,12 @@ of the scroll region, the row will be adjusted.
 
 
 
+<a id="vt-csi-hpr"></a>
 #### Horizontal Position Relative (HPR)
 
-<VTSequence sequence={["CSI", "Px", "a"]} />
+**Sequence:** `CSI Px a`
 
-This sequence performs [cursor position (CUP)](#vtcsi-cursor-position-cup) with `x` set
+This sequence performs [cursor position (CUP)](#vt-csi-cup) with `x` set
 to the current cursor column plus `x` and `y` set to the current cursor row.
 There is no additional or different behavior for using `HPR`.
 
@@ -11206,9 +8651,10 @@ of the scroll region, the row will be adjusted.
 
 
 
+<a id="vt-csi-ich"></a>
 #### Insert Character (ICH)
 
-<VTSequence sequence={["CSI", "Pn", "@"]} />
+**Sequence:** `CSI Pn @`
 
 Insert `n` blank characters at the current cursor position and shift
 existing cell contents right.
@@ -11336,9 +8782,10 @@ erase the cell.
 
 
 
+<a id="vt-csi-il"></a>
 #### Insert Line (IL)
 
-<VTSequence sequence={["CSI", "Pn", "L"]} />
+**Sequence:** `CSI Pn L`
 
 Inserts `n` lines at the current cursor position and shifts existing
 lines down.
@@ -11456,9 +8903,10 @@ printf "\033[L"
 
 
 
-#### Repeat (REP)
+<a id="vt-csi-rep"></a>
+#### Repeat Previous Character (REP)
 
-<VTSequence sequence={["CSI", "Pn", "b"]} />
+**Sequence:** `CSI Pn b`
 
 The parameter `n` must be an integer greater than or equal to 1. If `n` is less than
 or equal to 0, adjust `n` to be 1. If `n` is omitted, `n` defaults to 1.
@@ -11508,12 +8956,13 @@ printf "\033[b"
 
 
 
+<a id="vt-csi-sd"></a>
 #### Scroll Down (SD)
 
-<VTSequence sequence={["CSI", "Pn", "T"]} />
+**Sequence:** `CSI Pn T`
 
 This sequence is functionally identical to
-[Insert Line (IL)](#vtcsi-insert-line-il) with the cursor position set to the top of
+[Insert Line (IL)](#vt-csi-il) with the cursor position set to the top of
 the scroll region. The cursor position after the operation must be unchanged
 from when SD was invoked.
 
@@ -11543,14 +8992,15 @@ printf "\033[T"
 
 
 
+<a id="vt-csi-su"></a>
 #### Scroll Up (SU)
 
-<VTSequence sequence={["CSI", "Pn", "S"]} />
+**Sequence:** `CSI Pn S`
 
 The parameter `n` must be an integer greater than or equal to 1. If `n` is less than
 or equal to 0, adjust `n` to be 1. If `n` is omitted, `n` defaults to 1.
 
-This sequence executes [Delete Line (DL)](#vtcsi-delete-line-dl) with the cursor position
+This sequence executes [Delete Line (DL)](#vt-csi-dl) with the cursor position
 set to the top of the scroll region. There are some differences from DL
 which are explained below.
 
@@ -11654,9 +9104,10 @@ printf "\033[4S"
 
 
 
+<a id="vt-csi-tbc"></a>
 #### Tab Clear (TBC)
 
-<VTSequence sequence={["CSI", "Pn", "g"]} />
+**Sequence:** `CSI Pn g`
 
 The parameter `n` must be `0` or `3`. If `n` is omitted, `n` defaults to `0`.
 
@@ -11700,11 +9151,12 @@ printf "\t"
 
 
 
+<a id="vt-csi-vpa"></a>
 #### Vertical Position Absolute (VPA)
 
-<VTSequence sequence={["CSI", "Py", "d"]} />
+**Sequence:** `CSI Py d`
 
-This sequence performs [cursor position (CUP)](#vtcsi-cursor-position-cup) with `y` set
+This sequence performs [cursor position (CUP)](#vt-csi-cup) with `y` set
 to the parameterized value and `x` set to the current cursor position.
 There is no additional or different behavior for using `VPA`.
 
@@ -11715,11 +9167,12 @@ of the scroll region, the column will be adjusted.
 
 
 
+<a id="vt-csi-vpr"></a>
 #### Vertical Position Relative (VPR)
 
-<VTSequence sequence={["CSI", "Py", "e"]} />
+**Sequence:** `CSI Py e`
 
-This sequence performs [cursor position (CUP)](#vtcsi-cursor-position-cup) with `y` set
+This sequence performs [cursor position (CUP)](#vt-csi-cup) with `y` set
 to the current cursor row plus `y` and `x` set to the current cursor column.
 There is no additional or different behavior for using `VPR`.
 
@@ -11733,9 +9186,10 @@ of the scroll region, the column will be adjusted.
 
 
 
-#### Shift-Escape Behavior (XTSHIFTESCAPE)
+<a id="vt-csi-xtshiftescape"></a>
+#### Set Shift-Escape (XTSHIFTESCAPE)
 
-<VTSequence sequence={["CSI", ">", "Pn", "s"]} />
+**Sequence:** `CSI > Pn s`
 
 The parameter `n` must be an integer equal to 0 or 1. If `n` is omitted,
 `n` defaults to 0. If `n` is an invalid value, this sequence does nothing.
@@ -11773,9 +9227,11 @@ it doesn't need to know about it (`n = 0`).
 
 
 
+<a id="help"></a>
 ## Help
 
 
+<a id="help"></a>
 ### Help
 
 Ghostty is a personal side project with no commercial backing.
@@ -11788,7 +9244,7 @@ we try to document as many common issues and solutions as possible.
 | Issue                                                                      | Solution                                                    |
 | -------------------------------------------------------------------------- | ----------------------------------------------------------- |
 | Error "missing or unsuitable terminal" when running commands or using SSH. | [Terminfo](#help-terminfo)                             |
-| macOS window managers such as Yabai or Aerospace act strange               | [macOS Tiling Window Managers](#help-macos-tiling-window-managers) |
+| macOS window managers such as Yabai or Aerospace act strange               | [macOS Tiling Window Managers](#help-macos-tiling-wms) |
 | Ghostty has slow startup or high memory usage on Linux.                    | [GTK Single Instance](#help-gtk-single-instance)       |
 | "Unable to acquire OpenGL context" error on Linux                          | [GTK OpenGL Context](#help-gtk-opengl-context)         |
 | macOS defaults to login shells                                             | [macOS Login Shells](#help-macos-login-shells)         |
@@ -11813,6 +9269,7 @@ Please, please, please read the [contributing guide on GitHub](https://github.co
 
 
 
+<a id="help-terminfo"></a>
 ### Terminfo
 
 [Terminfo](https://en.wikipedia.org/wiki/Terminfo) is an archaic format
@@ -11918,7 +9375,8 @@ for more about this configuration option.
 
 
 
-### GTK Single Instance
+<a id="help-gtk-single-instance"></a>
+### GTK Single Instance Mode
 
 Ghostty uses GTK single instance mode by default when it detects
 it is not launched from a CLI environment.
@@ -11982,7 +9440,8 @@ just creating a new window in the existing instance.
 
 
 
-### GTK OpenGL Context
+<a id="help-gtk-opengl-context"></a>
+### GTK OpenGL Context Errors
 
 The Ghostty GTK application uses OpenGL for rendering. To render with
 OpenGL, Ghostty needs to first acquire an "OpenGL context" from GTK. This
@@ -12002,7 +9461,7 @@ tracking down the issue.
 
 If you want to try to get Ghostty working quickly, try the following.
 
-1. **Install a [binary package](#install-binaries-and-packages).** If you're building
+1. **Install a [binary package](#install-binary).** If you're building
    from source, try using a binary package instead. Binary packages tend
    to be built in a more controlled environment that works with a specific
    distribution and its libraries.
@@ -12014,7 +9473,7 @@ If you want to try to get Ghostty working quickly, try the following.
 3. **Build Ghostty from source using only system packages.** If you're using
    the Nix development environment to build Ghostty, try building it
    from source using only system packages. See the
-   [build from source](#install-build-from-source) instructions to do this
+   [build from source](#install-build) instructions to do this
    (but ignore the "Building with Nix" section).
 
 > **Important:** This section purposely avoids any detail in understanding the root cause of
@@ -12032,7 +9491,7 @@ environment to build Ghostty.** We recommend this environment for development,
 but it does pin various versions of these libraries and they may be
 incompatible with your global system. **To fix: try to build Ghostty using
 only system dependency packages, or Ghostty itself from a system package.**
-You can follow the [build from source](#install-build-from-source) instructions
+You can follow the [build from source](#install-build) instructions
 to do this (but ignore the "Building with Nix" section)
 
 **Another common cause is outdated system packages.**
@@ -12059,6 +9518,7 @@ We've had many cases where GPU driver changes have broken OpenGL in GTK.
 
 
 
+<a id="help-macos-tiling-wms"></a>
 ### macOS Tiling Window Managers
 
 macOS tiling window managers such as Yabai or Aerospace may
@@ -12104,6 +9564,7 @@ yabai -m signal --add app='^Ghostty$' event=window_destroyed action='yabai -m sp
 
 
 
+<a id="help-macos-login-shells"></a>
 ### macOS Login Shells
 
 Ghostty respects the macOS traditions and will start each shell as a login

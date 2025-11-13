@@ -47,7 +47,11 @@ class MDXConverter:
         """Extract title from frontmatter."""
         match = re.search(r'^---\s*\ntitle:\s*(.+?)\n', content, re.MULTILINE)
         if match:
-            return match.group(1).strip()
+            title = match.group(1).strip()
+            # Remove quotes if present
+            if title.startswith('"') and title.endswith('"'):
+                title = title[1:-1]
+            return title
         return ""
 
     def remove_frontmatter(self, content: str) -> str:
@@ -71,33 +75,50 @@ class MDXConverter:
                 inner_content = match.group(1).strip()
                 # Convert to blockquote
                 lines = inner_content.split('\n')
-                quoted_lines = [f'> **{callout_type}:** {lines[0]}'] if lines else []
-                for line in lines[1:]:
-                    if line.strip():
-                        quoted_lines.append(f'> {line}')
+                quoted_lines = []
+                for i, line in enumerate(lines):
+                    if i == 0:
+                        # First line gets the label
+                        quoted_lines.append(f'> **{callout_type}:** {line}')
                     else:
-                        quoted_lines.append('>')
+                        if line.strip():
+                            quoted_lines.append(f'> {line}')
+                        else:
+                            quoted_lines.append('>')
                 return '\n'.join(quoted_lines)
 
             content = re.sub(pattern, replace_callout, content, flags=re.DOTALL)
+
+        # Convert VTSequence component to code block
+        # Matches: <VTSequence sequence="BS" /> or <VTSequence sequence={["CSI", "Pn", "Z"]} />
+        def replace_vtsequence(match):
+            sequence_attr = match.group(1)
+            # Remove quotes and braces
+            sequence_attr = sequence_attr.replace('{', '').replace('}', '').replace('[', '').replace(']', '')
+            sequence_attr = sequence_attr.replace('"', '').replace("'", '')
+            # Join with spaces if multiple parts
+            parts = [p.strip() for p in sequence_attr.split(',')]
+            sequence_text = ' '.join(parts)
+            return f'**Sequence:** `{sequence_text}`'
+
+        content = re.sub(r'<VTSequence\s+sequence=([^/]+)/>', replace_vtsequence, content)
 
         # Convert ButtonLinks component
         button_pattern = r'<ButtonLinks\s+[^>]*links=\{(\[[^\]]+\])\}[^>]*/>'
 
         def replace_buttonlinks(match):
-            # Parse the links array (simplified JSON parsing)
             links_str = match.group(1)
             # Extract href and text from each link object
             links = []
             for link_match in re.finditer(r'text:\s*"([^"]+)"[^}]*href:\s*"([^"]+)"', links_str):
                 text, href = link_match.groups()
                 links.append(f'- [{text}]({href})')
-            return '\n'.join(links)
+            return '\n'.join(links) if links else ''
 
         content = re.sub(button_pattern, replace_buttonlinks, content, flags=re.DOTALL)
 
         # Convert CardLinks component
-        card_pattern = r'<CardLinks\s+cards=\{(\[[^\]]+?\]\s*)\}\s*/>'
+        card_pattern = r'<CardLinks\s+cards=\{(\[.*?\])\s*\}\s*/>'
 
         def replace_cardlinks(match):
             cards_str = match.group(1)
@@ -111,7 +132,7 @@ class MDXConverter:
                 title, desc, href = card_match.groups()
                 desc = desc.replace('\n', ' ').strip()
                 links.append(f'- **[{title}]({href})**: {desc}')
-            return '\n'.join(links)
+            return '\n'.join(links) if links else ''
 
         content = re.sub(card_pattern, replace_cardlinks, content, flags=re.DOTALL)
 
@@ -131,10 +152,11 @@ class MDXConverter:
                 if anchor:
                     return f'[{link_text}](#{anchor})'
                 else:
-                    # Try to create an anchor from the URL
+                    # Try without /docs prefix
                     path = link_url.replace('/docs/', '')
-                    if path in self.section_anchors:
-                        return f'[{link_text}](#{self.section_anchors[path]})'
+                    anchor = self.section_anchors.get(path, None)
+                    if anchor:
+                        return f'[{link_text}](#{anchor})'
                     # If no mapping, create a best-guess anchor
                     anchor = self.slugify(path.replace('/', '-'))
                     return f'[{link_text}](#{anchor})'
@@ -157,10 +179,15 @@ class MDXConverter:
         """Process a navigation item recursively."""
 
         if item['type'] == 'folder':
+            # Skip release-notes folder entirely
+            if item['path'] == '/release-notes':
+                print(f"  Skipping release notes folder")
+                return
+
             # Add folder heading
             folder_path = parent_path + item['path']
             title = item['title']
-            anchor = self.slugify(title)
+            anchor = self.slugify(f'{folder_path}'.strip('/').replace('/', '-'))
 
             # Store anchor mapping
             self.section_anchors[folder_path] = anchor
@@ -169,9 +196,10 @@ class MDXConverter:
             indent = '  ' * (level - 1)
             self.toc_entries.append(f'{indent}- [{title}](#{anchor})')
 
-            # Add section heading
+            # Add section heading with explicit anchor
             heading = '#' * (level + 1)
-            self.output.append(f'\n{heading} {title}\n')
+            self.output.append(f'\n<a id="{anchor}"></a>')
+            self.output.append(f'{heading} {title}\n')
 
             # Process children
             for child in item.get('children', []):
@@ -186,7 +214,7 @@ class MDXConverter:
             file_path = self.get_file_path(item['path'], parent_path)
 
             if not file_path.exists():
-                print(f"Warning: File not found: {file_path}")
+                print(f"  Warning: File not found: {file_path}")
                 return
 
             # Read content
@@ -194,13 +222,12 @@ class MDXConverter:
                 content = f.read()
 
             # Extract title from frontmatter if not provided
-            if not title or title == 'Overview':
-                extracted_title = self.extract_title(content)
-                if extracted_title and extracted_title != 'Overview':
-                    title = extracted_title
+            extracted_title = self.extract_title(content)
+            if extracted_title:
+                title = extracted_title
 
-            # Create anchor
-            anchor = self.slugify(f'{parent_path}-{title}'.strip('-'))
+            # Create anchor from path
+            anchor = self.slugify(f'{path}'.strip('/').replace('/', '-'))
 
             # Store anchor mapping
             self.section_anchors[path] = anchor
@@ -217,17 +244,22 @@ class MDXConverter:
             # Convert MDX components
             content = self.convert_mdx_components(content)
 
-            # Add section heading
+            # Add section heading with explicit anchor
             heading = '#' * (level + 1)
-            self.output.append(f'\n{heading} {title}\n')
+            self.output.append(f'\n<a id="{anchor}"></a>')
+            self.output.append(f'{heading} {title}\n')
             self.output.append(content)
             self.output.append('\n')
+
+            print(f"  ✓ Processed: {path}")
 
     def build_toc(self) -> str:
         """Build table of contents."""
         toc = ['# Ghostty Documentation\n']
-        toc.append('> Complete documentation for Ghostty terminal emulator\n')
-        toc.append('## Table of Contents\n')
+        toc.append('> Complete offline documentation for Ghostty terminal emulator\n')
+        toc.append('> This file was generated from the official Ghostty documentation\n')
+        toc.append('> Original source: https://ghostty.org/docs\n')
+        toc.append('\n## Table of Contents\n')
         toc.extend(self.toc_entries)
         toc.append('\n---\n')
         return '\n'.join(toc)
@@ -239,8 +271,8 @@ class MDXConverter:
         with open(self.nav_file, 'r', encoding='utf-8') as f:
             nav_data = json.load(f)
 
-        # First pass: build anchor mappings by processing structure
-        print("Building anchor mappings...")
+        # Process navigation structure
+        print("\nProcessing documentation files...")
         for item in nav_data['items']:
             self.process_nav_item(item)
 
@@ -249,7 +281,7 @@ class MDXConverter:
         result += '\n'.join(self.output)
 
         # Second pass: fix internal links
-        print("Fixing internal links...")
+        print("\nFixing internal links...")
         result = self.fix_internal_links(result)
 
         return result
@@ -259,7 +291,9 @@ def main():
     docs_dir = '/home/user/website/docs'
     output_file = '/home/user/website/ghostty-docs.md'
 
-    print("Converting Ghostty documentation from MDX to Markdown...")
+    print("=" * 70)
+    print("Converting Ghostty Documentation from MDX to Markdown")
+    print("=" * 70)
     print(f"Source: {docs_dir}")
     print(f"Output: {output_file}")
 
@@ -270,8 +304,13 @@ def main():
     with open(output_file, 'w', encoding='utf-8') as f:
         f.write(markdown_content)
 
-    print(f"\nConversion complete! Output written to: {output_file}")
-    print(f"Total sections processed: {len(converter.toc_entries)}")
+    print(f"\n{'=' * 70}")
+    print(f"✓ Conversion complete!")
+    print(f"{'=' * 70}")
+    print(f"Output file: {output_file}")
+    print(f"Total sections: {len(converter.toc_entries)}")
+    print(f"Total lines: {len(markdown_content.splitlines())}")
+    print(f"File size: {len(markdown_content) / 1024:.1f} KB")
 
 
 if __name__ == '__main__':
