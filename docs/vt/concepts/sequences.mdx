@@ -10,46 +10,52 @@ that programs interact with the terminal.
 
 Programs running within terminals only have a single way to communicate
 with the terminal: writing bytes to the connected file descriptor
-(typically a pty). In order to differentiate between text to be
-displayed and commands to be executed, terminals use special syntax
-known collectively as **control sequences**.
-
-Due to the historical nature of terminals, control sequences come
-in a handful of different formats. Most begin with an escape character
-(`0x1B`), so control sequences are sometimes referred to as
-**escape codes** or **escape sequences**.
-
-There are eight types of control sequences:
-
-- Control Characters
-- Escape Sequences
-- CSI Sequences ("Control Sequence Introducer")
-- OSC Sequences ("Operating System Command")
-- DCS Sequences ("Device Control Sequence")
-- SOS Sequences ("Start Of String")
-- PM Sequences ("Privacy Message")
-- APC Sequences ("Application Program Command")
+(typically a pseudo-terminal, or a "pty" for short). In order to
+differentiate between text to be displayed and commands to be executed,
+terminals use special syntax known collectively as **control sequences**.
 
 Each type of control sequence has a different format and purpose.
 They are described below along with their specific syntax. The
 [reference](/docs/vt/reference) contains a full list of supported
 control sequences grouped by type.
 
-## Control Characters
+## C0 control characters
 
-Control characters are single byte characters that have a special
-meaning. They have no encoding format; you send the bytes as-is.
-For example, [backspace](/docs/vt/control/bs) is `0x08`,
-[linefeed](/docs/vt/control/lf) is `0x0A`, etc.
+Each control sequence starts with a special, unprintable character, known
+as a **control character**. The simplest control characters, known as
+**C0 control characters**, lie between `0x00` and `0x20` in the ASCII
+encoding and take no parameters other than themselves.
 
 There are very few control characters, but they're important
 to be aware of because the single byte value impacts the terminal
 state.
 
-## Escape Sequences
+C0 characters meaningful to terminal emulation include:
 
-Escape sequences are in the format below. An example escape sequence
-is `ESC D`.
+| C0     | Abbr    | Full name       | Function                                    |
+|--------|---------|-----------------|---------------------------------------------|
+| `0x07` | [`BEL`] | Bell            | Raise the attention of the user.            |
+| `0x08` | [`BS`]  | Backspace       | Move the cursor backward one position.      |
+| `0x09` | [`TAB`] | Tab             | Move the cursor right to the next tab stop. |
+| `0x0A` | [`LF`]  | Linefeed        | Move the cursor down one line.              |
+| `0x0D` | [`CR`]  | Carriage Return | Move the cursor to the leftmost column.     |
+
+[`BEL`]: /docs/vt/control/bel
+[`BS`]: /docs/vt/control/bs
+[`TAB`]: /docs/vt/control/tab
+[`LF`]: /docs/vt/control/lf
+[`CR`]: /docs/vt/control/cr
+
+## Escape sequences
+
+One of the C0 characters, Escape (`0x1b`, `ESC`), is special. It can either
+start a few discrete sequences or begin entire families of sequences, which is
+also why control sequences are also *pars pro toto* commonly known as
+**escape sequences**.
+
+Not all sequences that begin with Escape are Escape sequences as defined here
+(they are more likely to be [C1 sequences](#c1-sequences)),
+but a true Escape sequence like `ESC D` are in the format below.
 
 ```
 esc_sequence = "0x1B" intermediates final
@@ -57,10 +63,36 @@ intermediates = [0x20-0x2F]*
 final = [0x30-0x7E]
 ```
 
-## CSI Sequences
+## `Fe` sequences
 
-CSI sequences are in the format below. An example CSI sequence
-is `ESC [ 1 ; 2 m`. CSI sequences are only capable of encoding integer values.
+When Escape is followed by certain printable characters, for various historical
+reasons they are instead interpreted together as **C1 control characters**,
+some of which are responsible for many families of sequences known collectively
+as `Fe` sequences. These characters can also be represented by single 8-bit
+characters, but they remain **predominantly** encoded with Escape characters as
+to avoid conflicting with UTF-8 and other high-byte encodings usually used in
+modern terminals.
+
+| ESC code | C1     | Abbr | Full name                   | Function                                                                                                 |
+|----------|--------|------|-----------------------------|----------------------------------------------------------------------------------------------------------|
+| `ESC [`  | `0x9b` | CSI  | Control Sequence Introducer | By far the most common. Uses integers to control the cursor, the screen, modes, cells, and their styles. |
+| `ESC ]`  | `0x9d` | OSC  | Operating System Command    | Often used in modern terminal extensions to transmit string data.                                        |
+| `ESC P`  | `0x90` | DCS  | Device Control Sequence     | Most often used when querying the terminal's capabilities (XTGETTCAP). Rare otherwise.                   |
+| `ESC _`  | `0x9f` | APC  | Application Program Command | Used in very complex protocols like the Kitty Graphics Protocol that require arbitrary payloads.         |
+| `ESC X`  | `0x98` | SOS  | Start of String             | Obsolete. Ignored by Ghostty.                                                                            |
+| `ESC ^`  | `0x9e` | PM   | Private Message             | Obsolete. Ignored by Ghostty.                                                                            |
+
+### CSI
+
+CSI sequences are *by far* the most common type of C1 sequences.
+They use integer parameters separated either with colons (`:`) or semicolons
+(`;`) to move the cursor, set the terminal's mode, scroll up or down, insert
+and delete cells and lines, change the styles of cells, etc.
+
+Their primary limitation is that they can **only** encode integer values.
+Other sequence types such as OSC or DCS are needed to encode string data.
+
+CSI sequences follow the format below. An example CSI sequence is `ESC [ 1 ; 2 m`.
 
 ```
 csi_sequence = "0x1B" "[" params intermediates final
@@ -71,21 +103,45 @@ intermediates = [0x20-0x2F]*
 final = [0x40-0x7E]
 ```
 
-## OSC Sequences
+### OSC
 
-OSC Sequences are typically used to encode strings or other non-integer data to
-transmit between the terminal and the application. The format of an OSC sequence
-is below. An example OSC sequence is `OSC 2 ; 👻  Ghostty 👻  ST` (where `ST` is
-the String Terminator). By convention, OSC sequences *usually* have some integer
-identifier to identify the sequence.
+OSC sequences are typically used to encode strings or other non-integer data to
+transmit between the terminal and an application. They usually alter variables
+regarding the terminal emulator itself, such as its title, palette,
+clipboard, etc., or instruct it on extra features like hyperlinks, progress
+reports, the current working directory, and so on.
+
+As a result of its flexibility, OSC sequences are very often used by modern
+extensions to offer new functionality that older terminals can simply ignore.
+
+An OSC sequence begins with OSC (`ESC ]` or `0x9d`). Then, by convention, an
+integer is added to identify the operation 
+
+The format of an OSC sequence is below. By convention, OSC sequences are
+identified by an integer identifier followed by a semicolon (`;`), although
+this is never required by the standard. Certain obsolete OSC sequences use
+non-numeric identifiers before the semicolon, but Ghostty does not support
+
+> [!NOTE]
+> Due to yet more convoluted historical reasons, OSC sequences in xterm (and
+> by extension Ghostty) may be terminated with the Bell character (`BEL`,
+> `0x07`) instead of the standard String Terminator (`ST`, `ESC \` or `0x9c`).
+>
+> While they are in most cases interchangeable, Ghostty will try to echo back
+> the terminator used in an OSC sequence when replying, to ensure maximum
+> compatibility with older programs and terminals. New code should always
+> prefer `ST` due to standards compliance.
+
+them. An example OSC sequence is `OSC 2 ; 👻  Ghostty 👻  ST` (where `ST` is
+the String Terminator).
 
 ```
-osc_sequence = "0x1B" "]" data ST
+osc_sequence = "0x1B" "]" data terminator
 data = [0x20-0xFF]
-ST = "0x1B" "0x5C"
+terminator = "0x1B" "0x5C"
 ```
 
-## DCS Sequences
+### DCS
 
 DCS Sequences are like a CSI sequence combined with an OSC sequence: they
 natively support integer parameters as well as string values. An example DSC
@@ -101,7 +157,7 @@ data = [0x20-0xFF]
 ST = "0x1B" "0x5C"
 ```
 
-## APC Sequences
+### APC
 
 Ghostty supports APC sequences. Currently there is only one supported APC
 sequence: the Kitty Graphics Protocol sequence. This is documented [here](https://sw.kovidgoyal.net/kitty/graphics-protocol/).
@@ -112,7 +168,7 @@ data = [0x20-0xFF]
 ST = "0x1B" "0x5C"
 ```
 
-## SOS and PM Sequences
+### SOS and PM
 
 SOS and PM sequences are entirely ignored by Ghostty.
 
