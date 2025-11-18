@@ -1,0 +1,50 @@
+---
+title: Query or Change Dynamic Colors (OSC 10–19)
+description: Query or change dynamic colors based on their indices.
+---
+
+<VTSequence sequence={["OSC", "Pn", ";", "Pc", "ST"]} />
+
+When `n` is between `10` and `19` inclusive, either query or change the
+[dynamic color] corresponding to `n` depending on the value of `c`.
+`c` may be provided **multiple times**, each separated with a semicolon (`;`).
+
+If `c` is given as a single character `?`, then the terminal will respond with
+the [color specification] of the dynamic color at index `n`. If `c` is a valid
+color specification, then the dynamic color is changed according to it.
+
+[dynamic color]: /docs/vt/concepts/colors#dynamic-colors
+[color specification]: /docs/vt/concepts/colors#color-specifications
+
+If there are more `c`s left in the sequence, then `n` is incremented by one,
+and the process repeats.
+
+The correspondence between `n` and the dynamic colors are as follows:
+
+| `n`  | Color                      |
+|------|----------------------------|
+| `10` | Foreground color           |
+| `11` | Background color           |
+| `12` | Cursor color               |
+| `13` | Pointer foreground color   |
+| `14` | Pointer background color   |
+| `15` | Tektronix foreground color |
+| `16` | Tektronix background color |
+| `17` | Highlight background color |
+| `18` | Tektronix cursor color     |
+| `19` | Highlight foreground color |
+
+> [!NOTE]
+>
+> Currently, Ghostty only supports `n` between `10` and `12` inclusive. All other
+> dynamic colors are ignored.
+
+As an example, this sequence changes the background color and the cursor color
+to `red` and `blue` respectively:
+
+<VTSequence sequence={["OSC", "11", ";", "red", ";", "blue", "ST"]} />
+
+This is equivalent to combining an OSC 11 and an OSC 12 together:
+
+<VTSequence sequence={["OSC", "11", ";", "red", "ST"]} />
+<VTSequence sequence={["OSC", "12", ";", "blue", "ST"]} />

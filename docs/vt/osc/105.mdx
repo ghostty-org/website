@@ -1,0 +1,12 @@
+---
+title: Reset Special Colors (OSC 105)
+description: Reset special colors.
+---
+
+<VTSequence sequence={["OSC", "105", ";", "Pn", "ST"]} />
+
+Reset the [special color] at index `n`. `n` can be specified **zero or
+more** times, separated with semicolons (`;`)
+When `n` is not specified, all special colors are reset.
+
+[special color]: /docs/vt/concepts/colors#special-colors

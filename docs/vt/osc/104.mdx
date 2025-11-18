@@ -1,0 +1,17 @@
+---
+title: Reset Palette Colors (OSC 104)
+description: Reset colors in the palette.
+---
+
+<VTSequence sequence={["OSC", "104", ";", "Pn", "ST"]} />
+
+Reset the color in the palette at index `n`. `n` can be specified **zero or
+more** times, separated with semicolons (`;`)
+When `n` is not specified, the entire palette is reset.
+
+When `n` is between 0 and 255, the normal 256-color palette is used.
+When `n` is above 255, however, they instead map to
+[special colors](/docs/vt/concepts/colors#special-colors), with 256
+mapping to the first special color (bold), 257 the second (underline), etc.
+This makes it behave equivalently to [OSC 105](/docs/vt/osc/105) with the index
+subtracted by 256.

@@ -1,0 +1,34 @@
+---
+title: Query or Change Palette Colors (OSC 4)
+description: Query or change colors in the palette based on their indices.
+---
+
+<VTSequence sequence={["OSC", "4", ";", "Pn", ";", "Pc", "ST"]} />
+
+Query or change the color in the palette at index `n` depending on the
+value of `c`.
+
+If `c` is given as the single character `?`, then the terminal will respond with
+the [color specification] of the color at index `n`. If `c` is a valid
+color, then the palette color is changed to it.
+
+[color specification]: /docs/vt/concepts/colors#color-specifications
+
+Pairs of `n` and `c` can be provided **multiple times**, separated with a
+semicolon (`;`). The terminal may reply with multiple sequences when multiple
+queries are made in one request.
+
+> [!NOTE]
+> The terminal need not return the color exactly as it was specified.
+> 
+> When a color at a given index is changed, the terminal is allowed to convert
+> the color into its internal representation, then reply in a different format
+> when the same color is queried.
+
+When `n` is between 0 and 255, the normal 256-color palette is used.
+When `n` is above 255, however, they instead map to
+[special colors](/docs/vt/concepts/colors#special-colors), with 256
+mapping to the first special color (bold), 257 the second (underline), etc.
+This makes it behave equivalently to [OSC 5](/docs/vt/osc/5) with the index
+subtracted by 256.
+

@@ -1,0 +1,39 @@
+---
+title: Change Pointer Shape (OSC 22)
+description: Change the pointer shape.
+---
+
+<VTSequence sequence={["OSC", "22", ";", "Pt", "ST"]} />
+
+Change the pointer shape to `t`.
+
+Unfortunately, there is no consensus on what values `t` is allowed to have.
+Even xterm, the origin of this OSC, remarks that when one uses a custom
+cursor theme, "expect it to provide about a third of those names, while adding
+others."[^xterm]
+
+[^xterm]: https://invisible-island.net/xterm/manpage/xterm.html#VT100-Widget-Resources:pointerShape
+
+Ghostty, like some other terminals like [Kitty] and Foot, uses CSS's list of
+standardized cursor shapes, used in the [`cursor`] property. This is by no
+means perfect, but it at least is an international standard that is unambiguous
+and platform-independent.
+
+[Kitty]: https://sw.kovidgoyal.net/kitty/pointer-shapes/
+[`cursor`]: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor#keyword
+
+**Avoid** using this sequence unless your program only targets certain terminal
+emulators, or you can switch between cursor names by detecting the current
+terminal.
+
+## Terminal Compatibility
+
+|               | Ghostty | Kitty  | VTE     | Alacritty | Foot       | iTerm2 | xterm |
+|---------------|---------|--------|---------|-----------|------------|--------|-------|
+| OSC 22        | 1.0.0   | 0.31.0 | No      | No        | 1.12.0     | 3.5.0  | 367   |
+| Cursor styles | CSS     | CSS    | -       | -         | CSS + X11 subset[^foot] | [Custom X11 subset] | X11 |
+
+[Custom X11 subset]: https://github.com/gnachman/iTerm2/blob/v3.6.6/sources/PTYSession.m#L15324-L15342
+[^foot]: Foot maps [both CSS and X11 names](https://codeberg.org/dnkl/foot/src/tag/1.25.0/cursor-shape.c#L62-L102)
+to [`wp_cursor_shape_device_v1::shape`](https://wayland.app/protocols/cursor-shape-v1#wp_cursor_shape_device_v1:enum:shape)
+enums, which are also based on the CSS standard.

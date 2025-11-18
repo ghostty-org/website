@@ -183,6 +183,11 @@
           "title": "Reference"
         },
         {
+          "type": "link",
+          "path": "/external",
+          "title": "External Protocols"
+        },
+        {
           "type": "folder",
           "path": "/concepts",
           "title": "Concepts",
@@ -201,6 +206,11 @@
               "type": "link",
               "path": "/screen",
               "title": "Screen"
+            },
+            {
+              "type": "link",
+              "path": "/colors",
+              "title": "Colors"
             }
           ]
         },
@@ -432,6 +442,78 @@
               "type": "link",
               "path": "/xtshiftescape",
               "title": "Shift-Escape Behavior (XTSHIFTESCAPE)"
+            }
+          ]
+        },
+        {
+          "type": "folder",
+          "path": "/osc",
+          "title": "OSC",
+          "children": [
+            {
+              "type": "link",
+              "path": "/0",
+              "title": "Change Window Icon and Title (OSC 0)"
+            },
+            {
+              "type": "link",
+              "path": "/1",
+              "title": "Change Window Icon (OSC 1)"
+            },
+            {
+              "type": "link",
+              "path": "/2",
+              "title": "Change Window Title (OSC 2)"
+            },
+            {
+              "type": "link",
+              "path": "/4",
+              "title": "Query or Change Palette Colors (OSC 4)"
+            },
+            {
+              "type": "link",
+              "path": "/5",
+              "title": "Query or Change Special Colors (OSC 5)"
+            },
+            {
+              "type": "link",
+              "path": "/7",
+              "title": "Change Working Directory (OSC 7)"
+            },
+            {
+              "type": "link",
+              "path": "/9",
+              "title": "Show Desktop Notification (OSC 9)"
+            },
+            {
+              "type": "link",
+              "path": "/conemu",
+              "title": "ConEmu Extensions (OSC 9;n)"
+            },
+            {
+              "type": "link",
+              "path": "/1x",
+              "title": "Query or Change Dynamic Colors (OSC 10–19)"
+            },
+            {
+              "type": "link",
+              "path": "/22",
+              "title": "Change Pointer Shape (OSC 22)"
+            },
+            {
+              "type": "link",
+              "path": "/104",
+              "title": "Reset Palette Colors (OSC 104)"
+            },
+            {
+              "type": "link",
+              "path": "/105",
+              "title": "Reset Special Colors (OSC 105)"
+            },
+            {
+              "type": "link",
+              "path": "/11x",
+              "title": "Reset Dynamic Colors (OSC 110–119)"
             }
           ]
         }

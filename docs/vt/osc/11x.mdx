@@ -1,0 +1,35 @@
+---
+title: Query or Change Dynamic Colors (OSC 110–119)
+description: Query or change dynamic colors based on their indices.
+---
+
+<VTSequence sequence={["OSC", "Pn", "ST"]} />
+
+When `n` is between `110` and `119` inclusive, reset the
+[dynamic color] corresponding to `n`.
+
+[dynamic color]: /docs/vt/concepts/colors#dynamic-colors
+
+The correspondence between `n` and the dynamic colors are as follows:
+
+| `n`  | Color                      |
+|------|----------------------------|
+| `110` | Foreground color           |
+| `111` | Background color           |
+| `112` | Cursor color               |
+| `113` | Pointer foreground color   |
+| `114` | Pointer background color   |
+| `115` | Tektronix foreground color |
+| `116` | Tektronix background color |
+| `117` | Highlight background color |
+| `118` | Tektronix cursor color     |
+| `119` | Highlight foreground color |
+
+> [!NOTE]
+>
+> Currently, Ghostty only supports `n` between `110` and `112` inclusive. All other
+> dynamic colors are ignored.
+
+> [!NOTE]
+>
+> xterm allows a trailing semicolon (`;`) to come after `n`.

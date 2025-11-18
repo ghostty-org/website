@@ -1,0 +1,13 @@
+---
+title: Change Window Title (OSC 2)
+description: Change the name of the window title.
+---
+
+<VTSequence sequence={["OSC", "2", ";", "Pt", "ST"]} />
+
+Change the window title to `t`.
+
+While xterm defaults to interpreting `t` as a ISO-8859-1-encoded string,
+which can be changed via Set Title Mode (XTSMTITLE) to either accept a
+hexadecimal-escaped or bare UTF-8 string, Ghostty always unconditionally
+expects `t` to be directly UTF-8-encoded.

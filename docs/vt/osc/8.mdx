@@ -1,0 +1,33 @@
+---
+title: Hyperlink (OSC 8)
+description: Begin or end a hyperlink.
+---
+
+> [!NOTE]
+>
+> OSC 8 was originally pioneered by VTE circa 2017. The original specification
+> can be read as [a GitHub gist][OSC 8 spec], which specifies every aspect of this
+> sequence fairly exhaustively. Any deviance between this page and the original
+> specification should be regarded as an error on our end.
+> 
+> [OSC 8 spec]: https://gist.github.com/egmontkob/eb114294efbcd5adb1944c9f3cb5feda
+
+<VTSequence sequence={["OSC", "8", ";", "Pp", ";", "Pu", "ST"]} />
+
+Mark the start of a hyperlink. Cells after this sequence are all considered
+part of a hyperlink to the URI `u` until the end of a hyperlink is reached,
+marked by a lack of any parameters `p` or the URI:
+
+<VTSequence sequence={["OSC", "8", ";", ";", "ST"]} />
+
+Parameters are colon-separated (`:`) key-value pairs joined by an equal sign
+(`=`). Currently the only recognized parameter is `id`, which links together
+separate cells of the same hyperlink object, provided that they share the same
+URI. Terminals primarily use this information to highlight all linked cells
+when the user's cursor hovers on them, but other uses are possible.
+
+When a `file://` URI is specified as a part of this sequence, one additional
+requirement is that the hostname must be specified, otherwise the terminal
+will refuse to process it. This is because terminal users commonly use SSH
+to access remote machines, and file links without a hostname may be
+erroneously interpreted to refer to local files that may or may not exist.

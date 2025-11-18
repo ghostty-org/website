@@ -1,0 +1,20 @@
+---
+title: Change Window Icon (OSC 1)
+description: Change the name of the window icon.
+---
+
+<VTSequence unimplemented sequence={["OSC", "1", ";", "Pt", "ST"]} />
+
+Change the window icon name to `t`. The exact method of locating the icon
+data through the icon name is platform-dependent.
+
+Ghostty and most modern terminal emulators do not implement this sequence
+as its behavior is not well-defined or even possible on all platforms,
+which is also the conclusion reached by
+[Foot](https://codeberg.org/dnkl/foot/pulls/1832#issuecomment-2304415).
+
+|       | Ghostty | Kitty  | VTE     | Alacritty | Foot | iTerm2 | xterm |
+|-------|---------|--------|---------|-----------|------|--------|-------|
+| OSC 1 | No      | No     | No      | No[^alacritty] | No   | No     | Yes   |
+
+[^alacritty]: Listed as "rejected".
