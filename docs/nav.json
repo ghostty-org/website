@@ -471,6 +471,11 @@
           "type": "link",
           "path": "/macos-login-shells",
           "title": "macOS Login Shells"
+        },
+        {
+          "type": "link",
+          "path": "/synchronized-output",
+          "title": "Synchronized Output"
         }
       ]
     }
