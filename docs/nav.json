@@ -502,6 +502,11 @@
             },
             {
               "type": "link",
+              "path": "/52",
+              "title": "Query or Change Clipboard Data (OSC 52)"
+            },
+            {
+              "type": "link",
               "path": "/104",
               "title": "Reset Palette Colors (OSC 104)"
             },
