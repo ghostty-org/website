@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import s from "./VTSequence.module.css";
 import { OctagonAlert } from "lucide-react";
+import classNames from "classnames";
 
 interface VTSequenceProps {
   sequence: string | [string];
@@ -29,7 +30,9 @@ export default function VTSequence({
       )}
       <ol className={s.sequence}>
         {sequenceElements.map(({ value, hex }, i) => (
-          <li key={i} className={s.vtelem}>
+          <li key={i} className={classNames(s.vtelem, {
+            [s.parameter]: hex == null
+          })}>
             <dl>
               <dt>{hex ? hex : "____"}</dt>
               <dd>{value}</dd>
@@ -53,12 +56,18 @@ const special: Record<string, number> = {
 
 function parseSequence(sequence: string | string[]) {
   let sequenceArray = typeof sequence === "string" ? [sequence] : sequence;
+
   if (sequenceArray[0] === "CSI") {
     sequenceArray.shift();
     sequenceArray.unshift("ESC", "[");
   } else if (sequenceArray[0] === "OSC") {
     sequenceArray.shift();
     sequenceArray.unshift("ESC", "]");
+  }
+
+  if (sequenceArray[sequenceArray.length - 1] === "ST") {
+    sequenceArray.pop();
+    sequenceArray.push("ESC", "\\");
   }
 
   return sequenceArray.map((value) => {

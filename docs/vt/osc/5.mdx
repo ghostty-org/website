@@ -1,0 +1,15 @@
+---
+title: Query or Change Special Colors (OSC 5)
+description: Query or change a special color based on its index.
+---
+
+<VTSequence sequence={["OSC", "5", ";", "Pn", ";", "Pc", "ST"]} />
+
+Query or change the [special color] corresponding to `n` depending on the
+value of `c`.
+
+[special color]: /docs/vt/concepts/colors#special-colors
+
+`n` and `c` behave nearly identically to [OSC 4](/docs/vt/osc/4), and may
+also be repeated multiple times in one sequence. The difference is that `n`
+now ranges between 0 and 4 inclusive, corresponding to the five special colors.

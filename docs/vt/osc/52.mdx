@@ -1,0 +1,41 @@
+---
+title: Query or Change Clipboard Data (OSC 52)
+description: Query or change data on clipboards.
+---
+
+<VTSequence sequence={["OSC", "52", ";", "Pt", ";", "Pd", "ST"]} />
+
+Query or change data on clipboards specified by `t` based on the
+value of `d`.
+
+`t` is a list of **zero or more** characters that each correspond to
+a different type of clipboard on the system. The meaning of each character
+in `t` as defined by xterm is as follows:
+
+| `t`     | Type                |
+|---------|---------------------|
+| `c`     | Standard clipboard  |
+| `p`     | Primary clipboard   |
+| `q`     | Secondary clipboard |
+| `s`     | Selection clipboard |
+| `0`–`7` | Cut-buffer `0`–`7`  |
+
+> [!NOTE]
+> Ghostty only recognizes `c`, `p`, and `s` as valid values in `t`.
+> Other types are treated as aliases for `c`. When `t` is omitted,
+> Ghostty defaults to querying or modifying the primary clipboard
+> (equivalent to `c`).
+
+> [!WARNING]
+> Ghostty currently only allows specifying one clipboard per sequence.
+> This is a limitation on our end and may be fixed in the future.
+
+When `d` is the single character `?`, the terminal will reply with
+another OSC 52 sequence with the data found from the first clipboard
+listed in `t` that contains the requested data.
+
+Otherwise, `d` is expected to be a Base64-encoded string that contains
+the new data for all clipboards listed in `t`.
+
+If `d` is neither a valid Base64-encoded string or the character `?`,
+all clipboards listed in `t` are cleared.

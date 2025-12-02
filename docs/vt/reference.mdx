@@ -58,3 +58,54 @@ introduce better organization and search capabilities.
 | [ICH](/docs/vt/csi/ich) | `CSI Pn @` | Insert `n` characters at the cursor |
 | [HPA](/docs/vt/csi/hpa) | `CSI Px ` ` | Move cursor to the specified column |
 | [XTSHIFTESCAPE](/docs/vt/csi/xtshiftescape) | `CSI > Pn s` | Configure `shift` modifier behavior with mouse reports |
+| [OSC 0] | `OSC 0 ; Pt ST` | Change window icon and window title |
+| [OSC 1] | `OSC 1 ; Pt ST` | Change window icon |
+| [OSC 2] | `OSC 2 ; Pt ST` | Change window title |
+| [OSC 4] | `OSC 4 ; Pn ; Pc ST` | Query or change palette colors |
+| [OSC 5] | `OSC 5 ; Pn ; Pc ST` | Query or change special colors |
+| [OSC 7] | `OSC 7 ; Pu ; ST` | Change the working directory |
+| [OSC 8] | `OSC 8 ; Pp ; Pu ; ST` | Begin or end a hyperlink |
+| [OSC 9] | `OSC 9 ; Pt ; ST` | Show a desktop notification |
+| [OSC 9;4] | `OSC 9 ; 4 ; Ps ; Pn ; ST` | Report progress state |
+| [OSC 10][OSC 1x] | `OSC 10 ; Pc ST` | Query or change the foreground color |
+| [OSC 11][OSC 1x] | `OSC 11 ; Pc ST` | Query or change the background color |
+| [OSC 12][OSC 1x] | `OSC 12 ; Pc ST` | Query or change the cursor color |
+| [OSC 13][OSC 1x] | `OSC 13 ; Pc ST` | Query or change the pointer foreground color |
+| [OSC 14][OSC 1x] | `OSC 14 ; Pc ST` | Query or change the pointer background color |
+| [OSC 15][OSC 1x] | `OSC 15 ; Pc ST` | Query or change the Tektronix foreground color |
+| [OSC 16][OSC 1x] | `OSC 16 ; Pc ST` | Query or change the Tektronix background color |
+| [OSC 17][OSC 1x] | `OSC 17 ; Pc ST` | Query or change the highlight background color |
+| [OSC 18][OSC 1x] | `OSC 18 ; Pc ST` | Query or change the Tektronix cursor color |
+| [OSC 19][OSC 1x] | `OSC 19 ; Pc ST` | Query or change the highlight foreground color |
+| [OSC 21] | `OSC 21 ; Pk = Pv ; ... ST ` | Query or change any color using the Kitty Color Protocol |
+| [OSC 22] | `OSC 22 ; Pt ST ` | Change the pointer shape |
+| [OSC 52] | `OSC 52 ; Pc ; Pd ST ` | Query or change clipboard data |
+| [OSC 104] | `OSC 104 ; Pn ST` | Reset palette colors |
+| [OSC 105] | `OSC 105 ; Pn ST` | Reset special colors |
+| [OSC 110][OSC 11x] | `OSC 110 ST` | Reset the foreground color |
+| [OSC 111][OSC 11x] | `OSC 111 ST` | Reset the background color |
+| [OSC 112][OSC 11x] | `OSC 112 ST` | Reset the cursor color |
+| [OSC 113][OSC 11x] | `OSC 113 ST` | Reset the pointer foreground color |
+| [OSC 114][OSC 11x] | `OSC 114 ST` | Reset the pointer background color |
+| [OSC 115][OSC 11x] | `OSC 115 ST` | Reset the Tektronix foreground color |
+| [OSC 116][OSC 11x] | `OSC 116 ST` | Reset the Tektronix background color |
+| [OSC 117][OSC 11x] | `OSC 117 ST` | Reset the highlight background color |
+| [OSC 118][OSC 11x] | `OSC 118 ST` | Reset the Tektronix cursor color |
+| [OSC 119][OSC 11x] | `OSC 119 ST` | Reset the highlight foreground color |
+
+[OSC 0]: /docs/vt/osc/0
+[OSC 1]: /docs/vt/osc/1
+[OSC 2]: /docs/vt/osc/2
+[OSC 4]: /docs/vt/osc/4
+[OSC 5]: /docs/vt/osc/5
+[OSC 7]: /docs/vt/osc/7
+[OSC 8]: https://gist.github.com/egmontkob/eb114294efbcd5adb1944c9f3cb5feda
+[OSC 9]: /docs/vt/osc/9
+[OSC 9;4]: /docs/vt/osc/conemu#change-progress-state-(osc-94)
+[OSC 1x]: /docs/vt/osc/1x
+[OSC 21]: https://sw.kovidgoyal.net/kitty/color-stack/
+[OSC 22]: /docs/vt/osc/22
+[OSC 52]: /docs/vt/osc/52
+[OSC 104]: /docs/vt/osc/104
+[OSC 105]: /docs/vt/osc/105
+[OSC 11x]: /docs/vt/osc/11x

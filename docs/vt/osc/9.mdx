@@ -1,0 +1,18 @@
+---
+title: Show Desktop Notification (OSC 9)
+description: Show a desktop notification.
+---
+
+<VTSequence sequence={["OSC", "9", ";", "Pt", "ST"]} />
+
+Show a desktop notification with title `t`.
+
+To avoid conflicting with the [ConEmu extensions], which also use OSC 9 due to
+historical happenstance, the title should not begin with a number and then a
+semicolon (`;`). In practice a collision of this kind should be rare.
+Ghostty's parser will silently convert any invalid ConEmu sequence to a OSC 9
+sequence, though this behavior should not be relied upon.
+
+[ConEmu extensions]: /docs/vt/osc/conemu
+
+Originated from iTerm since before 2010.

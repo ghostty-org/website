@@ -1,7 +1,7 @@
 .vtsequence {
   --sequence-border: 1px solid var(--gray-3);
 
-  margin: 32px 0 calc(32px - 0.5em) 0;
+  margin: 16px 0 calc(16px - 0.5em) 0;
   display: inline-flex;
   flex-direction: column;
   align-items: flex-start;
@@ -39,6 +39,10 @@
       text-align: center;
       border: var(--sequence-border);
       border-right-width: 0;
+
+      &.parameter {
+        font-style: italic;
+      }
 
       &:last-child {
         border-right-width: 1px;

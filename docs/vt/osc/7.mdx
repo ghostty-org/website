@@ -1,0 +1,14 @@
+---
+title: Change Working Directory (OSC 7)
+description: Change the current working directory of the terminal.
+---
+
+<VTSequence sequence={["OSC", "7", ";", "Pu", "ST"]} />
+
+Change the current working directory to the path denoted by the URI `u`.
+
+The URI should always have a scheme of `file://` and point to an existent
+folder.
+
+Primarily used by shell integrations for the shell to inform the terminal
+when the current working directory has changed.
