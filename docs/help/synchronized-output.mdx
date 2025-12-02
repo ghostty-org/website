@@ -1,0 +1,57 @@
+---
+title: Synchronized Output
+description: |-
+  Command-line programs that update large swaths of the visible screen might
+  show screen tearing on fast terminals like Ghostty, when synchronized
+  output is not enabled.
+---
+
+On some systems, command-line programs that frequently update large swaths of
+the visible screen might repeatedly flicker or exhibit severe screen tearing
+when using Ghostty, which does not occur with other terminal emulators.
+**This is usually not a bug with Ghostty, but rather a bug with the programs
+themselves.**
+
+Often the reason behind this is that Ghostty is rendering **too quickly**,
+and the programs that are redrawing the screen are not updating the cells
+on the screen fast enough to catch up with the renderer — hence, tearing.
+
+There's not much Ghostty can do here without compromising performance, and
+therefore we **highly encourage** users of affected programs to file issues
+to upstream developers with a link to the ["For developers"](#for-developers)
+section of this page, so that they know how to fix the underlying problem.
+
+Programs known to be affected by this include:
+
+- Claude Code ([#8176], [#8285])
+- Docker CLI ([#5493], [#5657], [#8162])
+- Ollama ([#4048])
+- Grok ([#9618])
+
+[#4048]: https://github.com/ghostty-org/ghostty/discussions/4048
+[#5493]: https://github.com/ghostty-org/ghostty/discussions/5493
+[#5657]: https://github.com/ghostty-org/ghostty/discussions/5657
+[#8162]: https://github.com/ghostty-org/ghostty/discussions/8162
+[#8176]: https://github.com/ghostty-org/ghostty/discussions/8176
+[#8285]: https://github.com/ghostty-org/ghostty/discussions/8285
+[#9618]: https://github.com/ghostty-org/ghostty/discussions/9618
+
+## For developers
+
+If you're a developer of a CLI or TUI-based app that has this issue, you
+need to implement the [Synchronized Output] protocol which signals Ghostty
+(and other modern, performant terminal emulators) when the screen has been
+fully updated, and it is safe to render the next frame.
+
+However, as a best practice we also recommend **only updating the cells that
+absolutely need to be updated**, and avoid erasing whole rows or the entirety
+of the active screen before updating new cells. Instead, you can reset the
+cursor to the part to be updated by using [Cursor Position (CUP)], update the
+cells, and erase the rest of the line using [Erase in Line (EL)]. This not
+only ameliorates the screen tearing on terminals that may not support the
+Synchronized Output protocol, but can also greatly increase performance by
+reducing needless updates and the amount of data sent to the terminal.
+
+[Synchronized Output]: https://github.com/contour-terminal/vt-extensions/blob/1a9fde53d80c4a60b1be44c5a4492d86ec9f9cce/synchronized-output.md
+[Cursor Position (CUP)]: /docs/vt/csi/cup
+[Erase in Line (EL)]: /docs/vt/csi/el
