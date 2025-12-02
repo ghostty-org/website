@@ -21,11 +21,12 @@ interface TagProps {
 
 interface TagListProps {
   tags: TagProps[];
+  className?: string;
 }
 
-export default function TagList({ tags }: TagListProps) {
+export default function TagList({ tags, className }: TagListProps) {
   return (
-    <ul className={s.tagList}>
+    <ul className={classNames(s.tagList, className)}>
       {tags.map(({ name, color }, index) => (
         <Tag key={`${name}_${index}`} name={name} color={color} />
       ))}
