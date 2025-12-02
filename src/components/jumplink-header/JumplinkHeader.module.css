@@ -51,6 +51,7 @@
   }
 
   & + .jumplinkHeader {
+    scroll-margin-top: calc(var(--header-height) + 16px);
     & .content {
       margin-top: 0;
     }
