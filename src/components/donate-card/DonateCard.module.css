@@ -1,0 +1,254 @@
+.donateCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 32px 0;
+  border-radius: 16px;
+  border: 1px solid hsl(var(--brand-color-hsl) / 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.main {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  padding: 32px;
+  background: linear-gradient(
+    135deg,
+    hsl(var(--brand-color-hsl) / 0.08) 0%,
+    hsl(var(--brand-color-hsl) / 0.02) 100%
+  );
+  border-bottom: 1px solid var(--gray-3);
+}
+
+.iconContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: linear-gradient(
+    135deg,
+    hsl(var(--brand-color-hsl) / 0.15) 0%,
+    hsl(var(--brand-color-hsl) / 0.05) 100%
+  );
+  flex-shrink: 0;
+}
+
+.icon {
+  width: 28px;
+  height: 28px;
+  color: var(--brand-color);
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  margin: 0 0 8px 0;
+  color: var(--gray-1);
+}
+
+.description {
+  margin: 0 0 20px 0;
+  color: var(--gray-4);
+  line-height: 1.6;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 8px;
+  background-color: var(--brand-color);
+  color: var(--gray-9);
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+
+  &:hover {
+    @media (hover: hover) {
+      background-color: hsl(var(--brand-color-hsl) / 0.85);
+      transform: translateY(-1px);
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.buttonIcon {
+  width: 18px;
+  height: 18px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.einButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 8px;
+  background-color: transparent;
+  border: 1px solid var(--gray-3);
+  color: var(--gray-6);
+  font-size: 15px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+
+  &:hover {
+    @media (hover: hover) {
+      border-color: var(--gray-4);
+      background-color: hsl(var(--brand-color-hsl) / 0.05);
+    }
+  }
+}
+
+.einText {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.einLabel {
+  color: var(--gray-5);
+  font-weight: 500;
+}
+
+.einValue {
+  font-family: monospace;
+  font-weight: 600;
+  color: var(--gray-8);
+}
+
+.copyIcon {
+  width: 16px;
+  height: 16px;
+  color: var(--gray-6);
+}
+
+.methods {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 24px 32px;
+  background: var(--gray-1);
+}
+
+.method {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--gray-2);
+
+  &:first-child {
+    padding-top: 0;
+  }
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
+.methodDaf .methodIcon {
+  background: hsl(200 60% 50% / 0.15);
+  color: hsl(200 60% 65%);
+}
+
+.methodCrypto .methodIcon {
+  background: hsl(280 50% 55% / 0.15);
+  color: hsl(280 50% 70%);
+}
+
+.methodOther .methodIcon {
+  background: hsl(150 45% 45% / 0.15);
+  color: hsl(150 45% 60%);
+}
+
+.methodIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  flex-shrink: 0;
+
+  & svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.methodContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 2px;
+}
+
+.methodTitle {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--gray-8);
+}
+
+.methodDesc {
+  font-size: 13px;
+  color: var(--gray-5);
+  line-height: 1.5;
+}
+
+.methodLink {
+  color: var(--gray-7);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+
+  &:hover {
+    color: var(--gray-9);
+  }
+}
+
+@media (max-width: 600px) {
+  .main {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 24px;
+    gap: 16px;
+  }
+
+  .actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .button,
+  .einButton {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .methods {
+    padding: 24px;
+  }
+
+  .method {
+    text-align: left;
+  }
+}

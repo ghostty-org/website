@@ -565,6 +565,11 @@
           "title": "Synchronized Output"
         }
       ]
+    },
+    {
+      "type": "link",
+      "path": "/sponsor",
+      "title": "Financial Support"
     }
   ]
 }

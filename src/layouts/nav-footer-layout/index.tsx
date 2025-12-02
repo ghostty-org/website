@@ -46,7 +46,7 @@ export default function NavFooterLayout(props: NavFooterLayoutProps) {
             href: "/download",
           },
         ]}
-        copyright={`© ${currentYear} Mitchell Hashimoto`}
+        copyright={`© ${currentYear} Ghostty`}
       />
     </RootLayout>
   );
