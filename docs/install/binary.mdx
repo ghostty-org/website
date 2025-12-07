@@ -24,7 +24,32 @@ process as installing many typical macOS applications.
 
 A [Homebrew cask](https://formulae.brew.sh/cask/ghostty) is available and maintained by the Ghostty community.
 
-```sh
+```{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+
+    ghostty = {
+      url = "github:ghostty-org/ghostty";
+    };
+  };
+
+  outputs = {
+    nixpkgs,
+    ghostty,
+    ...
+  }: {
+    nixosConfigurations.mysystem = nixpkgs.lib.nixosSystem {
+      modules = [
+        ({ pkgs, ... }: {
+          environment.systemPackages = [
+            ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default
+          ];
+        })
+      ];
+    };
+  };
+}
+
 brew install --cask ghostty
 ```
 
