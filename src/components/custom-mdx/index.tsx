@@ -5,6 +5,7 @@ import ButtonLinks from "../button-links";
 import Callout, { Caution, Important, Note, Tip, Warning } from "../callout";
 import CardLinks from "../card-links";
 import DonateCard from "../donate-card";
+import SponsorCard from "../sponsor-card";
 import CodeBlock from "../codeblock";
 import GitHub from "../github";
 import { processGitHubLinks } from "../github/mdx";
@@ -95,6 +96,7 @@ export default function CustomMDX({ content }: CustomMDXProps) {
           CardLinks,
           ButtonLinks,
           DonateCard,
+          SponsorCard,
           GitHub,
           Video,
           /* Callout Variants */
