@@ -1,0 +1,32 @@
+.showcasePage {
+
+  & .header {
+    padding: 0 0 28px;
+  }
+
+  & .list {
+    --gap: 24px;
+    --cols: 3;
+
+    @media(max-width: 1100px) {
+      --cols: 2;
+    }
+
+    @media(max-width: 768px) {
+      --cols: 1;
+    }
+
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap);
+
+    &>li {
+      --flex-basis: calc((100% / var(--cols)) - (var(--gap) * (var(--cols) - 1)) / var(--cols));
+      flex-basis: var(--flex-basis);
+      max-width: var(--flex-basis);
+    }
+  }
+}

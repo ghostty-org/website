@@ -1,0 +1,27 @@
+.ListItem {
+  border: 1px solid var(--gray-2);
+  border-radius: 10px;
+  overflow: hidden;
+
+  & img {
+    width: 100%;
+    height: auto;
+  }
+
+  & .content {
+    padding: 12px 12px 16px;
+
+    & .title {
+      margin-bottom: 8px;
+    }
+
+    & .description {
+      margin-bottom: 8px;
+    }
+
+  }
+
+  & .tagList {
+    padding: 16px 0 0;
+  }
+}
