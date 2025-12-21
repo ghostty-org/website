@@ -65,6 +65,21 @@ body {
   --callout-important: var(--atom-one-purple);
   --callout-warning: var(--atom-one-yellow);
   --callout-caution: var(--atom-one-red);
+
+  /* DocSearch customizations */
+  --docsearch-primary-color: var(--brand-color);
+  --docsearch-text-color: var(--gray-4);
+  --docsearch-subtle-color: var(--gray-2);
+  --docsearch-icon-color: var(--brand-color);
+  --docsearch-background-color: var(--gray-1);
+  --docsearch-modal-background: var(--gray-0);
+  --docsearch-searchbox-focus-background: var(--gray-1);
+  --docsearch-searchbox-background: var(--gray-0);
+  --docsearch-footer-background: #1f2937;
+  --docsearch-hit-background: #374151;
+  --docsearch-hit-color: #f9fafb;
+  --docsearch-key-background: transparent;
+  --docsearch-hit-shadow: none;
 }
 
 /* This a slightly modified atom-one-dark theme */

@@ -10,6 +10,7 @@ import NavTree, { BreakNode, LinkNode, NavTreeNode } from "../nav-tree";
 import GhosttyWordmark from "./ghostty-wordmark.svg";
 import s from "./Navbar.module.css";
 import { useRouter } from "next/router";
+import DocSearch from "@/components/doc-search";
 
 export interface NavbarProps {
   className?: string;
@@ -94,6 +95,7 @@ export default function Navbar({
         <NextLink href="/">
           <Image src={GhosttyWordmark} alt="Ghostty" />
         </NextLink>
+        <DocSearch />
         <div className={s.desktopLinks}>
           {links && (
             <ul className={s.linkList}>
