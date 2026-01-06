@@ -5,6 +5,10 @@
   --gradient-height: 20px;
   --gradient-color: var(--gray-0);
 
+  @media (prefers-color-scheme: light) {
+    --gradient-color: var(--black);
+  }
+
   &::before,
   &::after {
     content: "";

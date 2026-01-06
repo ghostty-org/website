@@ -58,6 +58,10 @@
   &:hover {
     background-color: var(--button-color);
     text-decoration: none;
+
+    &.brand {
+      color: var(--brand-color-fg);
+    }
   }
 
   border-radius: 6px;

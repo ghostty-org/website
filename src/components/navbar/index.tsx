@@ -8,6 +8,7 @@ import GridContainer, { NavAndFooterGridConfig } from "../grid-container";
 import Link, { ButtonLink, SimpleLink } from "../link";
 import NavTree, { BreakNode, LinkNode, NavTreeNode } from "../nav-tree";
 import GhosttyWordmark from "./ghostty-wordmark.svg";
+import GhosttyWordmarkBlack from "./ghostty-wordmark-black.svg";
 import s from "./Navbar.module.css";
 import { useRouter } from "next/router";
 
@@ -31,6 +32,18 @@ export default function Navbar({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const mobileContentRef = useRef<HTMLDivElement>(null);
   const activeItemRef = useRef<HTMLLIElement>(null);
+  const [darkTheme, setDarkTheme] = useState(true);
+
+  useEffect(() => {
+    const mediaMatch = window.matchMedia("(prefers-color-scheme: dark)");
+    setDarkTheme(mediaMatch.matches);
+    const cb = (e: MediaQueryListEvent) => {
+      setDarkTheme(e.matches);
+    };
+    mediaMatch.addEventListener("change", cb);
+
+    return () => mediaMatch.removeEventListener("change", cb);
+  }, []);
 
   useEffect(() => {
     function handleSizeUpdated() {
@@ -92,7 +105,7 @@ export default function Navbar({
         gridConfig={NavAndFooterGridConfig}
       >
         <NextLink href="/">
-          <Image src={GhosttyWordmark} alt="Ghostty" />
+          <Image src={darkTheme ? GhosttyWordmark : GhosttyWordmarkBlack} alt="Ghostty" />
         </NextLink>
         <div className={s.desktopLinks}>
           {links && (

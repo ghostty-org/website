@@ -11,11 +11,33 @@ export default function Mermaid({ chart, id, className = "" }: MermaidProps) {
   const elementRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [primaryColor, setPrimaryColor] = useState("#ffffff");
+  const [brandColor, setBrandColor] = useState("#3551F3");
+
+
+  useEffect(() => {
+    const colorSchemeMatch = window.matchMedia("(prefers-color-scheme: dark)");
+    const computedStyle = window.getComputedStyle(document.body);
+    const brandColor = computedStyle.getPropertyValue("--brand-color");
+
+    setBrandColor(brandColor);
+    setPrimaryColor(colorSchemeMatch.matches ? "#ffffff" : "#000000")
+
+    const cb = (e: MediaQueryListEvent) => {
+      setPrimaryColor(e.matches ? "#ffffff" : "#000000")
+    };
+
+    colorSchemeMatch.addEventListener("change", cb);
+
+    return () => {
+      colorSchemeMatch.removeEventListener("change", cb);
+    }
+  }, []);
 
   useEffect(() => {
     let mermaidInstance: any;
     const element = elementRef.current;
-
+    
     const renderMermaid = async () => {
       try {
         setIsLoading(true);
@@ -30,31 +52,31 @@ export default function Mermaid({ chart, id, className = "" }: MermaidProps) {
           fontFamily: "inherit",
           fontSize: 14,
           themeVariables: {
-            primaryColor: "#ffffff",
-            primaryTextColor: "#ffffff",
-            primaryBorderColor: "#ffffff",
+            primaryColor: brandColor,
+            primaryTextColor: primaryColor,
+            primaryBorderColor: primaryColor,
 
-            lineColor: "#ffffff",
+            lineColor: primaryColor,
 
             edgeLabelBackground: "transparent",
 
-            actorBorder: "#ffffff",
-            actorBkg: "transparent",
-            actorTextColor: "#ffffff",
-            actorLineColor: "#ffffff",
-            signalColor: "#ffffff",
-            signalTextColor: "#ffffff",
+            actorBorder: primaryColor,
+            actorBkg: brandColor,
+            actorTextColor: "white",
+            actorLineColor: primaryColor,
+            signalColor: primaryColor,
+            signalTextColor: primaryColor,
 
-            gridColor: "#ffffff",
+            gridColor: primaryColor,
 
-            git0: "#ffffff",
-            git1: "#ffffff",
-            git2: "#ffffff",
-            git3: "#ffffff",
-            git4: "#ffffff",
-            git5: "#ffffff",
-            git6: "#ffffff",
-            git7: "#ffffff",
+            git0: primaryColor,
+            git1: primaryColor,
+            git2: primaryColor,
+            git3: primaryColor,
+            git4: primaryColor,
+            git5: primaryColor,
+            git6: primaryColor,
+            git7: primaryColor,
 
             background: "transparent",
             secondaryColor: "transparent",
@@ -96,30 +118,20 @@ export default function Mermaid({ chart, id, className = "" }: MermaidProps) {
             const paths = svgElement.querySelectorAll("path");
             paths.forEach((path) => {
               if (path.getAttribute("stroke") !== "none") {
-                path.setAttribute("stroke", "#ffffff");
+                path.setAttribute("stroke", primaryColor);
               }
               if (
                 path.getAttribute("fill") !== "none" &&
                 path.getAttribute("fill") !== "transparent"
               ) {
-                path.setAttribute("fill", "#ffffff");
+                path.setAttribute("fill", primaryColor);
               }
             });
 
             const markers = svgElement.querySelectorAll("marker path");
             markers.forEach((marker) => {
-              marker.setAttribute("fill", "#ffffff");
-              marker.setAttribute("stroke", "#ffffff");
-            });
-
-            const polylines = svgElement.querySelectorAll("polyline");
-            polylines.forEach((polyline) => {
-              polyline.setAttribute("stroke", "#ffffff");
-            });
-
-            const lines = svgElement.querySelectorAll("line");
-            lines.forEach((line) => {
-              line.setAttribute("stroke", "#ffffff");
+              marker.setAttribute("fill", primaryColor);
+              marker.setAttribute("stroke", primaryColor);
             });
           }
         }
@@ -140,7 +152,7 @@ export default function Mermaid({ chart, id, className = "" }: MermaidProps) {
         element.innerHTML = "";
       }
     };
-  }, [chart, id]);
+  }, [chart, id, primaryColor]);
 
   if (error) {
     return (
