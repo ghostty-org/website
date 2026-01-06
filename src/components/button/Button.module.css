@@ -30,6 +30,7 @@
     color: var(--gray-9);
     background-color: var(--brand-color);
     &:hover  {
+      color: var(--brand-color-fg);
       @media(hover: hover) {
         background-color: hsl(var(--brand-color-hsl)/.7);
       }

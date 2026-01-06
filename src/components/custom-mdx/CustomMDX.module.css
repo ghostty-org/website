@@ -50,17 +50,14 @@
     border: 1px solid var(--gray-5);
     display: block;
   }
-  & :global(.mermaid-diagram *[fill]) {
-    fill: var(--brand-color) !important;
-  }
-  & :global(.mermaid-diagram *[color]) {
-    color: var(--brand-color) !important;
-  }
-  & :global(.mermaid-diagram) * {
-    color: white !important;
-  }
-  & :global(.mermaid-diagram svg) * {
+
+  & :global(.mermaid-diagram svg .actor-man) * {
     fill: white !important;
+  }
+
+  & :global(.mermaid-diagram svg .actor-man) :is(text, text *) {
+    color: var(--white) !important;
+    fill: var(--white) !important;
   }
 }
 
