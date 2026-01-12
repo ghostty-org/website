@@ -144,11 +144,15 @@ by the Ghostty project so we put it in the "official" section.
 
 ### openSUSE
 
-Ghostty is available as [`ghostty`](https://software.opensuse.org/package/ghostty) in the official openSUSE Tumbleweed repository.
+openSUSE has [dropped][opensuse-dropped] Ghostty from its official repositories
+as it does not allow packages to depend on a specific version of Zig, which is
+*critical* for Ghostty as nearly all new Zig releases introduce breaking changes
+that prevent software written for a previous Zig version from compiling.
 
-```sh
-zypper install ghostty
-```
+[opensuse-dropped]: https://lists.opensuse.org/archives/list/factory@lists.opensuse.org/thread/BMZTZ2DCNWXARP5UD7MECR6PCWOTKR5G/#BMZTZ2DCNWXARP5UD7MECR6PCWOTKR5G
+
+openSUSE users should try to build Ghostty from source instead, or try
+installing Ghostty from a third-party, community-maintained repository.
 
 ### Snap
 
