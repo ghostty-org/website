@@ -5,10 +5,14 @@ description: |-
   and running a prebuilt binary or package.
 ---
 
-The Ghostty project only officially provides prebuilt binaries
-for macOS. Other platforms may provide packages for Ghostty,
-but those packages are not officially maintained by the Ghostty project.
-This page will list both official and community-provided binary packages.
+The Ghostty project only officially distributes prebuilt binaries
+for macOS. For other platforms like Linux, we rely on a mix of distro
+maintainers and community members to build, test and distribute
+Ghostty for the wider userbase.
+
+In some cases, Ghostty maintainers may also be involved in maintaining
+packages for certain distros, but that should not be taken as endorsement
+from the Ghostty project as a whole.
 
 ## macOS
 
@@ -22,21 +26,67 @@ process as installing many typical macOS applications.
 
 ### Homebrew
 
-A [Homebrew cask](https://formulae.brew.sh/cask/ghostty) is available and maintained by the Ghostty community.
+A [Homebrew cask](https://formulae.brew.sh/cask/ghostty) is available and
+maintained by the Ghostty community. It merely repackages the official
+`.dmg` and should offer the same level of security as the official binary
+itself.
 
 ```sh
 brew install --cask ghostty
 ```
 
-## Linux (Official)
+### Nix (macOS binary)
 
-Pre-built Linux binaries are packaged by distributions and not the
-Ghostty project. The packages listed in this section are all official
-packages provided by the respective distributions.
-[Community-built packages](#linux-(community)) are also available. See
-the warning associated with those packages for more information.
+In Nixpkgs, Ghostty is available as a repackaging of the official `.dmg`
+under the package name `ghostty-bin`, not to be confused with `ghostty`,
+which is the GTK app [available for Nix on Linux](#nix).
 
-If your platform isn't available, you must
+<Note>
+
+Unfortunately, Nix currently cannot compile Ghostty from source under macOS.
+
+The reason behind that is because Nixpkgs does not yet have the ecosystem
+support required for it, chief among them include Swift 6 support, free,
+automatable and reproducible xcodebuild alternatives, etc. In the future,
+we may consider merging `ghostty-bin` into `ghostty` and provide
+from-source builds for both macOS and GTK apps.
+
+</Note>
+
+nix-darwin users can install Ghostty for either the entire system or
+for a single user through the usual method:
+
+```nix
+{
+  pkgs,
+}:
+{
+  # Systemwide install
+  environment.systemPackages = [
+    pkgs.ghostty-bin
+  ];
+  
+  # Install for a specific user
+  users.users.somebody.packages = [
+    pkgs.ghostty-bin
+  ];
+}
+```
+
+## Linux
+
+Ghostty is available in the default repositories for many Linux distributions.
+These packages are all built, tested and verified by the distributions
+themselves, and are unaffiliated with the Ghostty project.
+
+If you need help with installing and running Ghostty on a specific distribution
+or have any packaging-related questions, **please contact the maintainers of
+the Ghostty package within your own distribution** — once they've identified
+the issue to be within Ghostty itself, they will file an issue on your behalf.
+
+If your distribution isn't listed here, then please check out the
+[community-built binary packages](#linux-(community-binaries)) and see if
+there's any that you could install — otherwise, you must
 [build Ghostty from source](/docs/install/build).
 
 <Tip>
@@ -65,16 +115,9 @@ in Arch Linux's `[extra]` repository.
 pacman -S ghostty
 ```
 
-Additionally, a recipe for building and installing the tip of the `main`
-branch from source is available in the Arch User Repository (AUR) as
-[ghostty-git](https://aur.archlinux.org/packages/ghostty-git).
-Installation may be done with an AUR helper or from source per the
-[usual AUR instructions](https://wiki.archlinux.org/title/Arch_User_Repository#Installing_and_upgrading_packages).
-
-```sh
-# Install Ghostty git
-yay -S ghostty-git
-```
+Additionally, prerelease builds are also available on the AUR
+under `ghostty-git`. See the ["Prerelease Builds"](/docs/install/pre#aur)
+for specific details.
 
 ### Gentoo
 
@@ -84,71 +127,94 @@ Ghostty is available in the official Gentoo repository.
 emerge -av ghostty
 ```
 
-### NixOS
+### Nix
 
-Ghostty is available in [nixpkgs](https://search.nixos.org/packages?from=0&size=50&sort=relevance&type=packages&query=ghostty).
+On Linux, Ghostty can be installed with Nix in two major ways: by either using
+the `ghostty` package from [Nixpkgs] (maintained by a team of Nixpkgs maintainers)
+or the Flake available from Ghostty's source repository, maintained directly
+by the Ghostty project.
 
-```
-environment.systemPackages = [
-  pkgs.ghostty
-];
-```
+The package on Nixpkgs is the simplest option for most regular users, while
+the Flake allows more advanced users to install pinned versions of the
+development branch ("tip releases") in order to access more bleeding-edge
+features. As such, this page **only covers the package in Nixpkgs** — information
+regarding the Flake can be found in [its own section](/docs/install/pre#nix-flake)
+on the "Prereleases Builds" page.
 
-### Nix Flake
+[Nixpkgs]: https://search.nixos.org/packages?from=0&size=50&sort=relevance&type=packages&query=ghostty
 
-There is Nix package that can be used in the
-[Ghostty flake](https://github.com/ghostty-org/ghostty/blob/main/flake.nix)
-(`packages.ghostty` or `packages.default`). This is a good way
-to track specific commits of Ghostty.
+<Note>
 
-While the Ghostty project does not maintain any official packages for
-Linux, Ghostty maintains an in-repo Nix flake because Nix is used as
-our primary development and CI environment. The Ghostty project does
-not maintain any official NixOS packages (in `nixpkgs`).
+The `ghostty` package on Nixpkgs should not be confused with
+[`ghostty-bin`](#nix-(macos-binary)), which is a repackaging of the
+official `.dmg` for use on macOS.
 
-Below is an example:
+</Note>
+
+#### NixOS
+
+NixOS users can install Ghostty on an entire system or
+just for a single user through the usual method:
 
 ```nix
 {
-  inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-
-    ghostty = {
-      url = "github:ghostty-org/ghostty";
-    };
-  };
-
-  outputs = {
-    nixpkgs,
-    ghostty,
-    ...
-  }: {
-    nixosConfigurations.mysystem = nixpkgs.lib.nixosSystem {
-      modules = [
-        ({ pkgs, ... }: {
-          environment.systemPackages = [
-            ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default
-          ];
-        })
-      ];
-    };
-  };
+  pkgs,
+}:
+{
+  # Systemwide install
+  environment.systemPackages = [
+    pkgs.ghostty
+  ];
+  
+  # Install for a specific user
+  users.users.somebody.packages = [
+    pkgs.ghostty
+  ];
 }
 ```
 
-<Note>
-This isn't an official package in Nixpkgs but it is officially maintained
-by the Ghostty project so we put it in the "official" section.
-</Note>
+Trying out Ghostty without installing it with `nix run` or `nix-shell`
+should also work just fine:
+
+```sh
+nix run nixpkgs#ghostty
+nix-shell -p ghostty --run ghostty
+```
+
+#### Nix on other distros
+
+<Warning>
+
+Running Ghostty with Nix on non-NixOS systems will **fail to launch**
+without extra setup. This is because graphical programs compiled for Nixpkgs
+expect OpenGL drivers to be located in a different location than traditional
+distros, and will fail to find them if not manually worked around.
+
+</Warning>
+
+There are multiple ways to fix this, either by running Ghostty with a
+wrapper program like [`nixGL`] or [`nix-gl-host`] that sets up the correct
+OpenGL driver paths, or use a more permanent solution like
+[`nix-system-graphics`].
+
+[`nixGL`]: https://github.com/nix-community/nixGL
+[`nix-gl-host`]: https://github.com/numtide/nix-gl-host
+[`nix-system-graphics`]: https://github.com/soupglasses/nix-system-graphics
+
+Other than that, instructions are nearly identical to NixOS.
 
 
 ### openSUSE
 
-Ghostty is available as [`ghostty`](https://software.opensuse.org/package/ghostty) in the official openSUSE Tumbleweed repository.
+openSUSE has [dropped][opensuse-dropped] Ghostty from its official repositories
+as it does not allow packages to depend on a specific version of Zig. This is a
+*crucial* issue for Ghostty, as nearly all new Zig releases introduce breaking
+changes, preventing software targeting a previous Zig version to be compiled.
 
-```sh
-zypper install ghostty
-```
+[opensuse-dropped]: https://lists.opensuse.org/archives/list/factory@lists.opensuse.org/thread/BMZTZ2DCNWXARP5UD7MECR6PCWOTKR5G/#BMZTZ2DCNWXARP5UD7MECR6PCWOTKR5G
+
+openSUSE users should try to build Ghostty from source instead, or try
+installing Ghostty from a third-party, community-maintained repository.
 
 ### Snap
 
@@ -159,10 +225,11 @@ snap install ghostty --classic
 ```
 
 <Note>
-The Snap package at Snapcraft has an external maintainer but the build
-process is triggered by official scripts in the Ghostty repository and
-the package will be transferred to the Ghostty organization in the future,
-probably coinciding with future Ghostty 1.2 release.
+While the Snap at Snapcraft is currently maintained by an external maintainer,
+the Snap itself is built using Ghostty's own scripts, and we ensure that the
+Snap builds as a part of our CI regimen. We are currently working on formally
+transferring the Snap to the Ghostty project and making it one of the
+officially supported and distributed package formats for Linux.
 </Note>
 
 ### Solus
@@ -181,22 +248,38 @@ Ghostty is available in the official package repository.
 xbps-install ghostty
 ```
 
-## Linux (Community)
+## Linux (Community Binaries)
 
 The packages in this section provide binary installs for Ghostty but
-are not official packages within the associated distributions. These
-packages are maintained by community members and as such a higher level
-of caution should be taken when installing them.
+are not official packages within the associated distributions.
+
+<Warning>
+
+Community binaries carry a much higher risk compared to builds
+directly from the Ghostty project or from distro maintainers, since
+they have been compiled beforehand on a computer that might not be held
+to the same security standards as a package compiled by the Ghostty
+project or by distro maintainers.
+
+In case that was unclear, **by installing these packages, you implicitly
+accept the risk of a third party that could potentially temper with the
+binary files for malicious purposes**.
+
+Security concerns aside, there may also be silent breakages, depending on the
+architectural differences between your computer and the computer that built the
+binary package, or the compile flags used in the build process.
+
+Overall, if you are fine with these risks, feel free to use these community
+builds. Otherwise, [compiling from source](/docs/install/build) is the much
+safer option.
+
+</Warning>
 
 ### Debian
 
 Ghostty is available in [this community-maintained repository](https://debian.griffo.io/).
 
-Build, packaging and instructions for each version are available in the README of the [repository](https://github.com/dariogriffo/ghostty-debian)
-
-<Warning>
-These are user-maintained packages and not official Debian packages.
-</Warning>
+Build, packaging and instructions for each version are available in the README of the [repository](https://github.com/dariogriffo/ghostty-debian).
 
 ### Fedora
 
@@ -213,10 +296,6 @@ Ghostty is also available in [Terra](https://terra.fyralabs.com/).
  dnf install --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.com/terra$releasever' terra-release
  dnf install ghostty
  ```
-
-<Warning>
-These are user-maintained packages and not official Fedora packages.
-</Warning>
 
 #### Atomic Desktops (Silverblue)
 
@@ -243,10 +322,6 @@ An Ubuntu package (.deb) is available from
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/mkasberg/ghostty-ubuntu/HEAD/install.sh)"
 ```
 
-<Warning>
-This is a user-maintained package. It is not an official Ubuntu package.
-</Warning>
-
 ### Universal AppImage
 
 Ghostty is available as a Universal AppImage which is compatible with any Linux distribution (Including musl based).
@@ -262,6 +337,3 @@ chmod a+x Ghostty-${VERSION}-${ARCH}.appimage
 
 For comprehensive installation instructions, please refer the [installation guide](https://github.com/pkgforge-dev/ghostty-appimage#%EF%B8%8F-installation).
 
-<Warning>
-This is a community-maintained AppImage. It is not an official AppImage.
-</Warning>
