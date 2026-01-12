@@ -25,8 +25,9 @@ with more details in the sections following the table.
 | Platform | Description |
 | -------- | ----------- |
 | macOS | `auto-update-channel` to get the latest prerelease builds |
-| Nix   | Standard `flake.nix` in the Ghostty repository |
-| Linux | [Build from source](/docs/install/build) |
+| Arch Linux | `ghostty-git` on the AUR |
+| NixOS/Nix on other distros | Flake within the Ghostty repository |
+| Other Linux distros | [Build from source](/docs/install/build) |
 
 ## macOS
 
@@ -76,19 +77,91 @@ This is community-maintained. The `auto-update-channel` setting
 is an official distribution channel.
 </Warning>
 
-## Nix
+## Linux
 
-For Nix users on Linux, there is a standard
-[`flake.nix` in the Ghostty repository](https://github.com/ghostty-org/ghostty/blob/main/flake.nix).
-Follow the same instructions as the
-[Nix Flake](/docs/install/build#building-with-nix)
-section on the building from source page.
+### AUR
+
+<Warning>
+
+The AUR package is community-maintained. Any issues regarding packaging
+or the build process should be reported to the AUR maintainer first,
+and then to the Ghostty project.
+
+</Warning>
+
+The [`ghostty-git`] package on the Arch User Repository (AUR) provides
+a way to automatically build and install the latest prerelease version
+of Ghostty with ease.
+
+[`ghostty-git`]: https://aur.archlinux.org/packages/ghostty-git
+
+Installation may be done with an AUR helper or from source per the
+[usual AUR instructions](https://wiki.archlinux.org/title/Arch_User_Repository#Installing_and_upgrading_packages).
+
+```sh
+# Install Ghostty git
+yay -S ghostty-git
+```
+
+### Nix Flake
+
+The Ghostty repository comes with a Flake that can be used to build, run
+and install development ("tip") versions of Ghostty reproducibly, which
+is directly used, tested and maintained by Ghostty maintainers as our
+primary development and CI environment.
+
+```sh
+# Build and run the latest tip version of Ghostty without installing
+nix run github:ghostty-org/ghostty
+```
 
 <Note>
-**The package in the flake only supports Linux.** Building macOS app
-bundles is not well supported by Nix, so the package in the flake
-only supports Linux. If you want to contribute a macOS package to
-the flake, feel free to make a pull request!
+
+The Flake currently does not support macOS builds due to limitations of
+the Nix ecosystem. See the [Nix (macOS binary)](/docs/install/binary#nix-(macos-binary))
+section of the "Prebuilt Binaries and Packages" page for more details.
+
 </Note>
 
+<Warning>
+
+If you are installing the Flake on a non-NixOS system, be sure to read
+the [important caveats](/docs/install/binary#nix-on-other-distros) regarding
+running OpenGL programs built with Nix on non-NixOS systems. Ghostty will
+likely **fail to launch** without the workarounds described there.
+
+</Warning>
+
+NixOS users can install Ghostty either directly as a package under
+`packages.<system>.default` (where `<system>` is your current host system,
+e.g. `x86_64-linux`), or use the overlay at `overlays.default`.
+
+```nix
+{
+  pkgs,
+  inputs,
+}:
+{
+  # Installing the package directly
+  users.users.somebody.packages = [
+    inputs.ghostty.${pkgs.stdenv.hostPlatform.system}.default
+  ];
+
+  # Alternatively, using overlays:
+  nixpkgs.overlays = [
+    inputs.ghostty.overlays.default
+  ];
+  users.users.somebody.packages = [
+    pkgs.ghostty
+  ];
+}
+```
+
+The Flake also exposes Ghostty compiled under different optimization settings,
+including `ghostty-debug`, `ghostty-releasefast` and `ghostty-releasesafe`:
+`releasefast` is the default; `debug` enables better debug information at the
+cost of performance; and `releasesafe` is rarely used.
+
+`debug` and `releasefast` are also available as overlays, under `overlays.debug`
+and `overlays.releasefast` respectively.
 

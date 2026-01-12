@@ -38,7 +38,7 @@ export default function ReleaseDownloadPage({
         <div className={s.linuxLinks}>
           <ButtonLink
             size="large"
-            href="/docs/install/binary#linux-(official)"
+            href="/docs/install/binary#linux"
             text="Package Manager"
             icon={<Package strokeWidth={2} size={18} />}
             showExternalIcon={false}
