@@ -29,6 +29,8 @@
     "zustand": "^5.0.2"
   },
   "devDependencies": {
+    "@docsearch/css": "^4.1.0",
+    "@docsearch/js": "^4.1.0",
     "@types/klaw-sync": "^6.0.5",
     "@types/node": "20.14.13",
     "@types/react": "19.2.3",
