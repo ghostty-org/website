@@ -5,14 +5,25 @@
   padding: 24px;
   border-radius: 12px;
   border: 1px solid var(--gray-3);
-  background: var(--gray-1);
+  background: var(--gray-2);
   text-decoration: none;
   transition: border-color 0.15s ease, background-color 0.15s ease;
-
   &:hover {
     @media (hover: hover) {
-      border-color: var(--gray-4);
-      background: hsl(var(--brand-color-hsl) / 0.03);
+      border-color: var(--gray-6);
+      background: color-mix(in srgb, var(--brand-color) 20%, transparent);
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    border: 1px solid var(--gray-3);
+    background: var(--gray-1);
+
+    &:hover {
+      @media (hover: hover) {
+        border-color: var(--gray-6);
+        background: color-mix(in srgb, var(--brand-color) 3%, transparent);
+      }
     }
   }
 }

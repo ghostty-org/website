@@ -51,6 +51,11 @@
   display: flex;
   flex-direction: column;
 
+  @media (prefers-color-scheme: light) {
+    background: var(--gray-8);
+    color: var(--gray-0)
+  }
+
   & .header {
     display: grid;
     align-items: center;
@@ -102,7 +107,6 @@
   & .content {
     font-size: var(--content-font-size);
     padding-top: var(--code-margin-top);
-    color: var(--gray-6);
     word-wrap: break-word;
     scroll-behavior: smooth;
     overflow-y: scroll;
@@ -116,6 +120,10 @@
       & :global(.b) {
         color: var(--brand-color);
       }
+    }
+
+    @media (prefers-color-scheme: light) {
+      color: var(--gray-1);
     }
   }
 

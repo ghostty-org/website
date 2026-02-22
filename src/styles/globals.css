@@ -9,7 +9,7 @@
 }
 
 html {
-  color-scheme: dark;
+  color-scheme: light dark;
 }
 
 html,
@@ -31,6 +31,7 @@ body {
 
   max-width: 100vw;
   --brand-color: #3551F3;
+  --brand-color-fg: #fff;
   --brand-color-hsl: 240 100% 45%;
   --gray-0: #0F0F11; /* Background color */
   --gray-1: #16161A; /* Blocks */
@@ -145,7 +146,7 @@ pre code {
   text-decoration: underline;
 }
 
-@media print {
+@media print, screen and (prefers-color-scheme: light) {
   /* Invert the lightness in print mode */
   html,
   body {
@@ -173,5 +174,9 @@ pre code {
     --atom-one-teal: #2b959d;
     --atom-one-gray: #8f97a3;
     --atom-one-white: #434958;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--brand-color) 40%, transparent);
   }
 }

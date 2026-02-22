@@ -80,7 +80,7 @@ ul.nodesList {
 
       &.active {
         background: var(--brand-color);
-        color: var(--gray-9);
+        color: var(--brand-color-fg);
       }
     }
   }

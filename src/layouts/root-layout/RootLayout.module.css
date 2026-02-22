@@ -1,7 +1,7 @@
 .rootLayout {
   font-family: var(--pretendard-std-variable);
 
-  & a {
+  :where(& a) {
 		color: var(--gray-9);
   }
 
