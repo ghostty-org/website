@@ -151,7 +151,7 @@ This applies to both Metal and OpenGL.
 
 ### Stability Improvements
 
-PRs: GH-10337 GH-11089 GH-11109 GH-9594
+PRs: GH-10337 GH-10401 GH-11089 GH-11109 GH-9594
 
 Ghostty 1.3 includes a significant investment in stability and robustness.
 
@@ -169,6 +169,14 @@ crashes and potential memory safety issues through this process. None of
 these were known to cause any real-world issues, but they may have!
 As a longer-term goal, we'd like to spin up infrastructure to continuously
 fuzz Ghostty.
+
+We built a new testing tool called [Tripwire](https://mitchellh.com/writing/tripwire)
+(GH-10401) to systematically test `errdefer` cleanup paths by injecting
+failures at every `try` site. This uncovered and fixed several bugs including
+memory leaks, state corruption, and glyph cache corruption in the font
+subsystem. This only addresses bugs in error recovery paths, so this
+helps Ghostty be more robust in the face of unexpected errors such as OOMs,
+GPU driver issues, etc.
 
 On the memory side, we've optimized memory in a handful of places.
 Alt screen memory is now allocated on demand, saving several megabytes per
@@ -254,6 +262,14 @@ The following default behaviors have been changing in 1.3.0:
   with `copy_to_clipboard` binding action parameters. GH-9396
 - Window and tab titles can now be set separately from split titles
   using the menu, command palette, or new keybind actions. GH-9879
+- Session search in the command palette lets you jump to any
+  running terminal by searching its title or working directory, with
+  tab color indicators (macOS). GH-9945
+- Support Kitty's `click_events` extension which lets clicking the
+  prompt in supported shells move the cursor, such as Fish v4+ and Nushell
+  0.111+. GH-10536
+- Support OSC133 `cl=line` so bash and zsh get clickable prompts with the
+  above. GH-10542
 - The Ghostty configuration can now have the `.ghostty` extension. GH-8689
 - Ghostty can now show notifications when a command finishes using the
   `notify-on-command-finish` configuration. This can be set to trigger
@@ -284,11 +300,20 @@ The following default behaviors have been changing in 1.3.0:
   to deterministically navigate through windows. GH-8387
 - A new binding action `toggle_mouse_reporting` toggles mouse reporting
   to the TUI. GH-9282
+- A new binding action `end_key_sequence` binding action to explicitly end an active
+  key sequence, flushing prior keys to the terminal without encoding
+  the triggering key (e.g. `ctrl+w>escape=end_key_sequence`). GH-10098
 - The `close_tab` binding action takes a new parameter `right` which
   closes all tabes to the right. GH-9783
+- `resize_split` and `toggle_split_zoom` actions now return false
+  when there is only a single pane, allowing `performable:` keybinds
+  to pass the key through to the terminal application. GH-10376
 - The quick terminal now sets the `GHOSTTY_QUICK_TERMINAL` environment
   variable which can be used in any way, such as for custom shell prompts.
   GH-9673
+- The `cursor` shell integration feature now respects
+  `cursor-style-blink`, using a steady bar when blinking is disabled
+  instead of always using a blinking bar. GH-10643
 - Right clicking a URL will now highlight the full URL. GH-9298
 - Upgrade to Unicode 17. GH-8757
 - The `+list-themes` command now has a keybind to write a configuration file.
@@ -299,6 +324,11 @@ The following default behaviors have been changing in 1.3.0:
   shaders. GH-9416 GH-9417
 - OSC7 URI parsing now handles more edge cases such as MAC addresses
   better. GH-9193
+- Unsafe control characters in pasted text are now replaced with
+  spaces to prevent malicious pastes from tricking users into
+  executing unexpected commands, matching xterm's behavior. GH-10746
+- IME preedit text is now rendered with underlines instead of
+  inverted colors for better readability and consistency across programs. GH-10368
 - Improved font rendering on some low-DPI monitors. GH-9432
 - For font metrics, round cell height from line height instead of ceiling.
   This change should give more consistent results between high and low DPI
@@ -312,11 +342,26 @@ The following default behaviors have been changing in 1.3.0:
 - Keypad variation sequences respect Unicode VS16. GH-9502
 - VS15/16 check now considers emoji bases properly. GH-9679
 - Grapheme break algorithm updated to match Unicode spec exactly. GH-9680
+- Fix rendering of wide grapheme clusters in scripts like Devanagari
+  where multiple non-zero-width code points combine into a single
+  cluster that should occupy two cells. GH-10465
 - Fix possible crash due to data race condition looking up hyperlinks. GH-9813
 - Fix possible crash due to data race with selection and copy. GH-9818
+- Fix a crash caused by a race condition between
+  drawing Kitty image placements and the placement list being
+  updated, triggered when rapidly cycling through images in
+  applications like Yazi. GH-10680
+- Fix a major memory leak when pruning scrollback with non-standard
+  sized pages. Non-standard pages (caused by emoji-heavy, hyperlink-heavy,
+  or Claude Code output) were incorrectly returned to the memory pool
+  instead of being unmapped. GH-10251
+- Fix rendering artifacts that could be caused in certain edge cases
+  with insert lines or delete lines (IL/DL) VT operations. GH-10290
 
 ### Terminal Capabilities
 
+- vt: More complete and accurate parsing and implementation of OSC 133.
+  GH-10427
 - vt: ConEmu OSC9 is now fully parsed (subcommand 1 to 12). Ghostty GUI
   only implements a subset of this but libghostty can parse it all. GH-3125
 - vt: Report color scheme events are now reported synchronously. GH-5922
@@ -326,6 +371,11 @@ The following default behaviors have been changing in 1.3.0:
   scrollback buffer instead of erasing them, matching the behavior of
   other terminal emulators. This fixes Fish shell's `Ctrl-L`
   (`scrollback-push`) losing history. GH-9905
+- vt: Reset (`RIS`) now also resets the progress bar. GH-10168
+- vt: Parse Kitty text sizing protocol (OSC 66), not implemented
+  in the GUI yet. GH-10315
+- vt: Parse (but do not implement) iTerm2 OSC 1337 extensions. GH-10417
+- vt: Parse (but do not implement) Kitty clipboard protocol (OSC 5522). GH-10560
 - vt: Significantly more tmux control mode parsing, but not hooked up to
   the GUI yet. GH-9803 GH-9860
 - vt: Fix crash with specially crafted large images in Kitty Graphics. GH-9579
@@ -335,7 +385,18 @@ The following default behaviors have been changing in 1.3.0:
 
 - nu: SSH shell integration now supported. GH-7877
 - fish: Add descriptions to fish shell completions for Ghostty. GH-9531
+- zsh: Fix literal `\n` appearing in window titles when running commands
+  in zsh by stripping control characters instead of converting them
+  to visible representations. GH-10341
+- bash: shell integration no longer depends on bash-preexec for Bash
+  4.4+, using native PS0 and PROMPT_COMMAND instead for faster and
+  simpler hooks. Older Bash versions (e.g. macOS's 3.2) continue
+  using bash-preexec. GH-10609
+- elvish: always report working directory changes, decoupling it from the
+  title reporting feature. GH-10533
 - `sudo` shell integration feature is now more stable across all shells. GH-9891
+- Fix SSH cache failing when `$TMPDIR` and `$XDG_STATE_HOME` are on
+  different filesystems. GH-10364
 - If `cursor-style` is manually set, default `shell-integration-features` to
   contain `no-cursor`. GH-8681
 
@@ -343,14 +404,11 @@ The following default behaviors have been changing in 1.3.0:
 
 - macOS: A drag handle now appears at the top of every terminal for
   reordering splits, moving a terminal into a new tab or window, etc.
-  GH-1525
+  GH-1525 GH-10090
 - macOS: Custom command palette entries with `command-palette-entry`.
   This has been supported on GTK since 1.2.0. GH-7158
 - macOS: Update notifications now appear as an unobtrusive pill within
   terminal windows rather than a popup dialog. GH-9116
-- macOS: Session search in the command palette lets you jump to any
-  running terminal by searching its title or working directory, with
-  tab color indicators for easy identification. GH-9945
 - macOS: Mouse buttons 8/9 (back/forward) now encode properly in the terminal.
   GH-10381 GH-2425
 - macOS: A new app intent to focus a specific terminal usable by
@@ -362,6 +420,8 @@ The following default behaviors have been changing in 1.3.0:
   in non-native fullscreen in addition to native fullscreen. GH-9876
 - macOS: Implement the `close_all_windows` binding action. GH-9552
 - macOS: Add a new keyboard binding `toggle_background_opacity`. GH-9117
+- macOS: Support native `Cmd+Home`/`Cmd+End` shortcuts to scroll to
+  the top or bottom of the terminal scrollback. GH-10003
 - macOS: Equalize splits when double-clicking the split divider. GH-9524
 - macOS: The notification badge now clears when all active terminal bells
   are cleared. GH-8487
@@ -383,6 +443,9 @@ The following default behaviors have been changing in 1.3.0:
 - macOS: Custom app icons now update more reliably using
   `NSDockTilePlugIn`, fixing corner radius issues on older macOS
   versions. GH-9983
+- macOS: Menu bar now flashes briefly when using keyboard shortcuts
+  that have menu equivalents (e.g. Cmd+V, Cmd+N, Cmd+T), matching
+  standard macOS behavior. GH-10122
 - macOS: Apply subpixel horizontal alignment also when cell width is less
   than advance, resulting in smoother rendering. GH-9646
 - macOS: Font shaping now uses glyph positions for correct
@@ -396,6 +459,8 @@ The following default behaviors have been changing in 1.3.0:
 - macOS: Fix a crash when the terminal window texture exceeds the
   GPU's maximum allowed size by clamping texture dimensions to the
   device limit. GH-9972
+- macOS: Fix Vim filetype detection to recognize the macOS-specific Ghostty
+  config path as a Ghostty configuration file. GH-10101
 - macOS: Various windowing fixes with `macos-titlebar-style = tabs`. GH-9596
   GH-9597
 - macOS: Various fixes around dark/light theme reloading. GH-9360
@@ -404,14 +469,24 @@ The following default behaviors have been changing in 1.3.0:
 
 ### GTK (Linux, FreeBSD)
 
+- GTK: Two-finger left/right switch tab pages. GH-10575
 - GTK: Key tables and sequences now have dedicated UI showing the pending
   keyboard input state to match macOS. GH-2127
 - GTK: Cgroups have been revamped so that cgroups are now properly
   scopes per-surface. GH-10611 GH-2084
 - GTK: Windows with custom `window-height` or `window-width` now
   center properly. GH-7937
+- GTK: `paste_from_clipboard` now returns false when the clipboard
+  contains no text (e.g. an image), allowing `performable:` keybinds
+  to pass the keypress through to the terminal application. GH-10089
 - GTK: Fix an issue where i3 window border would disappear after
   toggling fullscreen back and forth. GH-8075
+- GTK: Fix Kitty keyboard protocol not reporting text events for composed
+  keys (e.g. accent characters via Compose key on international
+  keyboard layouts). GH-10049
+- GTK: Respect the `gtk-enable-primary-paste` GSettings option,
+  allowing users to disable middle-click paste via the GNOME desktop
+  setting. GH-10328
 - GTK: Log a warning when OpenGL version is too old instead of
   crashing without notice. GH-9586
 - GTK: Default FreeType flags to light hinting instead of full hinting to
@@ -428,238 +503,6 @@ The following default behaviors have been changing in 1.3.0:
 
 I have to manually go through these and summarize:
 
-- GH-10003
-- GH-10007
-- GH-10015
-- GH-10020
-- GH-10022
-- GH-10023
-- GH-10028
-- GH-10031
-- GH-10033
-- GH-10034
-- GH-10035
-- GH-10038
-- GH-10039
-- GH-10044
-- GH-10046
-- GH-10049
-- GH-10050
-- GH-10054
-- GH-10056
-- GH-10060
-- GH-10062
-- GH-10064
-- GH-10065
-- GH-10066
-- GH-10067
-- GH-10069
-- GH-10081
-- GH-10082
-- GH-10083
-- GH-10085
-- GH-10089
-- GH-10090
-- GH-10091
-- GH-10093
-- GH-10094
-- GH-10095
-- GH-10096
-- GH-10097
-- GH-10098
-- GH-10101
-- GH-10105
-- GH-10106
-- GH-10110
-- GH-10111
-- GH-10112
-- GH-10113
-- GH-10118
-- GH-10122
-- GH-10125
-- GH-10127
-- GH-10130
-- GH-10132
-- GH-10133
-- GH-10134
-- GH-10150
-- GH-10155
-- GH-10157
-- GH-10164
-- GH-10168
-- GH-10178
-- GH-10179
-- GH-10184
-- GH-10192
-- GH-10193
-- GH-10196
-- GH-10197
-- GH-10198
-- GH-10210
-- GH-10211
-- GH-10223
-- GH-10226
-- GH-10227
-- GH-10229
-- GH-10232
-- GH-10233
-- GH-10234
-- GH-10239
-- GH-10240
-- GH-10241
-- GH-10242
-- GH-10243
-- GH-10251
-- GH-10258
-- GH-10262
-- GH-10271
-- GH-10274
-- GH-10276
-- GH-10280
-- GH-10282
-- GH-10285
-- GH-10286
-- GH-10287
-- GH-10290
-- GH-10295
-- GH-10297
-- GH-10298
-- GH-10308
-- GH-10315
-- GH-10328
-- GH-10332
-- GH-10337
-- GH-10341
-- GH-10343
-- GH-10345
-- GH-10348
-- GH-10349
-- GH-10352
-- GH-10353
-- GH-10357
-- GH-10363
-- GH-10364
-- GH-10365
-- GH-10368
-- GH-10374
-- GH-10376
-- GH-10377
-- GH-10379
-- GH-10380
-- GH-10381
-- GH-10383
-- GH-10384
-- GH-10389
-- GH-10392
-- GH-10393
-- GH-10396
-- GH-10399
-- GH-10401
-- GH-10406
-- GH-10407
-- GH-10408
-- GH-10411
-- GH-10412
-- GH-10413
-- GH-10417
-- GH-10424
-- GH-10425
-- GH-10427
-- GH-10428
-- GH-10442
-- GH-10449
-- GH-10450
-- GH-10454
-- GH-10455
-- GH-10458
-- GH-10459
-- GH-10464
-- GH-10465
-- GH-10466
-- GH-10470
-- GH-10490
-- GH-10491
-- GH-10498
-- GH-10501
-- GH-10503
-- GH-10509
-- GH-10512
-- GH-10522
-- GH-10524
-- GH-10526
-- GH-10527
-- GH-10528
-- GH-10533
-- GH-10534
-- GH-10536
-- GH-10537
-- GH-10542
-- GH-10544
-- GH-10546
-- GH-10548
-- GH-10554
-- GH-10559
-- GH-10560
-- GH-10565
-- GH-10570
-- GH-10573
-- GH-10575
-- GH-10577
-- GH-10583
-- GH-10587
-- GH-10602
-- GH-10609
-- GH-10611
-- GH-10612
-- GH-10618
-- GH-10619
-- GH-10624
-- GH-10625
-- GH-10626
-- GH-10628
-- GH-10633
-- GH-10634
-- GH-10635
-- GH-10636
-- GH-10637
-- GH-10638
-- GH-10639
-- GH-10640
-- GH-10641
-- GH-10643
-- GH-10644
-- GH-10645
-- GH-10648
-- GH-10649
-- GH-10655
-- GH-10656
-- GH-10665
-- GH-10667
-- GH-10668
-- GH-10673
-- GH-10674
-- GH-10675
-- GH-10676
-- GH-10679
-- GH-10680
-- GH-10686
-- GH-10688
-- GH-10694
-- GH-10697
-- GH-10698
-- GH-10702
-- GH-10708
-- GH-10718
-- GH-10723
-- GH-10728
-- GH-10732
-- GH-10740
-- GH-10746
-- GH-10747
-- GH-10752
-- GH-10754
-- GH-10758
-- GH-10764
 - GH-10765
 - GH-10768
 - GH-10772
