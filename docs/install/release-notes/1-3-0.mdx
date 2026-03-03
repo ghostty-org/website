@@ -67,42 +67,6 @@ the terminal grid doesn't have to reserve space for the scrollbar with an
 aesthetically unpleasing gap or gutter. The scrollbar is overlaid on top of
 the terminal contents with minimal styling to prevent impacting selection.
 
-### Unobtrusive Updates (macOS)
-
-PR: GH-9116
-
-Update notifications on macOS are now unobtrusive. If a terminal
-window is open, update notifications appear as a small pill in the
-titlebar or bottom corner of the window instead of a disruptive popup
-window. The pill itself can be dismissed with a right click if you
-want to further hide it.
-
-You can also trigger a full update and restart directly from
-the command palette with "Update and Restart" (GH-9131), making the
-entire update process able to be keyboard-driven.
-
-{/*TODO: Screenshot showing the unobtrusive update banner in the titlebar*/}
-
-### Performance Improvements
-
-PRs: GH-9662 GH-9645
-
-Thanks to [asciinema](https://asciinema.org/), we received ~4GB of
-public terminal recording data to analyze and optimize Ghostty's performance.
-This is exciting because its based on real-world terminal usage, not just
-synthetic workloads.
-
-Using this data, we improved I/O processing considerably, lowering the
-time it took Ghostty to replay everything in the dataset from minutes to
-tens of seconds (with asciinema configured to ignore all pauses, of course).
-These improvements were also visible in synthetic benchmarks such
-as Alacritty's vtebench.
-
-In addition to I/O updates, the renderer was rearchitected, lowering the time
-the renderer holds the terminal lock by **2x to 5x**. And in most frames, the
-renderer doesn't hold the lock at all thanks to improved dirty/damage tracking.
-This applies to both Metal and OpenGL.
-
 ### Click to Move Cursor In Shell Prompts
 
 PR: GH-10455
@@ -164,6 +128,68 @@ The `copy_to_clipboard` binding now supports a parameter specifying
 the format to copy. In addition to mixed, plain, and HTML formats, the
 binding also supports `vt` which copies text with terminal escape sequences
 to preserve formatting when pasting into another terminal.
+
+### Performance Improvements
+
+PRs: GH-9662 GH-9645
+
+Thanks to [asciinema](https://asciinema.org/), we received ~4GB of
+public terminal recording data to analyze and optimize Ghostty's performance.
+This is exciting because its based on real-world terminal usage, not just
+synthetic workloads.
+
+Using this data, we improved I/O processing considerably, lowering the
+time it took Ghostty to replay everything in the dataset from minutes to
+tens of seconds (with asciinema configured to ignore all pauses, of course).
+These improvements were also visible in synthetic benchmarks such
+as Alacritty's vtebench.
+
+In addition to I/O updates, the renderer was rearchitected, lowering the time
+the renderer holds the terminal lock by **2x to 5x**. And in most frames, the
+renderer doesn't hold the lock at all thanks to improved dirty/damage tracking.
+This applies to both Metal and OpenGL.
+
+### Stability Improvements
+
+PRs: GH-10337 GH-11089 GH-11109 GH-9594
+
+Ghostty 1.3 includes a significant investment in stability and robustness.
+
+This release fixes a major memory leak that Claude Code specifically
+regularly triggered in prior Ghostty releases. This leak has existed since
+Ghostty 1.0 but was difficult or rare to trigger until Claude Code began
+exhibiting the perfect conditions to trigger this at scale, especially
+with their large user base. Details of the leak and the fix can be found
+[in this specific blog post about it](https://mitchellh.com/writing/ghostty-memory-leak-fix).
+
+We also ran this release through extensive [AFL++](https://aflplus.plus/)
+fuzz testing for Ghostty's terminal escape sequence parser (GH-11089) and the
+full VT stream processor (GH-11109). We identified and fixed around 10
+crashes and potential memory safety issues through this process. None of
+these were known to cause any real-world issues, but they may have!
+As a longer-term goal, we'd like to spin up infrastructure to continuously
+fuzz Ghostty.
+
+On the memory side, we've optimized memory in a handful of places.
+Alt screen memory is now allocated on demand, saving several megabytes per
+terminal for sessions that never use it (GH-9594). There are a variety of
+minor improvements in all subsystems, however.
+
+### Unobtrusive Updates (macOS)
+
+PR: GH-9116
+
+Update notifications on macOS are now unobtrusive. If a terminal
+window is open, update notifications appear as a small pill in the
+titlebar or bottom corner of the window instead of a disruptive popup
+window. The pill itself can be dismissed with a right click if you
+want to further hide it.
+
+You can also trigger a full update and restart directly from
+the command palette with "Update and Restart" (GH-9131), making the
+entire update process able to be keyboard-driven.
+
+{/*TODO: Screenshot showing the unobtrusive update banner in the titlebar*/}
 
 ## System Requirements
 
