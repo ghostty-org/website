@@ -122,6 +122,58 @@ This feature uses OSC 133 escape sequences to track command execution,
 so it requires shell integration to be enabled or a shell that sends
 OSC 133 sequences natively such as Fish or Nushell.
 
+### Key Tables, Chained Keybinds, and `catch_all`
+
+PRs: GH-9984 GH-9961 GH-9977 GH-10098
+
+Ghostty 1.3 adds many new features to our keybind system for keybind
+power users: key tables, chained keybinds, and the `catch_all` special key.
+
+**Key tables** enable tmux-like modal keybinding workflows. A key table is a
+named set of keybindings that can be activated or deactivated on demand. When
+a table is active, key presses are looked up within that table first, allowing
+you to create entirely separate keybinding modes.
+
+Tables are defined using a `<name>/<binding>` syntax on the existing `keybind`
+configuration. For example:
+
+```
+keybind = resize/arrow_up=resize_split:up,10
+keybind = resize/arrow_down=resize_split:down,10
+keybind = resize/arrow_left=resize_split:left,10
+keybind = resize/arrow_right=resize_split:right,10
+keybind = resize/escape=deactivate_key_table
+keybind = resize/catch_all=ignore
+
+keybind = ctrl+a=activate_key_table:resize
+```
+
+In this example, pressing `ctrl+a` activates the `resize` table. While active,
+the arrow keys resize splits and all other keys are ignored. Pressing `escape`
+deactivates the table and returns to normal keybinding behavior.
+
+On both macOS and GTK, a dedicated UI indicator shows when a key table is
+active, similar to the existing key sequence indicator.
+
+{/*TODO: Screenshot*/}
+
+**Chained keybinds** let you bind multiple actions to a single key. Using
+the `chain` key, actions are appended to the most recently defined binding:
+
+```
+keybind = ctrl+shift+f=toggle_fullscreen
+keybind = chain=toggle_window_decorations
+```
+
+This triggers both actions when `ctrl+shift+f` is pressed. Chains work within
+key tables and with key sequences.
+
+**`catch_all`** is a new special key that matches any key not explicitly bound.
+It can be combined with modifiers (`ctrl+catch_all=ignore`) and used within key
+sequences (`ctrl+a>catch_all=end_key_sequence`), making it easy to build
+self-contained modal keybinding sets that don't leak unintended input to the
+terminal.
+
 ### Fine-grained Working Directory Inheritance Controls
 
 PR: GH-9158
@@ -226,12 +278,6 @@ the command palette with "Update and Restart" (GH-9131), making the
 entire update process able to be keyboard-driven.
 
 {/*TODO: Screenshot showing the unobtrusive update banner in the titlebar*/}
-
-### Other Candidates
-
-- Chained keybinds GH-9961
-- Key tables GH-9984
-- catch_all GH-9977
 
 ## System Requirements
 
