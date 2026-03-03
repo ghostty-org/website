@@ -223,143 +223,860 @@ The following default behaviors have been changing in 1.3.0:
   matching the behavior of most other GTK applications. The old behavior
   can be restored via the `freetype-load-flags` configuration. GH-9253
 
-## Full Changelog
+## Full Issue List (to be removed)
 
-- The `.ghostty` file extension is now supported for the default
-  configuration file. When both `config` and `config.ghostty` exist,
-  the `.ghostty` version takes priority. GH-8689
-- Scrollback search is now available on both macOS and GTK. GH-9585 GH-9709
-  GH-9756
-- Native scrollbars are now available on both macOS and GTK. GH-9225
-  GH-9232
-- New `RenderState` API shortens the renderer's critical lock area by
-  2-5x and enables zero-lock frames when nothing has changed. GH-9662
-- Assorted I/O hot-path optimizations improve terminal throughput. GH-9645
-- `ghostty-vt` Zig module provides a standalone, reusable terminal
-  emulation library with Zig, C, and Wasm APIs. GH-8840
-- New `copy_to_clipboard` format option with `mixed` default for rich
-  text clipboard support. GH-9418
-- New `tab-inherit-working-directory` and `split-inherit-working-directory`
-  configurations for independent working directory inheritance. GH-9158
-- New `GHOSTTY_QUICK_TERMINAL` environment variable is set when running
-  inside the quick terminal, allowing shell configurations to adjust
-  behavior. GH-9673
-- New `toggle_background_opacity` keybind action to toggle background
-  transparency on a per-surface basis (macOS). GH-9117
-- New `prompt_window_title` keybind action for renaming windows via a
-  popup prompt. GH-10767
-- New `command-finished` notifications: configurable desktop or bell
-  notifications when long-running commands complete. GH-8992
-- Right-clicking a link now selects it for easy copying. GH-9298
-- Clickable file paths now support bare relative paths, `~/` paths,
-  `$VAR` paths, and improved space handling. GH-10570 GH-10619 GH-10867
-- Command palette now shows keyboard shortcuts next to commands (macOS).
-  GH-10723
-- Command palette fuzzy search on GTK now uses the Zf algorithm. GH-8291
-- Shell integration `cursor` feature now respects `cursor-style-blink`.
-  GH-10643
-- Bash shell integration no longer depends on bash-preexec for bash 4.4+.
-  GH-10609
-- Bash shell integration now uses a shell command for proper login shell
-  behavior. GH-9875
-- Nushell shell integration is now supported, including ssh wrapping
-  and sudo integration. GH-10274
-- Elvish shell integration improvements for directory reporting, sudo
-  detection, and XDG cleanup. GH-10533 GH-10534 GH-10587
-- Fish shell completions now include descriptions. GH-9551
-- `+list-themes` TUI now supports pressing `w` to write a theme config
-  file. GH-8930
-- Unicode library replaced from ziglyph to uucode with Unicode 16
-  support. GH-8757
-- Underline drawing reworked: undercurl uses z2d with rounded end caps,
-  dotted underline renders as anti-aliased evenly-spaced dots. GH-9654
-- Custom shaders gain new uniforms: cursor style/visibility, color
-  palette, focus state, and focus timestamp. GH-9572 GH-9656 GH-10130
-- IME preedit cells now respect `background-opacity`. GH-10774
-- Debug overlay framework for rendering diagnostic information directly
-  on the terminal. GH-10503
-- `copy_title_to_clipboard` now copies the user-overridden title. GH-10694
-- OSC 133 click-to-move cursor respects `cursor-click-to-move` config.
-  GH-11141
-- Paste encoding replaces unsafe control characters with spaces. GH-10746
-- New `language` configuration to override the GUI localization language
-  (GTK). GH-10428
-- Updated and new translations: Lithuanian, Latvian, and many updated
-  locales.
-- Ported to Zig 0.15. GH-8372
-- Multiple crashes found and fixed via AFL++ fuzzing of terminal escape
-  sequence parsers. GH-11088 GH-11110 GH-11111 GH-11112 GH-11113
-- Fix `ColorList.clone` not cloning `colors_c`, which broke custom icon
-  styles after config reload. GH-9613
-- Terminfo now includes SGR dim capability. GH-11144
+I have to manually go through these and summarize:
+
+- GH-111
+- GH-189
+- GH-1392
+- GH-1525
+- GH-2084
+- GH-2127
+- GH-2425
+- GH-2660
+- GH-3125
+- GH-5160
+- GH-5694
+- GH-5922
+- GH-7158
+- GH-7643
+- GH-7877
+- GH-7937
+- GH-8075
+- GH-8282
+- GH-8339
+- GH-8361
+- GH-8383
+- GH-8387
+- GH-8388
+- GH-8407
+- GH-8408
+- GH-8409
+- GH-8414
+- GH-8430
+- GH-8435
+- GH-8458
+- GH-8487
+- GH-8493
+- GH-8635
+- GH-8681
+- GH-8689
+- GH-8711
+- GH-8712
+- GH-8757
+- GH-8765
+- GH-8769
+- GH-8776
+- GH-8779
+- GH-8793
+- GH-8795
+- GH-8798
+- GH-8801
+- GH-8802
+- GH-8808
+- GH-8810
+- GH-8814
+- GH-8815
+- GH-8826
+- GH-8840
+- GH-8856
+- GH-8885
+- GH-8895
+- GH-8904
+- GH-8924
+- GH-8930
+- GH-8938
+- GH-8941
+- GH-8945
+- GH-8950
+- GH-8961
+- GH-8978
+- GH-8983
+- GH-8989
+- GH-8991
+- GH-8992
+- GH-9000
+- GH-9004
+- GH-9010
+- GH-9018
+- GH-9019
+- GH-9021
+- GH-9028
+- GH-9030
+- GH-9033
+- GH-9038
+- GH-9039
+- GH-9040
+- GH-9041
+- GH-9042
+- GH-9043
+- GH-9050
+- GH-9051
+- GH-9059
+- GH-9060
+- GH-9061
+- GH-9067
+- GH-9068
+- GH-9079
+- GH-9089
+- GH-9110
+- GH-9116
+- GH-9117
+- GH-9121
+- GH-9122
+- GH-9126
+- GH-9127
+- GH-9128
+- GH-9129
+- GH-9130
+- GH-9131
+- GH-9145
+- GH-9146
+- GH-9149
+- GH-9151
+- GH-9155
+- GH-9158
+- GH-9162
+- GH-9165
+- GH-9170
+- GH-9171
+- GH-9173
+- GH-9174
+- GH-9175
+- GH-9177
+- GH-9180
+- GH-9184
+- GH-9185
+- GH-9189
+- GH-9192
+- GH-9193
+- GH-9200
+- GH-9201
+- GH-9203
+- GH-9204
+- GH-9208
+- GH-9217
+- GH-9218
+- GH-9220
+- GH-9222
+- GH-9225
+- GH-9226
+- GH-9227
+- GH-9232
+- GH-9233
+- GH-9234
+- GH-9241
+- GH-9245
+- GH-9248
+- GH-9253
+- GH-9255
+- GH-9263
+- GH-9266
+- GH-9269
+- GH-9270
+- GH-9275
+- GH-9278
+- GH-9279
+- GH-9280
+- GH-9282
+- GH-9296
+- GH-9298
+- GH-9317
+- GH-9325
+- GH-9331
+- GH-9335
+- GH-9339
+- GH-9342
+- GH-9343
+- GH-9344
+- GH-9346
+- GH-9352
+- GH-9357
+- GH-9360
+- GH-9362
+- GH-9364
+- GH-9365
+- GH-9366
+- GH-9369
+- GH-9374
+- GH-9379
+- GH-9391
+- GH-9392
+- GH-9393
+- GH-9394
+- GH-9395
+- GH-9396
+- GH-9397
+- GH-9398
+- GH-9400
+- GH-9402
+- GH-9403
+- GH-9405
+- GH-9406
+- GH-9407
+- GH-9412
+- GH-9414
+- GH-9415
+- GH-9416
+- GH-9417
+- GH-9418
+- GH-9420
+- GH-9423
+- GH-9426
+- GH-9427
+- GH-9428
+- GH-9431
+- GH-9432
+- GH-9444
+- GH-9446
+- GH-9450
+- GH-9454
+- GH-9455
+- GH-9456
+- GH-9458
+- GH-9460
+- GH-9469
+- GH-9473
+- GH-9485
+- GH-9488
+- GH-9490
+- GH-9493
+- GH-9494
+- GH-9497
+- GH-9499
+- GH-9502
+- GH-9504
+- GH-9506
+- GH-9509
+- GH-9512
+- GH-9515
+- GH-9517
+- GH-9518
+- GH-9520
+- GH-9521
+- GH-9523
+- GH-9524
+- GH-9525
+- GH-9528
+- GH-9529
+- GH-9531
+- GH-9532
+- GH-9533
+- GH-9536
+- GH-9540
+- GH-9541
+- GH-9548
+- GH-9551
+- GH-9552
+- GH-9559
+- GH-9562
+- GH-9570
+- GH-9572
+- GH-9576
+- GH-9579
+- GH-9580
+- GH-9581
+- GH-9585
+- GH-9586
+- GH-9588
+- GH-9589
+- GH-9594
+- GH-9595
+- GH-9596
+- GH-9597
+- GH-9598
+- GH-9602
+- GH-9603
+- GH-9604
+- GH-9605
+- GH-9606
+- GH-9609
+- GH-9613
+- GH-9619
+- GH-9624
+- GH-9626
+- GH-9627
+- GH-9632
+- GH-9642
+- GH-9645
+- GH-9646
+- GH-9648
+- GH-9649
+- GH-9651
+- GH-9654
+- GH-9656
+- GH-9659
+- GH-9662
+- GH-9666
+- GH-9670
+- GH-9672
+- GH-9673
+- GH-9676
+- GH-9678
+- GH-9679
+- GH-9680
+- GH-9682
+- GH-9685
+- GH-9687
+- GH-9691
+- GH-9694
+- GH-9695
+- GH-9696
+- GH-9698
+- GH-9700
+- GH-9702
+- GH-9705
+- GH-9709
+- GH-9710
+- GH-9711
+- GH-9713
+- GH-9714
+- GH-9715
+- GH-9717
+- GH-9718
+- GH-9719
+- GH-9721
+- GH-9734
+- GH-9736
+- GH-9742
+- GH-9747
+- GH-9748
+- GH-9752
+- GH-9753
+- GH-9755
+- GH-9756
+- GH-9758
+- GH-9759
+- GH-9761
+- GH-9764
+- GH-9765
+- GH-9766
+- GH-9772
+- GH-9779
+- GH-9780
+- GH-9781
+- GH-9782
+- GH-9783
+- GH-9784
+- GH-9791
+- GH-9800
+- GH-9803
+- GH-9810
+- GH-9813
+- GH-9817
+- GH-9818
+- GH-9819
+- GH-9831
+- GH-9832
+- GH-9835
+- GH-9837
+- GH-9838
+- GH-9839
+- GH-9842
+- GH-9843
+- GH-9850
+- GH-9855
+- GH-9860
+- GH-9862
+- GH-9863
+- GH-9865
+- GH-9866
+- GH-9867
+- GH-9869
+- GH-9870
+- GH-9871
+- GH-9875
+- GH-9876
+- GH-9877
+- GH-9879
+- GH-9880
+- GH-9881
+- GH-9882
+- GH-9883
+- GH-9885
+- GH-9887
+- GH-9888
+- GH-9889
+- GH-9891
+- GH-9894
+- GH-9895
+- GH-9896
+- GH-9898
+- GH-9899
+- GH-9900
+- GH-9904
+- GH-9905
+- GH-9906
+- GH-9907
+- GH-9909
+- GH-9910
+- GH-9911
+- GH-9914
+- GH-9916
+- GH-9918
+- GH-9921
+- GH-9924
+- GH-9925
+- GH-9926
+- GH-9933
+- GH-9934
+- GH-9938
+- GH-9942
+- GH-9945
+- GH-9948
+- GH-9950
+- GH-9951
+- GH-9958
+- GH-9959
+- GH-9961
+- GH-9963
+- GH-9964
+- GH-9971
+- GH-9972
+- GH-9975
+- GH-9976
+- GH-9977
+- GH-9983
+- GH-9984
+- GH-9988
+- GH-9990
+- GH-9991
+- GH-9993
+- GH-9994
+- GH-9995
+- GH-9997
+- GH-9998
+- GH-10003
+- GH-10007
+- GH-10015
+- GH-10020
+- GH-10022
+- GH-10023
+- GH-10028
+- GH-10031
+- GH-10033
+- GH-10034
+- GH-10035
+- GH-10038
+- GH-10039
+- GH-10044
+- GH-10046
+- GH-10049
+- GH-10050
+- GH-10054
+- GH-10056
+- GH-10060
+- GH-10062
+- GH-10064
+- GH-10065
+- GH-10066
+- GH-10067
+- GH-10069
+- GH-10081
+- GH-10082
+- GH-10083
+- GH-10085
+- GH-10089
+- GH-10090
+- GH-10091
+- GH-10093
+- GH-10094
+- GH-10095
+- GH-10096
+- GH-10097
+- GH-10098
+- GH-10101
+- GH-10105
+- GH-10106
+- GH-10110
+- GH-10111
+- GH-10112
+- GH-10113
+- GH-10118
+- GH-10122
+- GH-10125
+- GH-10127
+- GH-10130
+- GH-10132
+- GH-10133
+- GH-10134
+- GH-10150
+- GH-10155
+- GH-10157
+- GH-10164
+- GH-10168
+- GH-10178
+- GH-10179
+- GH-10184
+- GH-10192
+- GH-10193
+- GH-10196
+- GH-10197
+- GH-10198
+- GH-10210
+- GH-10211
+- GH-10223
+- GH-10226
+- GH-10227
+- GH-10229
+- GH-10232
+- GH-10233
+- GH-10234
+- GH-10239
+- GH-10240
+- GH-10241
+- GH-10242
+- GH-10243
+- GH-10251
+- GH-10258
+- GH-10262
+- GH-10271
+- GH-10274
+- GH-10276
+- GH-10280
+- GH-10282
+- GH-10285
+- GH-10286
+- GH-10287
+- GH-10290
+- GH-10295
+- GH-10297
+- GH-10298
+- GH-10308
+- GH-10315
+- GH-10328
+- GH-10332
+- GH-10337
+- GH-10341
+- GH-10343
+- GH-10345
+- GH-10348
+- GH-10349
+- GH-10352
+- GH-10353
+- GH-10357
+- GH-10363
+- GH-10364
+- GH-10365
+- GH-10368
+- GH-10374
+- GH-10376
+- GH-10377
+- GH-10379
+- GH-10380
+- GH-10381
+- GH-10383
+- GH-10384
+- GH-10389
+- GH-10392
+- GH-10393
+- GH-10396
+- GH-10399
+- GH-10401
+- GH-10406
+- GH-10407
+- GH-10408
+- GH-10411
+- GH-10412
+- GH-10413
+- GH-10417
+- GH-10424
+- GH-10425
+- GH-10427
+- GH-10428
+- GH-10442
+- GH-10449
+- GH-10450
+- GH-10454
+- GH-10455
+- GH-10458
+- GH-10459
+- GH-10464
+- GH-10465
+- GH-10466
+- GH-10470
+- GH-10490
+- GH-10491
+- GH-10498
+- GH-10501
+- GH-10503
+- GH-10509
+- GH-10512
+- GH-10522
+- GH-10524
+- GH-10526
+- GH-10527
+- GH-10528
+- GH-10533
+- GH-10534
+- GH-10536
+- GH-10537
+- GH-10542
+- GH-10544
+- GH-10546
+- GH-10548
+- GH-10554
+- GH-10559
+- GH-10560
+- GH-10565
+- GH-10570
+- GH-10573
+- GH-10575
+- GH-10577
+- GH-10583
+- GH-10587
+- GH-10602
+- GH-10609
+- GH-10611
+- GH-10612
+- GH-10618
+- GH-10619
+- GH-10624
+- GH-10625
+- GH-10626
+- GH-10628
+- GH-10633
+- GH-10634
+- GH-10635
+- GH-10636
+- GH-10637
+- GH-10638
+- GH-10639
+- GH-10640
+- GH-10641
+- GH-10643
+- GH-10644
+- GH-10645
+- GH-10648
+- GH-10649
+- GH-10655
+- GH-10656
+- GH-10665
+- GH-10667
+- GH-10668
+- GH-10673
+- GH-10674
+- GH-10675
+- GH-10676
+- GH-10679
+- GH-10680
+- GH-10686
+- GH-10688
+- GH-10694
+- GH-10697
+- GH-10698
+- GH-10702
+- GH-10708
+- GH-10718
+- GH-10723
+- GH-10728
+- GH-10732
+- GH-10740
+- GH-10746
+- GH-10747
+- GH-10752
+- GH-10754
+- GH-10758
+- GH-10764
+- GH-10765
+- GH-10768
+- GH-10772
+- GH-10773
+- GH-10774
+- GH-10778
+- GH-10779
+- GH-10780
+- GH-10781
+- GH-10788
+- GH-10792
+- GH-10793
+- GH-10795
+- GH-10796
+- GH-10797
+- GH-10798
+- GH-10800
+- GH-10802
+- GH-10804
+- GH-10805
+- GH-10810
+- GH-10811
+- GH-10816
+- GH-10817
+- GH-10819
+- GH-10820
+- GH-10821
+- GH-10822
+- GH-10823
+- GH-10825
+- GH-10826
+- GH-10827
+- GH-10828
+- GH-10829
+- GH-10830
+- GH-10832
+- GH-10833
+- GH-10834
+- GH-10835
+- GH-10836
+- GH-10837
+- GH-10838
+- GH-10839
+- GH-10840
+- GH-10841
+- GH-10842
+- GH-10843
+- GH-10844
+- GH-10845
+- GH-10846
+- GH-10847
+- GH-10848
+- GH-10850
+- GH-10851
+- GH-10853
+- GH-10854
+- GH-10856
+- GH-10860
+- GH-10861
+- GH-10862
+- GH-10863
+- GH-10867
+- GH-10869
+- GH-10872
+- GH-10873
+- GH-10874
+- GH-10875
+- GH-10877
+- GH-10878
+- GH-10880
+- GH-10881
+- GH-10886
+- GH-10887
+- GH-10888
+- GH-10890
+- GH-10891
+- GH-10893
+- GH-10895
+- GH-10896
+- GH-10898
+- GH-10899
+- GH-10901
+- GH-10903
+- GH-10908
+- GH-10909
+- GH-10912
+- GH-10913
+- GH-10914
+- GH-10915
+- GH-10923
+- GH-10924
+- GH-10925
+- GH-10927
+- GH-10929
+- GH-10931
+- GH-10932
+- GH-10933
+- GH-10934
+- GH-10935
+- GH-10936
+- GH-10938
+- GH-10939
+- GH-10943
+- GH-10947
+- GH-10954
+- GH-10956
+- GH-10959
+- GH-10960
+- GH-10963
+- GH-10965
+- GH-10968
+- GH-10969
+- GH-10970
+- GH-10971
+- GH-10972
+- GH-10975
+- GH-10976
+- GH-10977
+- GH-10978
+- GH-10985
+- GH-10993
+- GH-10996
+- GH-10997
+- GH-11007
+- GH-11009
+- GH-11012
+- GH-11017
+- GH-11018
+- GH-11021
+- GH-11024
+- GH-11025
+- GH-11027
+- GH-11028
+- GH-11030
+- GH-11032
+- GH-11034
+- GH-11035
+- GH-11036
+- GH-11043
+- GH-11044
+- GH-11045
+- GH-11046
+- GH-11047
+- GH-11049
+- GH-11051
+- GH-11052
+- GH-11055
+- GH-11058
+- GH-11062
+- GH-11065
+- GH-11066
+- GH-11067
+- GH-11068
+- GH-11070
+- GH-11071
+- GH-11073
+- GH-11074
+- GH-11078
+- GH-11086
+- GH-11088
+- GH-11089
+- GH-11093
+- GH-11094
+- GH-11096
+- GH-11098
+- GH-11099
+- GH-11103
+- GH-11107
+- GH-11109
+- GH-11110
+- GH-11111
+- GH-11112
+- GH-11113
+- GH-11114
+- GH-11116
+- GH-11119
+- GH-11122
+- GH-11123
+- GH-11132
+- GH-11134
+- GH-11135
+- GH-11136
+- GH-11137
+- GH-11138
+- GH-11139
+- GH-11141
+- GH-11144
+- GH-11147
+- GH-11148
+- GH-11149
+
+## Full Changelog
 
 ### Terminal Capabilities
 
-- OSC 133 semantic prompt markers now include `cl=line` for per-line
-  tracking and click-to-move support. GH-10455
-- OSC 133 `click_events` support for shell-native cursor positioning.
-  GH-10455
-- OSC 5522 (Kitty clipboard protocol) parsing support. GH-10560
-- DCS passthrough bounds checking for params. GH-11088
-- CSI W handler bounds checking for missing params. GH-11110
-- CSI @ (ICH) now clamps parameter 0 to 1, matching xterm. GH-11111
-- CSI g (TBC) safely handles overflowing parameters. GH-11112
-- SGR underline parsing handles trailing colons gracefully. GH-11113
-- Kitty keyboard protocol now sends composed/IME text correctly on
-  Linux. GH-11149
-- Kitty image updates now properly acquire the draw mutex. GH-10932
-
 ### macOS
 
-- macOS Tahoe Liquid Glass background effect support. GH-8801
-- Unobtrusive update notifications in the titlebar. GH-9116
-- "Update and Restart" available in the command palette. GH-9131
-- Focus Terminal App Intent for Shortcuts/Siri integration. GH-8961
-- Scrollbar scroller appearance now matches the terminal background
-  color for better visibility in light themes. GH-9640
-- `toggle_background_opacity` keybind action. GH-9117
-- Command palette shows keyboard shortcuts. GH-10723
-- Command palette show/hide animation improved. GH-9698
-- Splits can be reordered by dragging with the mouse. GH-10090
-- Spatial split navigation now wraps at edges (GTK too). GH-10811
-- Two-finger horizontal scroll switches tabs. GH-10575
-- Secure Keyboard Input overlay animation optimized (~35% lower CPU).
-  GH-10903
-- `toggle_visibility` behavior fixed with tabbed windows. GH-9742
-- Search result counter is overlaid inside the search field to prevent
-  layout shift. GH-9713
-- Phantom mouse events no longer defeat `mouse-hide-while-typing`.
-  GH-11066
-- Fix undo-new-tab crash on macOS Tahoe. GH-9512
-- Fix crash when adding a tab from tab overview. GH-11009
-- Fix new tab crash from missing subview prefix. GH-10924
-- Fix memory leak in icon setting on config change. GH-9613
-
 ### GTK (Linux, FreeBSD)
-
-- GTK search UI. GH-9756
-- GTK scrollbar support. GH-9232
-- Command palette toggling now works on GTK. GH-10856
-- New `tab-inherit-working-directory` and `split-inherit-working-directory`
-  configs. GH-9158
-- Command finished notifications with configurable duration threshold.
-  GH-8992
-- `language` config to override GUI localization. GH-10428
-- Two-finger horizontal scroll to switch tabs. GH-10575
-- Spatial split navigation wraps at edges. GH-10811
-- "Change Title" available in the main menu. GH-10997
-- Better GLib/GTK log routing through Zig logging. GH-8779
-- Better CSS parsing error reporting. GH-9129
-- Clicking desktop notifications now properly focuses the window and
-  selects the tab. GH-9146
-- Fix i3 window border disappearing after fullscreen toggle. GH-8075
-- Fix SIGSEGV on ImGui GLArea re-realize. GH-11025
-- Cgroup/transient scope handling revamped: per-surface scopes with
-  per-surface resource controls. GH-10611
-- FreeBSD CI re-enabled for Zig 0.15 with FreeBSD 15.0. GH-9039
-- Composed/IME text now works with kitty keyboard protocol. GH-11149
-- Translation `.po` files renamed to follow GTK naming conventions.
-  GH-10976
 
 ### Changes for Package Maintainers
 
