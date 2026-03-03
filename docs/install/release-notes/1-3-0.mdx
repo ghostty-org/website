@@ -25,14 +25,28 @@ you to navigate between them with the arrow buttons or `cmd+g` / `shift+cmd+g`
 (macOS) or `enter` / `shift+enter` (GTK). All of these keybinds are
 configurable, of course.
 
-{/*TODO: Screenshot of search on macOS showing matches highlighted in the terminal*/}
+<p align="center">
+  <a href="/images/1-3-0/macos-search.png" target="_blank">
+    <img
+      src="/images/1-3-0/macos-search.png"
+      style={{ maxWidth: "85%", margin: "10px" }}
+    />
+  </a>
+</p>
 
 On macOS, the search bar can be dragged to any of the four corners of
 the terminal if it gets in the way. The search also integrates with
 standard macOS conventions: the menu bar, `Find Next` / `Find Previous`
 shortcuts, and the system find pasteboard all work as expected.
 
-{/*TODO: Screenshot of search on GTK*/}
+<p align="center">
+  <a href="/images/1-3-0/gtk-search.png" target="_blank">
+    <img
+      src="/images/1-3-0/gtk-search.png"
+      style={{ maxWidth: "85%", margin: "10px" }}
+    />
+  </a>
+</p>
 
 On GTK, the search bar also appears in one of the corners and can be
 dragged to any corner.
@@ -48,15 +62,13 @@ resources.
 
 PRs: GH-9225 GH-9232
 
-{/*TODO: where is the GTK PR for scrollbars*/}
-
 Ghostty now has native scrollbars. A new `scrollbar` configuration controls
 whether scrollbars are visible, defaulting to `system` which lets the
 OS decide.
 
-{/*TODO: Screenshot showing scrollbar on macOS*/}
+<Video src="https://web.files.ghostty.org/release-notes-1-3-0-macos-scrollbar.mp4" />
 
-{/*TODO: Screenshot showing scrollbar on GTK*/}
+<Video src="https://web.files.ghostty.org/release-notes-1-3-0-gtk-scrollbar.mp4" />
 
 The scrollbar on both macOS and GTK uses native widgets and styling,
 and supports all the standard interactions you would expect, such as
@@ -77,6 +89,8 @@ extensions to the [OSC 133 Semantic Prompts specification](https://gitlab.freede
 This lets you click your mouse within an active shell prompt to move
 the cursor, like a normal text field.
 
+<Video src="https://web.files.ghostty.org/release-notes-1-3-0-click.mp4" />
+
 This feature is supported natively by Fish (v4+) and Nushell (0.111+).
 For other shells, support varies based on Ghostty's injected shell
 integration. If you're using a supported shell, this will just magically
@@ -92,7 +106,14 @@ the OSC133 areas, which were a significant help for shell developers
 working to better support this. This can be enabled by anyone in the
 terminal inspector.
 
-{/*TODO: screenshot of overlay*/}
+<p align="center">
+  <a href="/images/1-3-0/osc133-overlay.png" target="_blank">
+    <img
+      src="/images/1-3-0/osc133-overlay.png"
+      style={{ maxWidth: "85%", margin: "10px" }}
+    />
+  </a>
+</p>
 
 ### Command Finished Notifications
 
@@ -155,7 +176,14 @@ deactivates the table and returns to normal keybinding behavior.
 On both macOS and GTK, a dedicated UI indicator shows when a key table is
 active, similar to the existing key sequence indicator.
 
-{/*TODO: Screenshot*/}
+<p align="center">
+  <a href="/images/1-3-0/key-overlay.png" target="_blank">
+    <img
+      src="/images/1-3-0/key-overlay.png"
+      style={{ maxWidth: "85%", margin: "10px" }}
+    />
+  </a>
+</p>
 
 **Chained keybinds** let you bind multiple actions to a single key. Using
 the `chain` key, actions are appended to the most recently defined binding:
@@ -202,12 +230,12 @@ Clipboard copy now sets multiple content types on the clipboard
 formatting so when you paste into a rich text editor, you get formatted
 text with colors and other styles preserved.
 
-{/*TODO: screenshot*/}
-
 The `copy_to_clipboard` binding now supports a parameter specifying
 the format to copy. In addition to mixed, plain, and HTML formats, the
 binding also supports `vt` which copies text with terminal escape sequences
 to preserve formatting when pasting into another terminal.
+
+<Video src="https://web.files.ghostty.org/release-notes-1-3-0-copy-formatted.mp4" />
 
 ### Performance Improvements
 
@@ -277,7 +305,23 @@ You can also trigger a full update and restart directly from
 the command palette with "Update and Restart" (GH-9131), making the
 entire update process able to be keyboard-driven.
 
-{/*TODO: Screenshot showing the unobtrusive update banner in the titlebar*/}
+<p align="center">
+  <a href="/images/1-3-0/macos-update.png" target="_blank">
+    <img
+      src="/images/1-3-0/macos-update.png"
+      style={{ maxWidth: "85%", margin: "10px" }}
+    />
+  </a>
+</p>
+
+<p align="center">
+  <a href="/images/1-3-0/macos-update-clicked.png" target="_blank">
+    <img
+      src="/images/1-3-0/macos-update-clicked.png"
+      style={{ maxWidth: "85%", margin: "10px" }}
+    />
+  </a>
+</p>
 
 ## System Requirements
 
