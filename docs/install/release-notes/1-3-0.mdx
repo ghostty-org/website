@@ -34,8 +34,8 @@ shortcuts, and the system find pasteboard all work as expected.
 
 {/*TODO: Screenshot of search on GTK*/}
 
-On GTK, the search bar appears at the top of the terminal with native
-styling and integrates with the menu bar.
+On GTK, the search bar also appears in one of the corners and can be
+dragged to any corner.
 
 Search is implemented using a dedicated search thread that operates
 concurrently with terminal I/O. The thread grabs the terminal lock in
@@ -93,6 +93,34 @@ working to better support this. This can be enabled by anyone in the
 terminal inspector.
 
 {/*TODO: screenshot of overlay*/}
+
+### Command Finished Notifications
+
+PRs: GH-8992 GH-10934
+
+Ghostty can now notify you when a long-running command finishes. This is
+useful when you kick off a build or test suite and switch to another
+window and want to be notified when it's done, for example.
+
+Three new configuration options control this feature:
+
+```
+notify-on-command-finish = unfocused
+notify-on-command-finish-action = no-bell,notify
+notify-on-command-finish-after = 30s
+```
+
+`notify-on-command-finish` controls when notifications are sent: `never`
+(default), `unfocused` (only when the terminal is not focused), or
+`always`. `notify-on-command-finish-action` controls how you're notified,
+supporting `bell` (default) and `notify` (desktop notification), which
+can be combined or negated (e.g. `no-bell,notify`).
+`notify-on-command-finish-after` sets the minimum command duration before
+a notification is sent, defaulting to 5 seconds.
+
+This feature uses OSC 133 escape sequences to track command execution,
+so it requires shell integration to be enabled or a shell that sends
+OSC 133 sequences natively such as Fish or Nushell.
 
 ### Fine-grained Working Directory Inheritance Controls
 
@@ -201,7 +229,6 @@ entire update process able to be keyboard-driven.
 
 ### Other Candidates
 
-- Command notifications? GH-8991
 - Chained keybinds GH-9961
 - Key tables GH-9984
 - catch_all GH-9977
