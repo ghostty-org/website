@@ -1,0 +1,376 @@
+---
+title: Ghostty 1.3.0
+description: |-
+  Release notes for Ghostty 1.3.0, released on March 9, 2026.
+---
+
+Ghostty 1.3.0 features **6 months of work** with changes from
+**180 contributors** over **2,858 commits**. Thank you to all the contributors,
+maintainers, community moderators, translators, packagers, and users
+who each helped make this release possible.
+
+## Security
+
+- TODO
+
+## Highlights
+
+### Scrollback Search
+
+PRs: GH-9585 GH-9602 GH-9687 GH-9702 GH-9709 GH-9756
+
+You can now search your terminal scrollback with `cmd+f` on macOS or
+`ctrl+shift+f` on GTK. Search highlights all matches in the viewport and allows
+you to navigate between them with the arrow buttons or `cmd+g` / `shift+cmd+g`
+(macOS) or `enter` / `shift+enter` (GTK). All of these keybinds are
+configurable, of course.
+
+{/*TODO: Screenshot of search on macOS showing matches highlighted in the terminal*/}
+
+On macOS, the search bar can be dragged to any of the four corners of
+the terminal if it gets in the way. The search also integrates with
+standard macOS conventions: the menu bar, `Find Next` / `Find Previous`
+shortcuts, and the system find pasteboard all work as expected.
+
+{/*TODO: Screenshot of search on GTK*/}
+
+On GTK, the search bar appears at the top of the terminal with native
+styling and integrates with the menu bar.
+
+Search is implemented using a dedicated search thread that operates
+concurrently with terminal I/O. The thread grabs the terminal lock in
+small time slices to make forward progress on searching while
+minimizing I/O throughput or rendering. If you do not use search, or you
+close the search bar, the search thread exits and does not consume any
+resources.
+
+### Scrollbars
+
+PRs: GH-9225 GH-9232
+
+{/*TODO: where is the GTK PR for scrollbars*/}
+
+Ghostty now has native scrollbars. A new `scrollbar` configuration controls
+whether scrollbars are visible, defaulting to `system` which lets the
+OS decide.
+
+{/*TODO: Screenshot showing scrollbar on macOS*/}
+
+{/*TODO: Screenshot showing scrollbar on GTK*/}
+
+The scrollbar on both macOS and GTK uses native widgets and styling,
+and supports all the standard interactions you would expect, such as
+dragging the knob, clicking the track, using scroll gestures, etc.
+
+On both platforms, we use a minimal overlay-style scrollbar so that
+the terminal grid doesn't have to reserve space for the scrollbar with an
+aesthetically unpleasing gap or gutter. The scrollbar is overlaid on top of
+the terminal contents with minimal styling to prevent impacting selection.
+
+### Unobtrusive Updates (macOS)
+
+PR: GH-9116
+
+Update notifications on macOS are now unobtrusive. If a terminal
+window is open, update notifications appear as a small pill in the
+titlebar or bottom corner of the window instead of a disruptive popup
+window. The pill itself can be dismissed with a right click if you
+want to further hide it.
+
+You can also trigger a full update and restart directly from
+the command palette with "Update and Restart" (GH-9131), making the
+entire update process able to be keyboard-driven.
+
+{/*TODO: Screenshot showing the unobtrusive update banner in the titlebar*/}
+
+### Performance Improvements
+
+PRs: GH-9662 GH-9645
+
+Thanks to [asciinema](https://asciinema.org/), we received ~4GB of
+public terminal recording data to analyze and optimize Ghostty's performance.
+This is exciting because its based on real-world terminal usage, not just
+synthetic workloads.
+
+Using this data, we improved I/O processing considerably, lowering the
+time it took Ghostty to replay everything in the dataset from minutes to
+tens of seconds (with asciinema configured to ignore all pauses, of course).
+These improvements were also visible in synthetic benchmarks such
+as Alacritty's vtebench.
+
+In addition to I/O updates, the renderer was rearchitected, lowering the time
+the renderer holds the terminal lock by **2x to 5x**. And in most frames, the
+renderer doesn't hold the lock at all thanks to improved dirty/damage tracking.
+This applies to both Metal and OpenGL.
+
+### Click to Move Cursor In Shell Prompts
+
+PR: GH-10455
+
+Ghostty now supports the [`click-events`](https://sw.kovidgoyal.net/kitty/shell-integration/#notes-for-shell-developers)
+and [`cl=line`](https://gitlab.freedesktop.org/Per_Bothner/specifications/blob/master/proposals/semantic-prompts.md)
+extensions to the [OSC 133 Semantic Prompts specification](https://gitlab.freedesktop.org/Per_Bothner/specifications/blob/master/proposals/semantic-prompts.md).
+This lets you click your mouse within an active shell prompt to move
+the cursor, like a normal text field.
+
+This feature is supported natively by Fish (v4+) and Nushell (0.111+).
+For other shells, support varies based on Ghostty's injected shell
+integration. If you're using a supported shell, this will just magically
+work.
+
+Additionally, Ghostty now has a much more complete and accurate
+implementation of OSC133 which enables more accurate behaviors for
+our long-supported jump-to-prompt or copy command output features. This
+also results in better resize behaviors while at an active prompt.
+
+As a fun detail, we also added a really cool debug overlay that shows
+the OSC133 areas, which were a significant help for shell developers
+working to better support this. This can be enabled by anyone in the
+terminal inspector.
+
+{/*TODO: screenshot of overlay*/}
+
+### Fine-grained Working Directory Inheritance Controls
+
+PR: GH-9158
+
+New configurations `tab-inherit-working-directory` and
+`split-inherit-working-directory` allow you to control working directory
+inheritance independently for new tabs, windows, and split panes. This
+was one of the most requested configuration features.
+
+```
+window-inherit-working-directory = false
+tab-inherit-working-directory = true
+split-inherit-working-directory = true
+```
+
+Longer term, we plan on supporting better conditional configuration
+in a more general way, but this specific use case was so highly requested
+that we added these specific options for now to get it in sooner.
+
+### Rich Clipboard Copy
+
+PRs: GH-9418 GH-9431
+
+Clipboard copy now sets multiple content types on the clipboard
+(both `text/plain` and `text/html`) to enable rich text pasting with
+formatting so when you paste into a rich text editor, you get formatted
+text with colors and other styles preserved.
+
+{/*TODO: screenshot*/}
+
+The `copy_to_clipboard` binding now supports a parameter specifying
+the format to copy. In addition to mixed, plain, and HTML formats, the
+binding also supports `vt` which copies text with terminal escape sequences
+to preserve formatting when pasting into another terminal.
+
+## System Requirements
+
+There are no changes to the system requirements from Ghostty 1.2.
+
+**macOS:** The minimum required macOS version for Ghostty 1.2 remains
+unchanged (macOS 13 Ventura).
+
+**GTK:** Ghostty 1.3 requires **GTK 4.14** and **libadwaita 1.5**. This
+aligns with our [GTK/Adwaita version policy](/docs/linux/#supported-gtkadwaita-versions).
+Systems with older GTK or Adwaita versions can workaround this requirement
+by using an older version of Ghostty or a community-maintained snap or
+flatpak package.
+
+<Important>
+  **This is the last version to support macOS 13.** Starting with
+  Ghostty 1.4 (and tip releases prior to 1.4), the minimum required macOS
+  version will be macOS 14. Apple dropped security support for macOS 13
+  in the fall of 2025, so this change is in line with Apple's general support.
+</Important>
+
+## Breaking Changes
+
+The following default behaviors have been changing in 1.3.0:
+
+- The default clipboard copy format has changed from `text` to `mixed`.
+  The `mixed` format sets both plain text and HTML on the clipboard.
+  If this causes issues, you must rebind `copy_to_clipboard` with a specific
+  format. GH-9418
+- GTK: FreeType now defaults to light hinting instead of full hinting,
+  matching the behavior of most other GTK applications. The old behavior
+  can be restored via the `freetype-load-flags` configuration. GH-9253
+
+## Full Changelog
+
+- The `.ghostty` file extension is now supported for the default
+  configuration file. When both `config` and `config.ghostty` exist,
+  the `.ghostty` version takes priority. GH-8689
+- Scrollback search is now available on both macOS and GTK. GH-9585 GH-9709
+  GH-9756
+- Native scrollbars are now available on both macOS and GTK. GH-9225
+  GH-9232
+- New `RenderState` API shortens the renderer's critical lock area by
+  2-5x and enables zero-lock frames when nothing has changed. GH-9662
+- Assorted I/O hot-path optimizations improve terminal throughput. GH-9645
+- `ghostty-vt` Zig module provides a standalone, reusable terminal
+  emulation library with Zig, C, and Wasm APIs. GH-8840
+- New `copy_to_clipboard` format option with `mixed` default for rich
+  text clipboard support. GH-9418
+- New `tab-inherit-working-directory` and `split-inherit-working-directory`
+  configurations for independent working directory inheritance. GH-9158
+- New `GHOSTTY_QUICK_TERMINAL` environment variable is set when running
+  inside the quick terminal, allowing shell configurations to adjust
+  behavior. GH-9673
+- New `toggle_background_opacity` keybind action to toggle background
+  transparency on a per-surface basis (macOS). GH-9117
+- New `prompt_window_title` keybind action for renaming windows via a
+  popup prompt. GH-10767
+- New `command-finished` notifications: configurable desktop or bell
+  notifications when long-running commands complete. GH-8992
+- Right-clicking a link now selects it for easy copying. GH-9298
+- Clickable file paths now support bare relative paths, `~/` paths,
+  `$VAR` paths, and improved space handling. GH-10570 GH-10619 GH-10867
+- Command palette now shows keyboard shortcuts next to commands (macOS).
+  GH-10723
+- Command palette fuzzy search on GTK now uses the Zf algorithm. GH-8291
+- Shell integration `cursor` feature now respects `cursor-style-blink`.
+  GH-10643
+- Bash shell integration no longer depends on bash-preexec for bash 4.4+.
+  GH-10609
+- Bash shell integration now uses a shell command for proper login shell
+  behavior. GH-9875
+- Nushell shell integration is now supported, including ssh wrapping
+  and sudo integration. GH-10274
+- Elvish shell integration improvements for directory reporting, sudo
+  detection, and XDG cleanup. GH-10533 GH-10534 GH-10587
+- Fish shell completions now include descriptions. GH-9551
+- `+list-themes` TUI now supports pressing `w` to write a theme config
+  file. GH-8930
+- Unicode library replaced from ziglyph to uucode with Unicode 16
+  support. GH-8757
+- Underline drawing reworked: undercurl uses z2d with rounded end caps,
+  dotted underline renders as anti-aliased evenly-spaced dots. GH-9654
+- Custom shaders gain new uniforms: cursor style/visibility, color
+  palette, focus state, and focus timestamp. GH-9572 GH-9656 GH-10130
+- IME preedit cells now respect `background-opacity`. GH-10774
+- Debug overlay framework for rendering diagnostic information directly
+  on the terminal. GH-10503
+- `copy_title_to_clipboard` now copies the user-overridden title. GH-10694
+- OSC 133 click-to-move cursor respects `cursor-click-to-move` config.
+  GH-11141
+- Paste encoding replaces unsafe control characters with spaces. GH-10746
+- New `language` configuration to override the GUI localization language
+  (GTK). GH-10428
+- Updated and new translations: Lithuanian, Latvian, and many updated
+  locales.
+- Ported to Zig 0.15. GH-8372
+- Multiple crashes found and fixed via AFL++ fuzzing of terminal escape
+  sequence parsers. GH-11088 GH-11110 GH-11111 GH-11112 GH-11113
+- Fix `ColorList.clone` not cloning `colors_c`, which broke custom icon
+  styles after config reload. GH-9613
+- Terminfo now includes SGR dim capability. GH-11144
+
+### Terminal Capabilities
+
+- OSC 133 semantic prompt markers now include `cl=line` for per-line
+  tracking and click-to-move support. GH-10455
+- OSC 133 `click_events` support for shell-native cursor positioning.
+  GH-10455
+- OSC 5522 (Kitty clipboard protocol) parsing support. GH-10560
+- DCS passthrough bounds checking for params. GH-11088
+- CSI W handler bounds checking for missing params. GH-11110
+- CSI @ (ICH) now clamps parameter 0 to 1, matching xterm. GH-11111
+- CSI g (TBC) safely handles overflowing parameters. GH-11112
+- SGR underline parsing handles trailing colons gracefully. GH-11113
+- Kitty keyboard protocol now sends composed/IME text correctly on
+  Linux. GH-11149
+- Kitty image updates now properly acquire the draw mutex. GH-10932
+
+### macOS
+
+- macOS Tahoe Liquid Glass background effect support. GH-8801
+- Unobtrusive update notifications in the titlebar. GH-9116
+- "Update and Restart" available in the command palette. GH-9131
+- Focus Terminal App Intent for Shortcuts/Siri integration. GH-8961
+- Scrollbar scroller appearance now matches the terminal background
+  color for better visibility in light themes. GH-9640
+- `toggle_background_opacity` keybind action. GH-9117
+- Command palette shows keyboard shortcuts. GH-10723
+- Command palette show/hide animation improved. GH-9698
+- Splits can be reordered by dragging with the mouse. GH-10090
+- Spatial split navigation now wraps at edges (GTK too). GH-10811
+- Two-finger horizontal scroll switches tabs. GH-10575
+- Secure Keyboard Input overlay animation optimized (~35% lower CPU).
+  GH-10903
+- `toggle_visibility` behavior fixed with tabbed windows. GH-9742
+- Search result counter is overlaid inside the search field to prevent
+  layout shift. GH-9713
+- Phantom mouse events no longer defeat `mouse-hide-while-typing`.
+  GH-11066
+- Fix undo-new-tab crash on macOS Tahoe. GH-9512
+- Fix crash when adding a tab from tab overview. GH-11009
+- Fix new tab crash from missing subview prefix. GH-10924
+- Fix memory leak in icon setting on config change. GH-9613
+
+### GTK (Linux, FreeBSD)
+
+- GTK search UI. GH-9756
+- GTK scrollbar support. GH-9232
+- Command palette toggling now works on GTK. GH-10856
+- New `tab-inherit-working-directory` and `split-inherit-working-directory`
+  configs. GH-9158
+- Command finished notifications with configurable duration threshold.
+  GH-8992
+- `language` config to override GUI localization. GH-10428
+- Two-finger horizontal scroll to switch tabs. GH-10575
+- Spatial split navigation wraps at edges. GH-10811
+- "Change Title" available in the main menu. GH-10997
+- Better GLib/GTK log routing through Zig logging. GH-8779
+- Better CSS parsing error reporting. GH-9129
+- Clicking desktop notifications now properly focuses the window and
+  selects the tab. GH-9146
+- Fix i3 window border disappearing after fullscreen toggle. GH-8075
+- Fix SIGSEGV on ImGui GLArea re-realize. GH-11025
+- Cgroup/transient scope handling revamped: per-surface scopes with
+  per-surface resource controls. GH-10611
+- FreeBSD CI re-enabled for Zig 0.15 with FreeBSD 15.0. GH-9039
+- Composed/IME text now works with kitty keyboard protocol. GH-11149
+- Translation `.po` files renamed to follow GTK naming conventions.
+  GH-10976
+
+### Changes for Package Maintainers
+
+- Ghostty now requires Zig 0.15 to build. GH-8372
+
+## Roadmap
+
+With highly requested features like scrollback search and native scrollbars
+now implemented, I believe Ghostty 1.3 is a great release that delivers
+on the longstanding goal to make Ghostty the
+["best existing terminal emulator"](https://mitchellh.com/writing/ghostty-1-0-reflection).
+
+"Best" will always be subjective, of course, but the point is that
+Ghostty 1.3 has all the mainstream features that users expect from any
+established terminal emulator, and it delivers them with a high level of
+polish and performance. We'll continue to improve Ghostty, of course,
+but this marks a major milestone in the project's development.
+
+The short-term focus will be on stabilizing and tagging a
+[libghostty](https://mitchellh.com/writing/libghostty-is-coming) release.
+Dozens of projects are [already using libghostty](https://github.com/Uzaaft/awesome-libghostty),
+and I believe that ultimately libghostty will be more widely used and
+influential than the Ghostty desktop application itself, so this is an
+important next step for the project.
+
+Ghostty 1.4 will continue to iterate and improve the desktop application.
+I don't want to promise any specific features, but we're working hard
+on making Ghostty scriptable, enabling a true Tmux control mode, graphical
+preferences, and more.
+
+To answer a common request, **Windows** is still not planned.
+This still remain part of the long term roadmap, but I think that focusing
+on a capable and powerful libghostty will enable better Windows support
+in the long run. libghostty itself already supports Windows.
+
+Ghostty 1.4 will continue the 6-month release cycle and is planned
+for September. For users interested in more frequent updates, we recommend
+using the [`tip` release channel](/docs/config/reference#auto-update-channel) on
+macOS or
+[building from source](/docs/install/build) frequently on Linux.
