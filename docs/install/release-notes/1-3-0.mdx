@@ -380,6 +380,7 @@ The following default behaviors have been changing in 1.3.0:
   the GUI yet. GH-9803 GH-9860
 - vt: Fix crash with specially crafted large images in Kitty Graphics. GH-9579
 - vt: Fix crash when spamming BEL (0x07). GH-9800
+- vt: Ghostty terminfo now advertises support for SGR dim. GH-11144
 
 ### Shell Integration
 
@@ -405,6 +406,11 @@ The following default behaviors have been changing in 1.3.0:
 - macOS: A drag handle now appears at the top of every terminal for
   reordering splits, moving a terminal into a new tab or window, etc.
   GH-1525 GH-10090
+- macOS: New "Set Ghostty as Default Terminal App" option, making it
+  easy to set Ghostty as the handler for opening directories, shell
+  scripts, etc. GH-10810
+- macOS: Double-clicking a tab now allows inline editing of the tab
+  title. Press Enter to confirm or Escape to cancel. GH-10963
 - macOS: Custom command palette entries with `command-palette-entry`.
   This has been supported on GTK since 1.2.0. GH-7158
 - macOS: Update notifications now appear as an unobtrusive pill within
@@ -456,9 +462,15 @@ The following default behaviors have been changing in 1.3.0:
   visible screen size and work correctly with `window-position`.
   GH-9975
 - macOS: Hide the tab overview properly on escape. GH-9971
+- macOS: Fix Cmd-click on file paths containing `~` (e.g.
+  `~/Documents/file.txt`) by expanding the tilde to the user's home
+  directory before opening. GH-10863
 - macOS: Fix a crash when the terminal window texture exceeds the
   GPU's maximum allowed size by clamping texture dimensions to the
   device limit. GH-9972
+- macOS: Optimize the Secure Keyboard Input overlay animation,
+  reducing CPU usage by ~35% and fixing lag and frozen frames caused
+  by the previous `innerShadow()` implementation. GH-10903
 - macOS: Fix Vim filetype detection to recognize the macOS-specific Ghostty
   config path as a Ghostty configuration file. GH-10101
 - macOS: Various windowing fixes with `macos-titlebar-style = tabs`. GH-9596
@@ -472,6 +484,9 @@ The following default behaviors have been changing in 1.3.0:
 - GTK: Two-finger left/right switch tab pages. GH-10575
 - GTK: Key tables and sequences now have dedicated UI showing the pending
   keyboard input state to match macOS. GH-2127
+- GTK: Spatial split navigation now wraps around at the edges, so
+  navigating past the last split in a direction wraps to the first
+  split on the opposite side. GH-10811
 - GTK: Cgroups have been revamped so that cgroups are now properly
   scopes per-surface. GH-10611 GH-2084
 - GTK: Windows with custom `window-height` or `window-width` now
@@ -498,133 +513,6 @@ The following default behaviors have been changing in 1.3.0:
 ### Changes for Package Maintainers
 
 - Ghostty now requires Zig 0.15 to build. GH-8372
-
-## Full Issue List (to be removed)
-
-I have to manually go through these and summarize:
-
-- GH-10765
-- GH-10768
-- GH-10772
-- GH-10773
-- GH-10774
-- GH-10778
-- GH-10788
-- GH-10792
-- GH-10800
-- GH-10802
-- GH-10805
-- GH-10810
-- GH-10811
-- GH-10819
-- GH-10820
-- GH-10821
-- GH-10823
-- GH-10825
-- GH-10827
-- GH-10829
-- GH-10832
-- GH-10833
-- GH-10836
-- GH-10838
-- GH-10840
-- GH-10841
-- GH-10843
-- GH-10844
-- GH-10845
-- GH-10847
-- GH-10850
-- GH-10854
-- GH-10856
-- GH-10860
-- GH-10861
-- GH-10863
-- GH-10867
-- GH-10877
-- GH-10878
-- GH-10880
-- GH-10881
-- GH-10886
-- GH-10888
-- GH-10890
-- GH-10891
-- GH-10893
-- GH-10895
-- GH-10899
-- GH-10901
-- GH-10903
-- GH-10908
-- GH-10909
-- GH-10915
-- GH-10923
-- GH-10924
-- GH-10925
-- GH-10929
-- GH-10932
-- GH-10933
-- GH-10934
-- GH-10935
-- GH-10938
-- GH-10939
-- GH-10943
-- GH-10954
-- GH-10956
-- GH-10960
-- GH-10963
-- GH-10965
-- GH-10969
-- GH-10975
-- GH-10976
-- GH-10978
-- GH-10985
-- GH-10993
-- GH-10997
-- GH-11009
-- GH-11017
-- GH-11018
-- GH-11024
-- GH-11025
-- GH-11027
-- GH-11030
-- GH-11034
-- GH-11035
-- GH-11036
-- GH-11043
-- GH-11044
-- GH-11045
-- GH-11046
-- GH-11047
-- GH-11049
-- GH-11051
-- GH-11052
-- GH-11066
-- GH-11067
-- GH-11068
-- GH-11070
-- GH-11073
-- GH-11074
-- GH-11086
-- GH-11088
-- GH-11089
-- GH-11094
-- GH-11103
-- GH-11109
-- GH-11110
-- GH-11111
-- GH-11112
-- GH-11113
-- GH-11119
-- GH-11132
-- GH-11134
-- GH-11135
-- GH-11136
-- GH-11137
-- GH-11138
-- GH-11141
-- GH-11144
-- GH-11147
-- GH-11148
-- GH-11149
 
 ## Roadmap
 
