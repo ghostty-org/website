@@ -215,7 +215,7 @@ PRs: GH-9662 GH-9645
 
 Thanks to [asciinema](https://asciinema.org/), we received ~4GB of
 public terminal recording data to analyze and optimize Ghostty's performance.
-This is exciting because its based on real-world terminal usage, not just
+This is exciting because it's based on real-world terminal usage, not just
 synthetic workloads.
 
 Using this data, we improved I/O processing considerably, lowering the
@@ -283,7 +283,7 @@ entire update process able to be keyboard-driven.
 
 There are no changes to the system requirements from Ghostty 1.2.
 
-**macOS:** The minimum required macOS version for Ghostty 1.2 remains
+**macOS:** The minimum required macOS version for Ghostty 1.3 remains
 unchanged (macOS 13 Ventura).
 
 **GTK:** Ghostty 1.3 requires **GTK 4.14** and **libadwaita 1.5**. This
@@ -301,7 +301,7 @@ flatpak package.
 
 ## Breaking Changes
 
-The following default behaviors have been changing in 1.3.0:
+The following default behaviors have been changed in 1.3.0:
 
 - The default clipboard copy format has changed from `text` to `mixed`.
   The `mixed` format sets both plain text and HTML on the clipboard.
@@ -317,7 +317,7 @@ The following default behaviors have been changing in 1.3.0:
   This is triggered with `cmd+f` on macOS and `ctrl+shift+f` on GTK and
   comes with a number of new bindable actions. GH-189
 - Native scrollbars are now available to navigate scrollback. These can
-  be controlled with the new `scrollbar` configuratin. GH-111
+  be controlled with the new `scrollbar` configuration. GH-111
 - Inherit working directory configuration can now be specified differently
   for windows vs. tabs vs. splits. GH-1392
 - Keybinds now support chaining multiple actions in sequence using
@@ -365,19 +365,19 @@ The following default behaviors have been changing in 1.3.0:
   disable all TUI mouse reporting features. GH-8430
 - A new configuration value `scroll-to-bottom = output` that automatically
   scrolls the window to the bottom on any output (default off). GH-9938
-- A new configuratino option `split-preserve-zoom`` that starts with a single
-  option`navigation` (default false). When navigation is set, zoomed splits
+- A new configuration option `split-preserve-zoom` that starts with a single
+  option `navigation` (default false). When navigation is set, zoomed splits
   will remain zoomed when split navigation (goto_split) is done. GH-8458
   GH-9089
 - A new binding action `goto_window:next` and `goto_window:previous`
   to deterministically navigate through windows. GH-8387
 - A new binding action `toggle_mouse_reporting` toggles mouse reporting
   to the TUI. GH-9282
-- A new binding action `end_key_sequence` binding action to explicitly end an active
+- A new `end_key_sequence` binding action to explicitly end an active
   key sequence, flushing prior keys to the terminal without encoding
   the triggering key (e.g. `ctrl+w>escape=end_key_sequence`). GH-10098
 - The `close_tab` binding action takes a new parameter `right` which
-  closes all tabes to the right. GH-9783
+  closes all tabs to the right. GH-9783
 - `resize_split` and `toggle_split_zoom` actions now return false
   when there is only a single pane, allowing `performable:` keybinds
   to pass the key through to the terminal application. GH-10376
@@ -493,7 +493,7 @@ The following default behaviors have been changing in 1.3.0:
 - macOS: A new app intent to focus a specific terminal usable by
   Apple Shortcuts. GH-8961
 - macOS: Right click tabs to be able to set a tab color. GH-9784
-- macOS: `backgrond-blur` now supports new options to use macOS 26 native
+- macOS: `background-blur` now supports new options to use macOS 26 native
   liquid glass blurring. GH-8801
 - macOS: The `fullscreen` configuration can now be used to start Ghostty
   in non-native fullscreen in addition to native fullscreen. GH-9876
@@ -516,7 +516,7 @@ The following default behaviors have been changing in 1.3.0:
 - macOS: Metal loads linearized foreground color for the cursor cell so
   cursor text appears correct. GH-9695
 - macOS: Fix "Undo New Tab" crashing on certain systems. GH-9512
-- macOS: Fix command palette does not close on mouse with when `focus-follows-mouse`
+- macOS: Fix command palette does not close on mouse when `focus-follows-mouse`
   is set. GH-9533
 - macOS: Fix `quick-terminal-size` not working consistently for people. GH-9837
 - macOS: Custom app icons now update more reliably using
@@ -561,7 +561,7 @@ The following default behaviors have been changing in 1.3.0:
   navigating past the last split in a direction wraps to the first
   split on the opposite side. GH-10811
 - GTK: Cgroups have been revamped so that cgroups are now properly
-  scopes per-surface. GH-10611 GH-2084
+  scoped per-surface. GH-10611 GH-2084
 - GTK: Windows with custom `window-height` or `window-width` now
   center properly. GH-7937
 - GTK: `paste_from_clipboard` now returns false when the clipboard
@@ -613,7 +613,7 @@ on making Ghostty scriptable, enabling a true Tmux control mode, graphical
 preferences, and more.
 
 To answer a common request, **Windows** is still not planned.
-This still remain part of the long term roadmap, but I think that focusing
+This still remains part of the long term roadmap, but I think that focusing
 on a capable and powerful libghostty will enable better Windows support
 in the long run. libghostty itself already supports Windows.
 
