@@ -60,7 +60,7 @@ dragged to any corner.
 Search is implemented using a dedicated search thread that operates
 concurrently with terminal I/O. The thread grabs the terminal lock in
 small time slices to make forward progress on searching while
-minimizing I/O throughput or rendering. If you do not use search, or you
+minimizing impact on I/O throughput or rendering. If you do not use search, or you
 close the search bar, the search thread exits and does not consume any
 resources.
 
@@ -82,7 +82,7 @@ dragging the knob, clicking the track, using scroll gestures, etc.
 
 On both platforms, we use a minimal overlay-style scrollbar so that
 the terminal grid doesn't have to reserve space for the scrollbar with an
-aesthetically unpleasing gap or gutter. The scrollbar is overlaid on top of
+aesthetically unpleasant gap or gutter. The scrollbar is overlaid on top of
 the terminal contents with minimal styling to prevent impacting selection.
 
 ### Click to Move Cursor In Shell Prompts
@@ -103,12 +103,12 @@ integration. If you're using a supported shell, this will just magically
 work.
 
 Additionally, Ghostty now has a much more complete and accurate
-implementation of OSC133 which enables more accurate behaviors for
+implementation of OSC 133 which enables more accurate behaviors for
 our long-supported jump-to-prompt or copy command output features. This
 also results in better resize behaviors while at an active prompt.
 
 As a fun detail, we also added a really cool debug overlay that shows
-the OSC133 areas, which were a significant help for shell developers
+the OSC 133 areas, which were a significant help for shell developers
 working to better support this. This can be enabled by anyone in the
 terminal inspector.
 
