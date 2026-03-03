@@ -236,11 +236,16 @@ The following default behaviors have been changing in 1.3.0:
   be controlled with the new `scrollbar` configuratin. GH-111
 - Inherit working directory configuration can now be specified differently
   for windows vs. tabs vs. splits. GH-1392
+- Data copied to clipboard now supports rich text and can be configured
+  with `copy_to_clipboard` binding action parameters. GH-9396
 - The Ghostty configuration can now have the `.ghostty` extension. GH-8689
 - Ghostty can now show notifications when a command finishes using the
   `notify-on-command-finish` configuration. This can be set to trigger
   under various conditions such as slow commands, unfocused windows,
   etc. GH-8991
+- A surface can now be marked "readonly" and it will no longer send any
+  input events to the pty and will always warn before closing. This
+  can be triggered by a new keyboard binding, command palette, etc. GH-8432
 - A new configuration `key-remap` can be used to remap keys from one to
   another within the scope of Ghostty. Example: `key-remap = ctrl=super`.
   GH-5160
@@ -248,6 +253,9 @@ The following default behaviors have been changing in 1.3.0:
   some codepoints when copying to the clipboard (writing the clipboard,
   specifically). This would allow copying things like symbols for computing,
   branch drawing, etc. GH-8383
+- A new configuration `selection-word-chars` can be used to configure
+  the characters that determine word boundaries for double-click selection.
+  GH-9335
 - A new configuration `mouse-reporting = false` can be used to
   disable all TUI mouse reporting features. GH-8430
 - A new configuration value `scroll-to-bottom = output` that automatically
@@ -255,21 +263,50 @@ The following default behaviors have been changing in 1.3.0:
 - A new configuratino option `split-preserve-zoom`` that starts with a single
   option`navigation` (default false). When navigation is set, zoomed splits
   will remain zoomed when split navigation (goto_split) is done. GH-8458
+  GH-9089
 - A new binding action `goto_window:next` and `goto_window:previous`
   to deterministically navigate through windows. GH-8387
+- A new binding action `toggle_mouse_reporting` toggles mouse reporting
+  to the TUI. GH-9282
+- The quick terminal now sets the `GHOSTTY_QUICK_TERMINAL` environment
+  variable which can be used in any way, such as for custom shell prompts.
+  GH-9673
+- Right clicking a URL will now highlight the full URL. GH-9298
 - Upgrade to Unicode 17. GH-8757
 - The `+list-themes` command now has a keybind to write a configuration file.
   GH-8930
+- Commands started with `-e` now set the terminal title to `argv[0]`. GH-9121
+- Custom shaders have many new uniforms such as cursor shape, position,
+  previous position, time since change, color scheme, etc. to support more advanced
+  shaders. GH-9416 GH-9417
+- OSC7 URI parsing now handles more edge cases such as MAC addresses
+  better. GH-9193
+- Improved font rendering on some low-DPI monitors. GH-9432
+- For font metrics, round cell height from line height instead of ceiling.
+  This change should give more consistent results between high and low DPI
+  displays. GH-9648
+- Decouple balanced top and left window paddings to avoid diagonal resize
+  window jitter. GH-9518
+- Update many default keybindings to work with other keyboard layouts.
+  This should not affect standard US layouts. GH-9469
+- Ignore Unicode byte-order-mark (BOM) characters in the configuration
+  file. GH-9490
+- Keypad variation sequences respect Unicode VS16. GH-9502
+- VS15/16 check now considers emoji bases properly. GH-9679
+- Grapheme break algorithm updated to match Unicode spec exactly. GH-9680
 
 ### Terminal Capabilities
 
 - vt: ConEmu OSC9 is now fully parsed (subcommand 1 to 12). Ghostty GUI
   only implements a subset of this but libghostty can parse it all. GH-3125
 - vt: Report color scheme events are now reported synchronously. GH-5922
+- vt: Modify other keys state 2 no longer encodes option as alt on macOS. GH-9406
+- vt: Fix crash with specially crafted large images in Kitty Graphics. GH-9579
 
 ### Shell Integration
 
 - nu: SSH shell integration now supported. GH-7877
+- fish: Add descriptions to fish shell completions for Ghostty. GH-9531
 - If `cursor-style` is manually set, default `shell-integration-features` to
   contain `no-cursor`. GH-8681
 
@@ -280,6 +317,8 @@ The following default behaviors have been changing in 1.3.0:
   GH-1525
 - macOS: Custom command palette entries with `command-palette-entry`.
   This has been supported on GTK since 1.2.0. GH-7158
+- macOS: Update notifications now appear as an unobtrusive pill within
+  terminal windows rather than a popup dialog. GH-9116
 - macOS: Mouse buttons 8/9 (back/forward) now encode properly in the terminal.
   GH-10381 GH-2425
 - macOS: A new app intent to focus a specific terminal usable by
@@ -288,13 +327,30 @@ The following default behaviors have been changing in 1.3.0:
   liquid glass blurring. GH-8801
 - macOS: The `fullscreen` configuration can now be used to start Ghostty
   in non-native fullscreen in addition to native fullscreen. GH-9876
+- macOS: Implement the `close_all_windows` binding action. GH-9552
+- macOS: Add a new keyboard binding `toggle_background_opacity`. GH-9117
+- macOS: Equalize splits when double-clicking the split divider. GH-9524
 - macOS: The notification badge now clears when all active terminal bells
   are cleared. GH-8487
+- macOS: The `system` bell setting (default off) now uses the system beep. GH-9339
 - macOS: The dictation icon now appears in a more correct location. GH-8493
 - macOS: `window-width` and `window-height` now properly take into account
   window chrome such as tab bars. GH-2660
 - macOS: Restored non-native fullscreen windows now restore properly. GH-8435
+- macOS: Quick terminal state is restored properly. GH-9588
 - macOS: `toggle_quick_terminal` no longer makes hidden windows visible. GH-8414
+- macOS: Text field in unsafe paste confirmation is no longer editable. GH-9400
+- macOS: Close confirmation sheet attaches to a relevant window. GH-9509
+- macOS: Metal loads linearized foreground color for the cursor cell so
+  cursor text appears correct. GH-9695
+- macOS: Fix "Undo New Tab" crashing on certain systems. GH-9512
+- macOS: Fix command palette does not close on mouse with when `focus-follows-mouse`
+  is set. GH-9533
+- macOS: Apply subpixel horizontal alignment also when cell width is less
+  than advance, resulting in smoother rendering. GH-9646
+- macOS: Various windowing fixes with `macos-titlebar-style = tabs`. GH-9596
+  GH-9597
+- macOS: Various fixes around dark/light theme reloading. GH-9360
 - macOS: Various fixes to ensure the mouse cursor is more accurate depending
   on the state. GH-9580 GH-8409
 
@@ -308,6 +364,13 @@ The following default behaviors have been changing in 1.3.0:
   center properly. GH-7937
 - GTK: Fix an issue where i3 window border would disappear after
   toggling fullscreen back and forth. GH-8075
+- GTK: Log a warning when OpenGL version is too old instead of
+  crashing without notice. GH-9586
+- GTK: Default FreeType flags to light hinting instead of full hinting to
+  match the behavior of most other GTK applications. GH-9253
+- GTK: XKB mapping works properly on Linux. GH-9454
+- GTK: If 4.2 is available, use media queries and `prefers-color-scheme`
+  in CSS. GH-9520
 
 ### Changes for Package Maintainers
 
@@ -317,240 +380,6 @@ The following default behaviors have been changing in 1.3.0:
 
 I have to manually go through these and summarize:
 
-- GH-9000
-- GH-9004
-- GH-9010
-- GH-9018
-- GH-9019
-- GH-9021
-- GH-9028
-- GH-9030
-- GH-9033
-- GH-9038
-- GH-9039
-- GH-9040
-- GH-9041
-- GH-9042
-- GH-9043
-- GH-9050
-- GH-9051
-- GH-9059
-- GH-9060
-- GH-9061
-- GH-9067
-- GH-9068
-- GH-9079
-- GH-9089
-- GH-9110
-- GH-9116
-- GH-9117
-- GH-9121
-- GH-9122
-- GH-9126
-- GH-9127
-- GH-9128
-- GH-9129
-- GH-9130
-- GH-9131
-- GH-9145
-- GH-9146
-- GH-9149
-- GH-9151
-- GH-9155
-- GH-9158
-- GH-9162
-- GH-9165
-- GH-9170
-- GH-9171
-- GH-9173
-- GH-9174
-- GH-9175
-- GH-9177
-- GH-9180
-- GH-9184
-- GH-9185
-- GH-9189
-- GH-9192
-- GH-9193
-- GH-9200
-- GH-9201
-- GH-9203
-- GH-9204
-- GH-9208
-- GH-9217
-- GH-9218
-- GH-9220
-- GH-9222
-- GH-9225
-- GH-9226
-- GH-9227
-- GH-9232
-- GH-9233
-- GH-9234
-- GH-9241
-- GH-9245
-- GH-9248
-- GH-9253
-- GH-9255
-- GH-9263
-- GH-9266
-- GH-9269
-- GH-9270
-- GH-9275
-- GH-9278
-- GH-9279
-- GH-9280
-- GH-9282
-- GH-9296
-- GH-9298
-- GH-9317
-- GH-9325
-- GH-9331
-- GH-9335
-- GH-9339
-- GH-9342
-- GH-9343
-- GH-9344
-- GH-9346
-- GH-9352
-- GH-9357
-- GH-9360
-- GH-9362
-- GH-9364
-- GH-9365
-- GH-9366
-- GH-9369
-- GH-9374
-- GH-9379
-- GH-9391
-- GH-9392
-- GH-9393
-- GH-9394
-- GH-9395
-- GH-9396
-- GH-9397
-- GH-9398
-- GH-9400
-- GH-9402
-- GH-9403
-- GH-9405
-- GH-9406
-- GH-9407
-- GH-9412
-- GH-9414
-- GH-9415
-- GH-9416
-- GH-9417
-- GH-9418
-- GH-9420
-- GH-9423
-- GH-9426
-- GH-9427
-- GH-9428
-- GH-9431
-- GH-9432
-- GH-9444
-- GH-9446
-- GH-9450
-- GH-9454
-- GH-9455
-- GH-9456
-- GH-9458
-- GH-9460
-- GH-9469
-- GH-9473
-- GH-9485
-- GH-9488
-- GH-9490
-- GH-9493
-- GH-9494
-- GH-9497
-- GH-9499
-- GH-9502
-- GH-9504
-- GH-9506
-- GH-9509
-- GH-9512
-- GH-9515
-- GH-9517
-- GH-9518
-- GH-9520
-- GH-9521
-- GH-9523
-- GH-9524
-- GH-9525
-- GH-9528
-- GH-9529
-- GH-9531
-- GH-9532
-- GH-9533
-- GH-9536
-- GH-9540
-- GH-9541
-- GH-9548
-- GH-9551
-- GH-9552
-- GH-9559
-- GH-9562
-- GH-9570
-- GH-9572
-- GH-9576
-- GH-9579
-- GH-9580
-- GH-9581
-- GH-9585
-- GH-9586
-- GH-9588
-- GH-9589
-- GH-9594
-- GH-9595
-- GH-9596
-- GH-9597
-- GH-9598
-- GH-9602
-- GH-9603
-- GH-9604
-- GH-9605
-- GH-9606
-- GH-9609
-- GH-9613
-- GH-9619
-- GH-9624
-- GH-9626
-- GH-9627
-- GH-9632
-- GH-9642
-- GH-9645
-- GH-9646
-- GH-9648
-- GH-9649
-- GH-9651
-- GH-9654
-- GH-9656
-- GH-9659
-- GH-9662
-- GH-9666
-- GH-9670
-- GH-9672
-- GH-9673
-- GH-9676
-- GH-9678
-- GH-9679
-- GH-9680
-- GH-9682
-- GH-9685
-- GH-9687
-- GH-9691
-- GH-9694
-- GH-9695
-- GH-9696
-- GH-9698
-- GH-9700
-- GH-9702
-- GH-9705
-- GH-9709
-- GH-9710
-- GH-9711
 - GH-9713
 - GH-9714
 - GH-9715
