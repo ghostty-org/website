@@ -297,6 +297,29 @@ Alt screen memory is now allocated on demand, saving several megabytes per
 terminal for sessions that never use it (GH-9594). There are a variety of
 minor improvements in all subsystems, however.
 
+### Split Drag and Drop (macOS)
+
+PR: GH-10090
+
+You can now reorder splits on macOS by dragging them. When you hover near
+the top of a split, a grab handle appears that can be used to drag the split
+into any other split position. Simply grab the handle and drop the split
+where you want it; the terminal contents, working directory, and running
+processes all move with it.
+
+<Video src="https://web.files.ghostty.org/release-notes-1-3-0-split-drag.mp4" />
+
+You can also drag splits out of windows or into new tabs, and all of this
+integrates with the undo/redo system so you can easily revert if you
+accidentally drop a split somewhere you didn't want it.
+
+This is a mouse-driven approach to rearranging your terminal layout without
+having to close and recreate splits. The implementation also lays the
+groundwork for future enhancements like dragging splits into new tabs or
+windows.
+
+A GTK implementation of this feature is planned for a future release.
+
 ### Unobtrusive Updates (macOS)
 
 PR: GH-9116
