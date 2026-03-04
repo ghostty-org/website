@@ -15,6 +15,7 @@ import GitHub from "@/components/github";
 import { processGitHubLinks } from "@/components/github/mdx";
 import JumplinkHeader from "@/components/jumplink-header";
 import Mermaid from "@/components/mermaid";
+import SponsorBanner from "@/components/sponsor-banner";
 import SponsorCard from "@/components/sponsor-card";
 import { BodyParagraph, LI } from "@/components/text";
 import VTSequence from "@/components/vt-sequence";
@@ -107,6 +108,7 @@ const mdxComponents: MDXComponents = {
   CardLinks,
   ButtonLinks,
   DonateCard,
+  SponsorBanner,
   SponsorCard,
   GitHub,
   Video,
