@@ -549,6 +549,8 @@ The following default behaviors have been changed in 1.3.0:
 
 ### macOS
 
+- macOS: Suppress focus-transfer split clicks from being reported to
+  terminal applications as mouse input. GH-d1468086 GH-3ee8ef4f
 - macOS: A drag handle now appears at the top of every terminal for
   reordering splits, moving a terminal into a new tab or window, etc.
   GH-1525 GH-10090
@@ -627,6 +629,9 @@ The following default behaviors have been changed in 1.3.0:
 
 ### GTK (Linux, FreeBSD)
 
+- GTK: Suppress mouse reports for focus-transfer clicks so split focus
+  changes don't emit unintended mouse input to terminal applications.
+  GH-0fa12f89
 - GTK: Two-finger left/right switch tab pages. GH-10575
 - GTK: Key tables and sequences now have dedicated UI showing the pending
   keyboard input state to match macOS. GH-2127
