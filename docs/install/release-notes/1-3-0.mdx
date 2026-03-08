@@ -299,6 +299,45 @@ Alt screen memory is now allocated on demand, saving several megabytes per
 terminal for sessions that never use it (GH-9594). There are a variety of
 minor improvements in all subsystems, however.
 
+### AppleScript (macOS)
+
+PR: GH-11208
+
+Ghostty now has built-in AppleScript support on macOS, enabling
+powerful automation and integration capabilities. Using AppleScript,
+you can inspect and control windows, tabs, splits, and invidual
+terminals. In addition to simple creation and navigation actions, you can
+also send text, key, and mouse input.
+
+Some example workflows that are possible through scripting include
+automated terminal layouts, command broadcasting, jumping to terminals
+by working directory, and more.
+
+Here is a short example creating a simple split layout with a shell
+on the left and log tailing on the right:
+
+```AppleScript
+tell application "Ghostty"
+    set win to new window
+    set mainTerm to terminal 1 of selected tab of win
+    set logsTerm to split mainTerm direction right
+    input text "tail -f /tmp/dev.log" to logsTerm
+    send key "enter" to logsTerm
+end tell
+```
+
+AppleScript is enabled by default and secured by macOS Automation
+permissions (TCC), so macOS will prompt before another app can control
+Ghostty. If you don't want AppleScript support at all, set
+`macos-applescript = false`.
+
+<Important>
+We're treating this as a **preview feature in 1.3**. The AppleScript
+  functionality didn't get as much time as other features to test
+  in our pre-release builds, so we expect we'll make breaking API
+  changes and add significant new features in 1.4 based on user feedback.
+</Important>
+
 ### Split Drag and Drop (macOS)
 
 PR: GH-10090

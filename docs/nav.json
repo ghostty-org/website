@@ -169,6 +169,11 @@
           "type": "link",
           "path": "/shell-integration",
           "title": "Shell Integration"
+        },
+        {
+          "type": "link",
+          "path": "/applescript",
+          "title": "AppleScript (macOS)"
         }
       ]
     },
