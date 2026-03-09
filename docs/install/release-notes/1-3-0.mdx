@@ -306,8 +306,8 @@ PRs: GH-10337 GH-10401 GH-11089 GH-11109 GH-9594
 
 Ghostty 1.3 includes a significant investment in stability and robustness.
 
-This release fixes a major memory leak that Claude Code specifically
-regularly triggered in prior Ghostty releases. This leak has existed since
+This release fixes a major memory leak that Claude Code regularly
+triggered in prior Ghostty releases. This leak has existed since
 Ghostty 1.0 but was difficult or rare to trigger until Claude Code began
 exhibiting the perfect conditions to trigger this at scale, especially
 with their large user base. Details of the leak and the fix can be found
@@ -405,7 +405,7 @@ want to further hide it.
 
 You can also trigger a full update and restart directly from
 the command palette with "Update and Restart" (GH-9131), making the
-entire update process able to be keyboard-driven.
+entire update process keyboard-driven.
 
 <p align="center">
   <a href="/images/1-3-0/macos-update.png" target="_blank">
@@ -434,7 +434,7 @@ unchanged (macOS 13 Ventura).
 
 **GTK:** Ghostty 1.3 requires **GTK 4.14** and **libadwaita 1.5**. This
 aligns with our [GTK/Adwaita version policy](/docs/linux/#supported-gtkadwaita-versions).
-Systems with older GTK or Adwaita versions can workaround this requirement
+Systems with older GTK or Adwaita versions can work around this requirement
 by using an older version of Ghostty or a community-maintained snap or
 flatpak package.
 
@@ -641,7 +641,7 @@ The following default behaviors have been changed in 1.3.0:
   GH-10381 GH-2425
 - macOS: A new app intent to focus a specific terminal usable by
   Apple Shortcuts. GH-8961
-- macOS: Right click tabs to be able to set a tab color. GH-9784
+- macOS: Right-click tabs to set a tab color. GH-9784
 - macOS: `background-blur` now supports new options to use macOS 26 native
   liquid glass blurring. GH-8801
 - macOS: `bell-features = audio` now works on macOS. You can specify
@@ -667,7 +667,7 @@ The following default behaviors have been changed in 1.3.0:
 - macOS: Metal loads linearized foreground color for the cursor cell so
   cursor text appears correct. GH-9695
 - macOS: Fix "Undo New Tab" crashing on certain systems. GH-9512
-- macOS: Fix command palette does not close on mouse when `focus-follows-mouse`
+- macOS: Fix command palette not closing on mouse click when `focus-follows-mouse`
   is set. GH-9533
 - macOS: Fix `quick-terminal-size` not working consistently for people. GH-9837
 - macOS: Custom app icons now update more reliably using
@@ -705,7 +705,7 @@ The following default behaviors have been changed in 1.3.0:
 
 ### GTK (Linux, FreeBSD)
 
-- GTK: Two-finger left/right switch tab pages. GH-10575
+- GTK: Two-finger left/right swipes switch tab pages. GH-10575
 - GTK: Key tables and sequences now have dedicated UI showing the pending
   keyboard input state to match macOS. GH-2127
 - GTK: Spatial split navigation now wraps around at the edges, so
@@ -716,13 +716,13 @@ The following default behaviors have been changed in 1.3.0:
 - GTK: Cgroups have been revamped so that cgroups are now properly
   scoped per-surface. GH-10611 GH-2084
 - GTK: Split-modifying actions such as creating, resizing, or closing
-  splits no longer flickers the entire window. GH-8208
+  splits no longer flicker the entire window. GH-8208
 - GTK: Windows with custom `window-height` or `window-width` now
   center properly. GH-7937
 - GTK: `paste_from_clipboard` now returns false when the clipboard
   contains no text (e.g. an image), allowing `performable:` keybinds
   to pass the keypress through to the terminal application. GH-10089
-- GTK: Fix an issue where i3 window border would disappear after
+- GTK: Fix an issue where the i3 window border would disappear after
   toggling fullscreen back and forth. GH-8075
 - GTK: Fix Kitty keyboard protocol not reporting text events for composed
   keys (e.g. accent characters via Compose key on international
@@ -830,7 +830,7 @@ and I believe that ultimately libghostty will be more widely used and
 influential than the Ghostty desktop application itself, so this is an
 important next step for the project.
 
-There is also a lot non-profit development work to be done such as building
+There is also a lot of non-profit development work to be done such as building
 out a corporate sponsorship program, providing more tangible benefits
 for sponsoring the project, better advertising what Ghostty is doing
 with funds, and more.
