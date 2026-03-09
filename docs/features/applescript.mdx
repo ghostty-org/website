@@ -43,21 +43,42 @@ application -> windows -> tabs -> terminals
 
 | Object | Key Properties | Key Elements |
 | ------ | -------------- | ------------ |
-| `application` | `name`, `frontmost`, `version` | `windows`, `terminals` |
+| `application` | `name`, `frontmost`, `front window`, `version` | `windows`, `terminals` |
 | `window` | `id`, `name`, `selected tab` | `tabs`, `terminals` |
-| `tab` | `id`, `name`, `index`, `selected` | `terminals` |
+| `tab` | `id`, `name`, `index`, `selected`, `focused terminal` | `terminals` |
 | `terminal` | `id`, `name`, `working directory` | None |
+
+`front window` returns the frontmost Ghostty window. `focused terminal`
+returns the active terminal in a tab, which is useful for scripts that
+operate on whatever terminal currently has focus.
 
 ### Object Query Examples
 
 ```AppleScript
 tell application "Ghostty"
-    set win to window 1
+    set win to front window
     set tab1 to selected tab of win
-    set term1 to terminal 1 of tab1
+    set term1 to focused terminal of tab1
     set allTermsInWin to terminals of win
 
     set cwdMatches to every terminal whose working directory contains "ghostty"
+end tell
+```
+
+These two properties make active-context scripting concise:
+
+```AppleScript
+tell application "Ghostty"
+    set term to focused terminal of selected tab of front window
+    input text "pwd\n" to term
+end tell
+```
+
+```AppleScript
+tell application "Ghostty"
+    set currentTerm to focused terminal of selected tab of front window
+    set newTerm to split currentTerm direction right
+    input text "echo split-ready\n" to newTerm
 end tell
 ```
 

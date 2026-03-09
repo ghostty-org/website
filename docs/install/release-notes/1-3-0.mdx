@@ -301,11 +301,11 @@ minor improvements in all subsystems, however.
 
 ### AppleScript (macOS)
 
-PR: GH-11208
+PRs: GH-11208 GH-11251
 
 Ghostty now has built-in AppleScript support on macOS, enabling
 powerful automation and integration capabilities. Using AppleScript,
-you can inspect and control windows, tabs, splits, and invidual
+you can inspect and control windows, tabs, splits, and individual
 terminals. In addition to simple creation and navigation actions, you can
 also send text, key, and mouse input.
 
@@ -313,16 +313,13 @@ Some example workflows that are possible through scripting include
 automated terminal layouts, command broadcasting, jumping to terminals
 by working directory, and more.
 
-Here is a short example creating a simple split layout with a shell
-on the left and log tailing on the right:
+Here is a short example that targets the currently focused terminal in
+the frontmost Ghostty window:
 
 ```AppleScript
 tell application "Ghostty"
-    set win to new window
-    set mainTerm to terminal 1 of selected tab of win
-    set logsTerm to split mainTerm direction right
-    input text "tail -f /tmp/dev.log" to logsTerm
-    send key "enter" to logsTerm
+    set term to focused terminal of selected tab of front window
+    input text "pwd\n" to term
 end tell
 ```
 
