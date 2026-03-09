@@ -245,6 +245,33 @@ to preserve formatting when pasting into another terminal.
 
 <Video src="https://web.files.ghostty.org/release-notes-1-3-0-copy-formatted.mp4" />
 
+### Unicode and International Text Rendering
+
+PRs: GH-8757 GH-10895 GH-9680 GH-10465 GH-9883 GH-10179 GH-10295 GH-10332
+
+Text in Brahmic scripts such as Devanagari, Bengali, Tibetan,
+Javanese, Tai Tham, and Chakma now renders correctly. These scripts
+rely on font shaping to form ligatures, position combining marks,
+and join characters, and all of these are significantly improved.
+
+An update to Unicode 17 with full conformance to the grapheme clustering
+specification means multi-codepoint characters are correctly treated as
+single units for selection, cursor movement, and cell width calculation.
+
+<p align="center">
+  <a href="/images/1-3-0/shaping.png" target="_blank">
+    <img
+      src="/images/1-3-0/shaping.png"
+      style={{ maxWidth: "85%", margin: "10px" }}
+    />
+  </a>
+</p>
+
+The first row shows the previous version and the second row shows 1.3.0
+rendering the same text. Notice the improved ligature formation, combining mark
+placement, and grapheme clustering — in the first column, the selection
+highlight now correctly covers the entire character as a single unit.
+
 ### Performance Improvements
 
 PRs: GH-9662 GH-9645
