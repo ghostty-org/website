@@ -42,6 +42,11 @@
             },
             {
               "type": "link",
+              "path": "/1-3-0",
+              "title": "1.3.0"
+            },
+            {
+              "type": "link",
               "path": "/1-2-3",
               "title": "1.2.3"
             },
@@ -164,6 +169,11 @@
           "type": "link",
           "path": "/shell-integration",
           "title": "Shell Integration"
+        },
+        {
+          "type": "link",
+          "path": "/applescript",
+          "title": "AppleScript (macOS)"
         }
       ]
     },

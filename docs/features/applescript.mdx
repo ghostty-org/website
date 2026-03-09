@@ -1,0 +1,237 @@
+---
+title: AppleScript (macOS)
+description: |-
+  Automate Ghostty on macOS with AppleScript. This guide covers
+  the object model, available commands, and practical examples.
+---
+
+## Overview
+
+Ghostty on macOS exposes a native AppleScript dictionary so scripts can
+query and control terminal windows, tabs, and split panes.
+This makes it easy to integrate Ghostty with tools such as `osascript`,
+launcher workflows, editor plugins, and custom automation scripts.
+
+AppleScript support was introduced in Ghostty 1.3.0.
+
+## Scripting Dictionary
+
+The source of truth for the AppleScript API is the Ghostty scripting
+definition file: <a href="https://github.com/ghostty-org/ghostty/blob/main/macos/Ghostty.sdef">Ghostty.sdef</a>.
+The best way to view this is to load it into Script Editor and browse
+the API using the macOS GUI.
+
+To inspect the dictionary from an installed app bundle:
+
+```sh
+sdef /Applications/Ghostty.app | less
+```
+
+To verify that scripting works:
+
+```sh
+osascript -e 'tell application "Ghostty" to get version'
+```
+
+## Object Model
+
+Ghostty's AppleScript model is hierarchical:
+
+```text
+application -> windows -> tabs -> terminals
+```
+
+| Object | Key Properties | Key Elements |
+| ------ | -------------- | ------------ |
+| `application` | `name`, `frontmost`, `front window`, `version` | `windows`, `terminals` |
+| `window` | `id`, `name`, `selected tab` | `tabs`, `terminals` |
+| `tab` | `id`, `name`, `index`, `selected`, `focused terminal` | `terminals` |
+| `terminal` | `id`, `name`, `working directory` | None |
+
+`front window` returns the frontmost Ghostty window. `focused terminal`
+returns the active terminal in a tab, which is useful for scripts that
+operate on whatever terminal currently has focus.
+
+### Object Query Examples
+
+```AppleScript
+tell application "Ghostty"
+    set win to front window
+    set tab1 to selected tab of win
+    set term1 to focused terminal of tab1
+    set allTermsInWin to terminals of win
+
+    set cwdMatches to every terminal whose working directory contains "ghostty"
+end tell
+```
+
+These two properties make active-context scripting concise:
+
+```AppleScript
+tell application "Ghostty"
+    set term to focused terminal of selected tab of front window
+    input text "pwd\n" to term
+end tell
+```
+
+```AppleScript
+tell application "Ghostty"
+    set currentTerm to focused terminal of selected tab of front window
+    set newTerm to split currentTerm direction right
+    input text "echo split-ready\n" to newTerm
+end tell
+```
+
+## Commands
+
+### Creation and Layout
+
+| Command | Purpose | Example Syntax |
+| ------- | ------- | -------------- |
+| `new surface configuration` | Create a reusable surface configuration record. | `set cfg to new surface configuration` |
+| `new window` | Create a new window. | `set win to new window with configuration cfg` |
+| `new tab` | Create a new tab in an optional target window. | `set t to new tab in win with configuration cfg` |
+| `split` | Split a terminal and return the new terminal. | `set t2 to split t1 direction right with configuration cfg` |
+
+`split direction` values are `right`, `left`, `down`, and `up`.
+
+### Focus, Selection, and Lifecycle
+
+| Command | Purpose | Example Syntax |
+| ------- | ------- | -------------- |
+| `focus` | Focus a terminal and bring its window to front. | `focus t1` |
+| `activate window` | Bring a window to the front. | `activate window (window 1)` |
+| `select tab` | Select a tab. | `select tab (tab 2 of window 1)` |
+| `close` | Close a terminal. | `close (terminal 2 of selected tab of window 1)` |
+| `close tab` | Close a tab. | `close tab (tab 2 of window 1)` |
+| `close window` | Close a window. | `close window (window 1)` |
+
+### Input and Actions
+
+| Command | Purpose | Example Syntax |
+| ------- | ------- | -------------- |
+| `input text` | Send paste-style text input to a terminal. | `input text "echo hello" to t1` |
+| `send key` | Send key press/release events with optional modifiers. | `send key "enter" to t1` |
+| `send mouse button` | Send mouse button events. | `send mouse button left button to t1` |
+| `send mouse position` | Send pointer position updates. | `send mouse position x 240 y 120 to t1` |
+| `send mouse scroll` | Send scroll events with precision/momentum options. | `send mouse scroll x 0 y -8 precision true to t1` |
+| `perform action` | Execute a Ghostty action string on a terminal. | `perform action "toggle_fullscreen" on t1` |
+
+For `send key` and `send mouse button`, `action` can be `press` or
+`release`. `modifiers` is a comma-separated string containing any of:
+`shift`, `control`, `option`, `command`.
+
+For `perform action`, action strings match the action names used in keybind
+configuration. See [Keybind Action Reference](/docs/config/keybind/reference).
+
+## Surface Configuration Records
+
+`new surface configuration` creates a reusable value record that can be passed
+to `new window`, `new tab`, and `split`.
+
+Supported fields are:
+
+- `font size`
+- `initial working directory`
+- `command`
+- `initial input`
+- `wait after command`
+- `environment variables` (list of `KEY=VALUE` strings)
+
+Example:
+
+```AppleScript
+tell application "Ghostty"
+    set cfg to new surface configuration
+    set initial working directory of cfg to POSIX path of (path to home folder) & "src/ghostty"
+    set font size of cfg to 13
+    set environment variables of cfg to {"EDITOR=nvim", "FZF_DEFAULT_OPTS=--height 40%"}
+
+    set win to new window with configuration cfg
+end tell
+```
+
+## Security
+
+AppleScript support is enabled by default on macOS.
+macOS protects app-to-app automation using Automation permissions (TCC), so
+the system will prompt before another app can control Ghostty.
+
+If you want to disable AppleScript support entirely, set:
+
+```ini
+macos-applescript = false
+```
+
+## Examples
+
+### Build a Tmux-style Layout
+
+```AppleScript
+set projectDir to POSIX path of (path to home folder) & "src/ghostty"
+
+tell application "Ghostty"
+    activate
+
+    set cfg to new surface configuration
+    set initial working directory of cfg to projectDir
+
+    set win to new window with configuration cfg
+    set paneEditor to terminal 1 of selected tab of win
+    set paneBuild to split paneEditor direction right with configuration cfg
+    set paneGit to split paneEditor direction down with configuration cfg
+    set paneLogs to split paneBuild direction down with configuration cfg
+
+    input text "nvim ." to paneEditor
+    send key "enter" to paneEditor
+
+    input text "zig build -Demit-macos-app=false" to paneBuild
+    send key "enter" to paneBuild
+
+    input text "git status -sb" to paneGit
+    send key "enter" to paneGit
+
+    input text "tail -f /tmp/dev.log" to paneLogs
+    send key "enter" to paneLogs
+
+    focus paneEditor
+end tell
+```
+
+### Broadcast a Command to Every Terminal
+
+```AppleScript
+set cmd to "date"
+
+tell application "Ghostty"
+    set allTerms to terminals
+
+    repeat with t in allTerms
+        input text cmd to t
+        send key "enter" to t
+    end repeat
+
+    display dialog ("Broadcasted to " & (count of allTerms) & " terminal(s).")
+end tell
+```
+
+### Jump to a Terminal by Working Directory
+
+```AppleScript
+set needle to "ghostty"
+
+tell application "Ghostty"
+    set matches to every terminal whose working directory contains needle
+
+    if (count of matches) = 0 then
+        set matches to every terminal whose name contains needle
+    end if
+
+    if (count of matches) > 0 then
+        set t to item 1 of matches
+        focus t
+        input text "echo '[focused by AppleScript]'" to t
+        send key "enter" to t
+    end if
+end tell
+```

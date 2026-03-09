@@ -89,6 +89,30 @@ Set the font size to the specified size in points (pt).
 For example, `set_font_size:14.5` will set the font size
 to 14.5 points.
 
+## `search`
+Start a search for the given text. If the text is empty, then
+the search is canceled. A canceled search will not disable any GUI
+elements showing search. For that, the explicit end_search binding
+should be used.
+
+If a previous search is active, it is replaced.
+
+## `search_selection`
+Start a search for the current text selection. If there is no
+selection, this does nothing. If a search is already active, this
+changes the search terms.
+
+## `navigate_search`
+Navigate the search results. If there is no active search, this
+is not performed.
+
+## `start_search`
+Start a search if it isn't started already. This doesn't set any
+search terms, but opens the UI for searching.
+
+## `end_search`
+End the current search if any and hide any GUI elements.
+
 ## `clear_screen`
 Clear the screen and all scrollback.
 
@@ -103,6 +127,10 @@ Scroll to the bottom of the screen.
 
 ## `scroll_to_selection`
 Scroll to the selected text.
+
+## `scroll_to_row`
+Scroll to the given absolute row in the screen with 0 being
+the first row.
 
 ## `scroll_page_up`
 Scroll the screen up by one page.
@@ -248,8 +276,10 @@ found by running `ghostty +version`.
 ## `prompt_surface_title`
 Change the title of the current focused surface via a pop-up prompt.
 
-This requires libadwaita 1.5 or newer on Linux. The current libadwaita
-version can be found by running `ghostty +version`.
+## `prompt_tab_title`
+Change the title of the current tab via a pop-up prompt. The
+title set via this prompt overrides any title set by the terminal
+and persists across focus changes within the tab.
 
 ## `new_split`
 Create a new split in the specified direction.
@@ -271,12 +301,25 @@ Focus on a split either in the specified direction (`right`, `down`,
 `left` and `up`), or in the adjacent split in the order of creation
 (`previous` and `next`).
 
+## `goto_window`
+Focus on either the previous window or the next one ('previous', 'next')
+
 ## `toggle_split_zoom`
 Zoom in or out of the current split.
 
 When a split is zoomed into, it will take up the entire space in
 the current tab, hiding other splits. The tab or tab bar would also
 reflect this by displaying an icon indicating the zoomed state.
+
+## `toggle_readonly`
+Toggle read-only mode for the current surface.
+
+When a surface is in read-only mode:
+  - No input is sent to the PTY (mouse events, key encoding)
+  - Input can still be used at the terminal level to make selections,
+    copy/paste (keybinds), scroll, etc.
+  - Warn before quit is always enabled in this state even if an active
+    process is not running
 
 ## `resize_split`
 Resize the current split in the specified direction and amount in
@@ -332,9 +375,8 @@ This might trigger a close confirmation popup, depending on the value
 of the `confirm-close-surface` configuration setting.
 
 ## `close_tab`
-Close the current tab and all splits therein _or_ close all tabs and
-splits thein of tabs _other_ than the current tab, depending on the
-mode.
+Close the current tab and all splits therein, close all other tabs, or
+close every tab to the right of the current one depending on the mode.
 
 If the mode is not specified, defaults to closing the current tab.
 
@@ -386,6 +428,17 @@ This applies to the entire application, not just the focused terminal.
 You must manually untoggle it or quit Ghostty entirely to disable it.
 
 Only implemented on macOS, as this uses a built-in system API.
+
+## `toggle_mouse_reporting`
+Toggle mouse reporting on or off.
+
+When mouse reporting is disabled, mouse events will not be reported to
+terminal applications even if they request it. This allows you to always
+use the mouse for selection and other terminal UI interactions without
+applications capturing mouse input.
+
+This can also be controlled via the `mouse-reporting` configuration
+option.
 
 ## `toggle_command_palette`
 Toggle the command palette.
@@ -458,6 +511,16 @@ Note: When the focused surface is fullscreen, this method does nothing.
 
 Only implemented on macOS.
 
+## `toggle_background_opacity`
+Toggle the window background opacity between transparent and opaque.
+
+This does nothing when `background-opacity` is set to 1 or above.
+
+When `background-opacity` is less than 1, this action will either make
+the window transparent or not depending on its current transparency state.
+
+Only implemented on macOS.
+
 ## `check_for_updates`
 Check for updates.
 
@@ -492,28 +555,16 @@ Redo the last undoable action for the focused surface or terminal,
 if possible. See "undo" for more details on what can and cannot
 be undone or redone.
 
-## `quit`
-Quit Ghostty.
+## `end_key_sequence`
+End the currently active key sequence, if any, and flush the
+keys up to this point to the terminal, excluding the key that
+triggered this action.
 
-## `crash`
-Crash Ghostty in the desired thread for the focused surface.
+For example: `ctrl+w>escape=end_key_sequence` would encode
+`ctrl+w` to the terminal and exit the key sequence.
 
-WARNING: This is a hard crash (panic) and data can be lost.
-
-The purpose of this action is to test crash handling. For some
-users, it may be useful to test crash reporting functionality in
-order to determine if it all works as expected.
-
-The value determines the crash location:
-
-  - `main`
-
-    Crash on the main (GUI) thread.
-
-  - `io`
-
-    Crash on the IO thread for the focused surface.
-
-  - `render`
-
-    Crash on the render thread for the focused surface.
+Normally, an invalid sequence will reset the key sequence and
+flush all data including the invalid key. This action allows
+you to flush only the prior keys, which is useful when you want
+to bind something like a control key (`ctrl+w`) but not send
+additional inputs.
