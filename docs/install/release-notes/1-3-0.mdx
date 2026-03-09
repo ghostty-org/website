@@ -19,7 +19,11 @@ who each helped make this release possible.
 
 ## Security
 
-- TODO
+- [CVE-2026-26982](https://github.com/ghostty-org/ghostty/security/advisories/GHSA-4jxv-xgrp-5m3r).
+  Fixed an issue where control characters such as `0x03` (Ctrl+C) in pasted
+  or drag-and-dropped text could be used to execute arbitrary commands in
+  some shell environments. This requires user interaction
+  (copy-paste or drag-and-drop) to trigger.
 
 ## Highlights
 
