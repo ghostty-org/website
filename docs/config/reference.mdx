@@ -723,7 +723,7 @@ Multi-codepoint sequences (e.g. emoji) are not supported.
 The null character (U+0000) is always treated as a boundary and does not
 need to be included in this configuration.
 
-Default: ` \t'"│`|:;,()[]\{\}\<\>$`
+Default: `` \t'"│`|:;,()[]{}<>$ ``
 
 To add or remove specific characters, you can set this to a custom value.
 For example, to treat semicolons as part of words:
@@ -1409,8 +1409,6 @@ Valid values:
     keybind actions, etc. but you will not have a visual UI widget showing
     a scrollbar.
 
-This only applies to macOS currently. GTK doesn't yet support scrollbars.
-
 ## `link`
 
 Match a regular expression against the terminal text and associate clicking
@@ -1545,8 +1543,9 @@ if Ghostty can detect it is launched from launchd (double-clicked) or
 `open`, then it defaults to `home`. On Linux with GTK, if Ghostty can detect
 it was launched from a desktop launcher, then it defaults to `home`.
 
-The value of this must be an absolute value or one of the special values
-below:
+The value of this must be an absolute path, a path prefixed with `~/`
+(the tilde will be expanded to the user's home directory), or
+one of the special values below:
 
   * `home` - The home directory of the executing user.
 
@@ -3138,7 +3137,7 @@ Valid values are:
 
  * `audio`
 
-   Play a custom sound. (GTK only)
+   Play a custom sound. (Available since 1.3.0 on macOS)
 
  * `attention` *(enabled by default)*
 
@@ -3181,7 +3180,7 @@ configuration file that it is referenced from, or from the current working
 directory if this is used as a CLI flag. The path may be prefixed with `~/`
 to reference the user's home directory.
 
-Available since: 1.2.0
+Available since: 1.2.0 on GTK, 1.3.0 on macOS.
 
 ## `bell-audio-volume`
 
@@ -3189,7 +3188,7 @@ If `audio` is an enabled bell feature, this is the volume to play the audio
 file at (relative to the system volume). This is a floating point number
 ranging from 0.0 (silence) to 1.0 (as loud as possible). The default is 0.5.
 
-Available since: 1.2.0
+Available since: 1.2.0 on GTK, 1.3.0 on macOS.
 
 ## `app-notifications`
 
@@ -3777,6 +3776,12 @@ Available since: 1.1.0
 If `true` (default), applications running in the terminal can show desktop
 notifications using certain escape sequences such as OSC 9 or OSC 777.
 
+## `progress-style`
+
+If `true` (default), applications running in the terminal can show
+graphical progress bars using the ConEmu OSC 9;4 escape sequence.
+If `false`, progress bar sequences are silently ignored.
+
 ## `bold-color`
 
 Modifies the color used for bold text in the terminal.
@@ -3891,10 +3896,3 @@ Valid values are:
  * `stable` - Stable, tagged releases such as "1.0.0".
  * `tip` - Pre-release versions generated from each commit to the
    main branch. This is the version that was in use during private
-   beta testing by thousands of people. It is generally stable but
-   will likely have more bugs than the stable channel.
-
-Changing this configuration requires a full restart of
-Ghostty to take effect.
-
-This only works on macOS since only macOS has an auto-update feature.
