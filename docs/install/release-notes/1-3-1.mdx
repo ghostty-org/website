@@ -1,0 +1,93 @@
+---
+title: Ghostty 1.3.1
+description: |-
+  Release notes for Ghostty 1.3.1, released on March 13, 2026.
+---
+
+Ghostty 1.3.1 includes changes from
+**15 contributors** over **100 commits**. This is a patch release
+focused on fixing regressions introduced in 1.3.0, especially on
+macOS, along with a handful of targeted improvements.
+
+## Highlights
+
+### macOS Mouse Selection Bugs Fixed
+
+PRs: GH-11276
+
+Ghostty 1.3.0 had a very noticeable bug on macOS where phantom mouse
+events would occur after focus changes, leading to phantom drag,
+selection, and scroll events.
+
+This issue is now resolved.
+
+## Full Changelog
+
+[Full list of closed issues on GitHub](https://github.com/ghostty-org/ghostty/milestone/13?closed=1).
+
+In each section, we try to sort improvements before bug fixes.
+
+- New configuration: `progress-style` controls whether OSC 9;4 progress
+  bars are shown, allowing progress bars to be disabled entirely. GH-11289
+- New binding actions `set_surface_title:<title>` and
+  `set_tab_title:<title>` allow direct title setting from keybinds and
+  other action entry points. GH-11373 GH-11316
+- The `working-directory` configuration now expands `~/` paths. GH-11337
+  GH-11336
+- `jump_to_prompt:next` now handles multiline prompts correctly when
+  moving forward through prompts. GH-11331 GH-11330
+
+### Shell Integration
+
+- zsh: Improve prompt marking compatibility with dynamic themes and
+  prompt rebuild behavior. GH-11367
+- bash: Multiline `PS1` prompts with command substitutions no longer
+  break due to mark insertion behavior. GH-11369
+- bash: Readline vi mode indicator redraws no longer introduce extra
+  newlines. GH-11377 GH-10953
+
+### macOS
+
+- macOS: `paste_from_clipboard` is now `performable:` for keybind parity
+  with GTK. GH-11328 GH-10751
+- macOS: Fix stale mouse state leading to phantom drag/selection
+  behavior after focus changes. GH-11276 GH-11319
+- macOS: Fix window sizing regressions where opening tabs could
+  unexpectedly resize windows under certain configurations. GH-11313
+  GH-11322 GH-11380
+- macOS: Fix configuration cycle detection when loading config files
+  from App Support paths. GH-11323 GH-11326
+- macOS: Inline tab title editing now correctly restores keyboard focus
+  after confirming or canceling edits. GH-11320
+- macOS: Fix fullscreen tab title rename hit testing so you can now
+  double-click to rename tabs in native fullscreen. GH-11353
+- macOS: Split drag handles no longer appear in native fullscreen
+  with no splits. GH-11376
+- macOS: Split drag handles only appear when the mouse is somewhat
+  near them. GH-11379
+- macOS: Ghostty keybinds once again override system macOS keybinds,
+  so keys such as `super+h` are once again bindable. GH-11396 GH-11403
+- macOS: Automatic one-time code inputs will no longer appear in the terminal. GH-11351
+- macOS: Improve first-window positioning, window cascading, and split
+  drag-to-new-window placement behavior. GH-11421 GH-11426 GH-11429
+- macOS: The AppleScript tab selection command no longer activates the
+  application unexpectedly. GH-11459
+
+### GTK (Linux, FreeBSD)
+
+- GTK: `+new-window` now correctly handles inferred
+  `--working-directory` when used with `-e`. GH-11357 GH-11356
+- Snap: Ghostty no longer leaks `LD_LIBRARY_PATH` from the
+  snap launcher into child processes, avoiding runtime conflicts in
+  launched applications. GH-11431
+
+### Changes for Package Maintainers
+
+No changes for package maintainers in this release.
+
+## Roadmap
+
+We're still investigating other 1.3.x regressions and issues, and I do
+expect a 1.3.2 release at some point. The plan is for that release to be
+a bit further out than the 1.3.1 release, which focused on critical
+release-day bugs.
