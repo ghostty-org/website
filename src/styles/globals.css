@@ -145,7 +145,7 @@ pre code {
   text-decoration: underline;
 }
 
-@media print {
+@media print, (prefers-color-scheme: light) {
   /* Invert the lightness in print mode */
   html,
   body {
