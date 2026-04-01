@@ -23,5 +23,13 @@
 
   & .imageCopyright {
     font-size: 12px;
+    text-align: center;
+    color: var(--gray-6);
+
+    a {
+      color: inherit;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
   }
 }

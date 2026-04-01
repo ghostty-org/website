@@ -25,7 +25,7 @@ export default function NotFoundPage() {
           width={425}
           height={500}
         />
-        <P className={s.imageCopyright}>CC BY 4.0 (&#169;) Qwerasd</P>
+        <P className={s.imageCopyright}><a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> &#169; Qwerasd</P>
       </section>
     </main>
   );
