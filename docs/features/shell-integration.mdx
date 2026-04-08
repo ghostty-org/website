@@ -151,3 +151,99 @@ lost_ in that shell (it will keep working in the original shell process).
 
 To make shell integration work in these cases, you must manually source
 the Ghostty shell-specific code as shown in the previous section.
+
+## SSH Integration
+
+Ghostty uses `xterm-ghostty` as its `TERM` value, but most remote hosts
+don't yet ship Ghostty's terminfo entry. See
+[Terminfo](/docs/help/terminfo#ssh) for background on the problem and
+the manual remedies.
+
+The `ssh-env` and `ssh-terminfo` shell integration features attempt to
+address this automatically. Both are disabled by default and can be
+enabled via
+[`shell-integration-features`](/docs/config/reference#shell-integration-features):
+
+```ini
+shell-integration-features = ssh-env,ssh-terminfo
+```
+
+- **`ssh-env`** sets `TERM=xterm-256color` for the remote session and
+  forwards `COLORTERM`, `TERM_PROGRAM`, and `TERM_PROGRAM_VERSION` via
+  `SendEnv` so the remote shell can still detect that it's running inside
+  Ghostty.
+- **`ssh-terminfo`** attempts to install Ghostty's terminfo entry on the
+  remote host the first time you connect, using `infocmp` locally and
+  `tic` remotely. Successful installations are cached locally so subsequent
+  connections skip the install step. The cache can be inspected and
+  managed with the `ghostty +ssh-cache` CLI action.
+
+When both features are enabled, Ghostty tries to install the terminfo
+entry first and falls back to `xterm-256color` if installation fails.
+
+### How It Works
+
+Both features work by defining a shell function named `ssh` that wraps
+the real `ssh` binary. When you type `ssh` in your interactive shell,
+this function runs first, configures `TERM` and any other environment or
+`ssh` options that are needed, and then invokes the real `ssh` binary
+on your behalf.
+
+This mechanism is simple and requires no changes to your `~/.ssh/config`,
+but it has an important limitation: **shell functions are not inherited
+by child processes.** The `ssh` wrapper only applies to `ssh` invocations
+made directly from your interactive shell.
+
+### Limitations
+
+The `ssh` shell function will _not_ be used in the following cases:
+
+- **Scripts run as `./script.sh` or `sh script.sh`.** Each script runs
+  in a new non-interactive shell that does not inherit the function.
+  Source the script into your current shell instead (e.g.
+  `source script.sh` or `. script.sh`) so it runs in the same shell
+  process where the function is defined.
+- **Wrapper tools that spawn `ssh` themselves**, such as
+  `aws ec2-instance-connect ssh`, `gcloud compute ssh`, `mosh`,
+  `rsync -e ssh`, `git` over `ssh`, `scp`, and `sftp`. These invoke
+  `ssh` (or an `ssh`-like binary) directly and never consult your
+  shell's function table.
+- **Non-interactive shells and subshells** more generally, including
+  `Makefile` recipes, `cron` jobs, and command substitutions in other
+  programs.
+
+For any of these cases, the most robust workaround is to configure
+`SetEnv` and `SendEnv` directly in `~/.ssh/config`, which applies to
+every `ssh` invocation regardless of how it was launched:
+
+```ssh-config
+# ~/.ssh/config
+Host example.com
+  SetEnv TERM=xterm-256color
+  SendEnv COLORTERM TERM_PROGRAM TERM_PROGRAM_VERSION
+```
+
+<Note>
+  `SetEnv` requires OpenSSH 8.7 or newer. See
+  [Terminfo](/docs/help/terminfo#ssh) for more on the terminfo side of this
+  problem, including how to copy Ghostty's terminfo entry to a remote host
+  manually.
+</Note>
+
+### Remote `sshd` Configuration
+
+The `ssh-env` feature uses `SendEnv` to forward `COLORTERM`,
+`TERM_PROGRAM`, and `TERM_PROGRAM_VERSION` to the remote host, but
+`SendEnv` is only a _request_. The remote `sshd` will silently drop any
+variable that isn't listed in its `AcceptEnv` directive. If you want
+these variables to reach the remote session, the remote `sshd_config`
+needs something like:
+
+```sshd-config
+# /etc/ssh/sshd_config on the remote host
+AcceptEnv COLORTERM TERM_PROGRAM TERM_PROGRAM_VERSION
+```
+
+This is a property of the remote host, not Ghostty, and many managed or
+hardened servers will not have it configured. `TERM` itself is always
+forwarded by `ssh` and is not affected by `AcceptEnv`.

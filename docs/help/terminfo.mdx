@@ -72,21 +72,11 @@ everywhere, but in the meantime there are two ways to resolve the situation:
      SetEnv TERM=xterm-256color
    ```
 
-Both variants can be automated by specifying one or both of the following in
-your Ghostty configuration:
-
-1. `shell-integration-features = ssh-terminfo` to copy the terminfo entry the
-   first time you log into a new server over SSH.
-2. `shell-integration-features = ssh-env` to configure SSH to fall back to
-   `xterm-256color`.
-
-If both features are enabled
-(`shell-integration-features = ssh-terminfo,ssh-env`), Ghostty will try to
-install the terminfo entry first and use the fallback if installation failed.
-
-See
-[`shell-integration-features`](/docs/config/reference#shell-integration-features)
-for more about this configuration option.
+Both variants can be automated by Ghostty's shell integration via the
+`ssh-terminfo` and `ssh-env` features. See
+[SSH Integration](/docs/features/shell-integration#ssh-integration) for
+details, including important limitations around when the automation
+applies.
 
 <Note>
   The `tic` command on the server may give the warning `"<stdin>", line 2,
