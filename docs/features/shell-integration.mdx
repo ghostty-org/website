@@ -2,8 +2,8 @@
 title: Shell Integration
 description: |-
   Some Ghostty features require integrating with your shell. Ghostty
-  can automatically inject shell integration for bash, zsh, fish, and
-  elvish.
+  can automatically inject shell integration for bash, elvish, fish,
+  nushell, and zsh.
 ---
 
 ## Features
@@ -30,7 +30,7 @@ description: |-
 ## Shell Integration Injection
 
 Ghostty will automatically inject the shell integration code for `bash`,
-`zsh`, `fish`, and `elvish`.
+`elvish`, `fish`, `nushell`, and `zsh`.
 
 <Note>
   The version of Bash distributed with macOS (`/bin/bash`) does not support
@@ -43,11 +43,12 @@ Other shells do not have shell integration code written, but they will function
 fine within Ghostty, although some or all of the above-mentioned shell
 integration features may be unavailable.
 
-Some shells such as [Nushell](https://www.nushell.sh) have built-in
-support for some of the features that Ghostty provides, so shell
-integration is not necessary. For example, newer versions of
-Fish (4.0+) have built-in support for prompt marking so `jump_to_prompt`,
-prompt resizing, and prompt selection will work without shell integration.
+[Nushell](https://www.nushell.sh) provides many of these features
+itself (such as title and cursor handling), so its Ghostty integration
+focuses on Ghostty-specific features like `sudo`, `ssh-env`, and
+`ssh-terminfo`. Similarly, newer versions of Fish (4.0+) have built-in
+support for prompt marking so `jump_to_prompt`, prompt resizing, and
+prompt selection will work without shell integration.
 
 Ghostty detects your shell using a simple string match on the
 basename of the command to execute. If you are using a supported
@@ -131,12 +132,13 @@ fi
 
 Each shell integration's installation instructions are documented inline:
 
-| Shell    | Integration                                                                                    |
-| -------- | ---------------------------------------------------------------------------------------------- |
-| `bash`   | `${GHOSTTY_RESOURCES_DIR}/shell-integration/bash/ghostty.bash`                                 |
-| `fish`   | `"$GHOSTTY_RESOURCES_DIR"/shell-integration/fish/vendor_conf.d/ghostty-shell-integration.fish` |
-| `zsh`    | `${GHOSTTY_RESOURCES_DIR}/shell-integration/zsh/ghostty-integration`                           |
-| `elvish` | `${GHOSTTY_RESOURCES_DIR}/shell-integration/elvish/lib/ghostty-integration.elv`                |
+| Shell     | Integration                                                                                    |
+| --------- | ---------------------------------------------------------------------------------------------- |
+| `bash`    | `${GHOSTTY_RESOURCES_DIR}/shell-integration/bash/ghostty.bash`                                 |
+| `elvish`  | `${GHOSTTY_RESOURCES_DIR}/shell-integration/elvish/lib/ghostty-integration.elv`                |
+| `fish`    | `"$GHOSTTY_RESOURCES_DIR"/shell-integration/fish/vendor_conf.d/ghostty-shell-integration.fish` |
+| `nushell` | `$GHOSTTY_RESOURCES_DIR/shell-integration/nushell/vendor/autoload/ghostty.nu`                  |
+| `zsh`     | `${GHOSTTY_RESOURCES_DIR}/shell-integration/zsh/ghostty-integration`                           |
 
 For shell-specific details see <a href="https://github.com/ghostty-org/ghostty/blob/main/src/shell-integration/README.md">shell-integration/README.md</a>.
 
