@@ -214,9 +214,12 @@ The `ssh` shell function will _not_ be used in the following cases:
   `Makefile` recipes, `cron` jobs, and command substitutions in other
   programs.
 
-For any of these cases, the most robust workaround is to configure
-`SetEnv` and `SendEnv` directly in `~/.ssh/config`, which applies to
-every `ssh` invocation regardless of how it was launched:
+### Manual `~/.ssh/config` Configuration
+
+If you need `TERM` and environment forwarding for cases the shell wrapper
+can't cover (see above), you can configure `SetEnv` and `SendEnv`
+directly in `~/.ssh/config`, which applies to every `ssh` invocation
+regardless of how it was launched:
 
 ```ssh-config
 # ~/.ssh/config
@@ -230,6 +233,12 @@ Host example.com
   [Terminfo](/docs/help/terminfo#ssh) for more on the terminfo side of this
   problem, including how to copy Ghostty's terminfo entry to a remote host
   manually.
+</Note>
+
+<Note>
+  If the remote host already has the `xterm-ghostty` terminfo entry
+  installed, a `SetEnv TERM=xterm-256color` stanza will unnecessarily
+  downgrade `TERM`. Only use this for hosts that lack the terminfo entry.
 </Note>
 
 ### Remote `sshd` Configuration
