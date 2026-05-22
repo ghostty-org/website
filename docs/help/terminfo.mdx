@@ -72,11 +72,10 @@ everywhere, but in the meantime there are two ways to resolve the situation:
      SetEnv TERM=xterm-256color
    ```
 
-Both variants can be automated by Ghostty's shell integration via the
-`ssh-terminfo` and `ssh-env` features. See
-[SSH Integration](/docs/features/shell-integration#ssh-integration) for
-details, including important limitations around when the automation
-applies.
+Ghostty can automate both variants. See [SSH](/docs/features/ssh) for
+details on the `ghostty +ssh` CLI action and the `ssh-env` /
+`ssh-terminfo` shell integration features, including important
+limitations around when the automation applies.
 
 <Note>
   The `tic` command on the server may give the warning `"<stdin>", line 2,

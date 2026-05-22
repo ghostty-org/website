@@ -1,0 +1,191 @@
+---
+title: SSH
+description: |-
+  Ghostty's `+ssh` CLI action is a drop-in `ssh` wrapper that prepares
+  the remote session for Ghostty before exec'ing the real `ssh`
+  binary.
+---
+
+`ghostty +ssh` is a drop-in `ssh` wrapper. It prepares the remote
+session for Ghostty, then exec's the real `ssh` binary with your
+arguments forwarded verbatim:
+
+```sh
+ghostty +ssh -- user@example.com
+```
+
+You can use it as an alias so that every `ssh` invocation in your
+shell goes through `+ssh`:
+
+```bash
+alias ssh='ghostty +ssh --'
+```
+
+Or you can let Ghostty's [shell integration](#shell-integration) wrap
+`ssh` for you automatically.
+
+Run `ghostty +ssh --help` for the full flag reference.
+
+## Features
+
+### Environment Forwarding
+
+The `--forward-env` flag (default `true`) requests `SendEnv`
+forwarding of `COLORTERM`, `TERM_PROGRAM`, and `TERM_PROGRAM_VERSION`
+so the remote shell can detect that it's running inside Ghostty.
+
+For the forwarded variables to reach the remote session, the remote
+`sshd` must list them in its `AcceptEnv` directive. See
+[Remote `sshd` Configuration](#remote-sshd-configuration) below.
+
+Disable with `--forward-env=false`.
+
+### Terminfo Install
+
+Ghostty uses `xterm-ghostty` as its `TERM` value, but most remote
+hosts don't yet ship Ghostty's terminfo entry. See
+[Terminfo](/docs/help/terminfo#ssh) for more information.
+
+The `--terminfo` flag (default `true`) installs Ghostty's terminfo
+entry on the remote host the first time you connect, using `tic` on
+the remote. When the install succeeds (or the host is already cached),
+`TERM` is set to `xterm-ghostty` for the remote session.
+
+If the install fails (for example, `tic` isn't available on the
+remote), `+ssh` logs a warning and falls back to `TERM=xterm-256color`,
+which is a widely-supported entry that preserves color and most
+terminal capabilities on the remote.
+
+Disable with `--terminfo=false`.
+
+### Install Cache
+
+Successful terminfo installs are recorded in a local cache, keyed by
+`user@hostname`, so subsequent connections to the same host skip the
+install step. The cache is managed by the
+[`+ssh-cache`](#the-+ssh-cache-cli-action) action.
+
+Passing `--cache=false` to `+ssh` bypasses both the read and the
+write for a single invocation, without touching the cache. This is
+useful for scripting ("always reinstall") and for debugging issues.
+
+## The `+ssh-cache` CLI Action
+
+`ghostty +ssh-cache` manages the terminfo cache used by `+ssh`:
+
+```sh
+# List every cached host.
+ghostty +ssh-cache
+
+# Check whether a single host is cached.
+ghostty +ssh-cache --host=user@example.com
+
+# Manually mark a host as cached (e.g. after installing terminfo by hand).
+ghostty +ssh-cache --add=user@example.com
+
+# Force the next connection to reinstall terminfo on a host.
+ghostty +ssh-cache --remove=user@example.com
+
+# Clear the entire cache.
+ghostty +ssh-cache --clear
+
+# Set the cache expiration period (default: entries never expire).
+ghostty +ssh-cache --expire-days=30
+```
+
+`--remove` is the recommended way to force a reinstall on a single
+host: drop the cache entry, and the next successful connection
+re-populates it. Use `+ssh --cache=false` when you want to bypass the
+cache entirely.
+
+Cache entries are always keyed as `user@hostname`, where `user` is the
+ssh user (defaulting to your local `$USER`) and `hostname` is the
+resolved remote host (post-`HostName`, post-`ProxyJump`) rather than
+an alias from `~/.ssh/config`.
+
+Run `ghostty +ssh-cache --help` for the full flag reference.
+
+## Shell Integration
+
+Ghostty's [shell integration](/docs/features/shell-integration) can
+wrap `ssh` in your interactive shell so that `ghostty +ssh` is invoked
+transparently. This is disabled by default and can be enabled via
+[`shell-integration-features`](/docs/config/reference#shell-integration-features):
+
+```ini
+shell-integration-features = ssh-env,ssh-terminfo
+```
+
+- **`ssh-env`** enables environment forwarding (passes
+  `--forward-env=true` to `+ssh`).
+- **`ssh-terminfo`** enables the remote terminfo install (passes
+  `--terminfo=true` to `+ssh`).
+
+The wrapper is a small shell function named `ssh` that translates
+these feature flags into the right `+ssh` command-line options and
+then forwards your args.
+
+### Limitations
+
+Because the wrapper is a shell function, it **is not inherited by
+child processes**. The wrapper will _not_ be used in the following
+cases:
+
+- **Scripts run as `./script.sh` or `sh script.sh`.** Each script runs
+  in a new non-interactive shell that does not inherit the function.
+  Source the script into your current shell instead (e.g.
+  `source script.sh` or `. script.sh`) so it runs in the same shell
+  process where the function is defined.
+- **Wrapper tools that spawn `ssh` themselves**, such as
+  `aws ec2-instance-connect ssh`, `gcloud compute ssh`, `mosh`,
+  `rsync -e ssh`, `git` over `ssh`, `scp`, and `sftp`. These invoke
+  `ssh` (or an `ssh`-like binary) directly and never consult your
+  shell's function table.
+- **Non-interactive shells and subshells** more generally, including
+  `Makefile` recipes, `cron` jobs, and command substitutions in other
+  programs.
+
+For these cases, invoke `ghostty +ssh` directly, or configure
+`~/.ssh/config` as described below.
+
+## Manual `~/.ssh/config` Configuration
+
+For cases the shell wrapper can't cover, you can configure `SetEnv`
+and `SendEnv` directly in `~/.ssh/config`, which applies to every
+`ssh` invocation regardless of how it was launched:
+
+```ssh-config
+# ~/.ssh/config
+Host example.com
+  SetEnv TERM=xterm-256color
+  SendEnv COLORTERM TERM_PROGRAM TERM_PROGRAM_VERSION
+```
+
+<Note>
+  `SetEnv` requires OpenSSH 8.7 or newer. See
+  [Terminfo](/docs/help/terminfo#ssh) for how to copy Ghostty's terminfo entry
+  to a remote host manually.
+</Note>
+
+<Note>
+  If the remote host already has the `xterm-ghostty` terminfo entry installed, a
+  `SetEnv TERM=xterm-256color` stanza will unnecessarily downgrade `TERM`. Only
+  use this for hosts that lack the terminfo entry.
+</Note>
+
+## Remote `sshd` Configuration
+
+Environment forwarding uses `SendEnv`, which is only a _request_. The
+remote `sshd` will silently drop any variable that isn't listed in its
+`AcceptEnv` directive. If you want `COLORTERM`, `TERM_PROGRAM`, and
+`TERM_PROGRAM_VERSION` to reach the remote session, the remote
+`sshd_config` needs something like:
+
+```sshd-config
+# /etc/ssh/sshd_config on the remote host
+AcceptEnv COLORTERM TERM_PROGRAM TERM_PROGRAM_VERSION
+```
+
+This is a property of the remote host, not Ghostty, and many managed
+or hardened servers will not have it configured. `TERM` itself is
+always forwarded by `ssh` and is not affected by `AcceptEnv`.
