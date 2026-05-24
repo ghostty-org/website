@@ -8,7 +8,9 @@ description: |-
 
 `ghostty +ssh` is a drop-in `ssh` wrapper. It prepares the remote
 session for Ghostty, then exec's the real `ssh` binary with your
-arguments forwarded verbatim:
+arguments forwarded verbatim. This command fixes the common chicken
+and egg issue where the remote machine requires the Ghostty terminfo
+files.
 
 ```sh
 ghostty +ssh -- user@example.com
@@ -25,6 +27,12 @@ Or you can let Ghostty's [shell integration](#shell-integration) wrap
 `ssh` for you automatically.
 
 Run `ghostty +ssh --help` for the full flag reference.
+
+<Note>
+  `+ssh` requires Ghostty tip, which will become Ghostty 1.4.0. It
+  is not present in Ghostty 1.3.x. The SSH shell integration features
+  documented on this page are present in 1.3.x.
+</Note>
 
 ## Features
 
