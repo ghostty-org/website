@@ -177,6 +177,11 @@
         },
         {
           "type": "link",
+          "path": "/ssh",
+          "title": "SSH"
+        },
+        {
+          "type": "link",
           "path": "/applescript",
           "title": "AppleScript (macOS)"
         }
