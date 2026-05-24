@@ -69,6 +69,20 @@ Passing `--cache=false` to `+ssh` bypasses both the read and the
 write for a single invocation, without touching the cache. This is
 useful for scripting ("always reinstall") and for debugging issues.
 
+### Alternate `ssh` Executable
+
+By default `+ssh` exec's the first `ssh` on your `PATH`. The
+`--ssh=PATH` flag points it at a specific client instead:
+
+```sh
+ghostty +ssh --ssh=/opt/homebrew/bin/ssh -- user@example.com
+```
+
+This is useful when you have an alternate OpenSSH build or wrapper
+client that you want `+ssh` to use. The path must resolve to an
+executable; if it doesn't, `+ssh` fails rather than silently falling
+back to the `PATH` `ssh`.
+
 ## The `+ssh-cache` CLI Action
 
 `ghostty +ssh-cache` manages the terminfo cache used by `+ssh`:
