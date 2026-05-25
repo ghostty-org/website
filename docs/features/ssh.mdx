@@ -96,27 +96,33 @@ back to the `PATH` `ssh`.
 `ghostty +ssh-cache` manages the terminfo cache used by `+ssh`:
 
 ```sh
-# List every cached host.
+# List every cached destination.
 ghostty +ssh-cache
 
-# Check whether a single host is cached.
-ghostty +ssh-cache --host=user@example.com
+# Show a specific destination, or every cached user on a host.
+ghostty +ssh-cache user@example.com
+ghostty +ssh-cache example.com
 
-# Manually mark a host as cached (e.g. after installing terminfo by hand).
+# Manually mark a destination as cached (e.g. after installing
+# terminfo by hand).
 ghostty +ssh-cache --add=user@example.com
 
-# Force the next connection to reinstall terminfo on a host.
+# Force the next connection to reinstall terminfo on a destination.
 ghostty +ssh-cache --remove=user@example.com
+
+# Remove cache entries older than a given age (s, m, h, d, w, y).
+ghostty +ssh-cache --prune=30d
 
 # Clear the entire cache.
 ghostty +ssh-cache --clear
-
-# Set the cache expiration period (default: entries never expire).
-ghostty +ssh-cache --expire-days=30
 ```
 
+A destination is looked up positionally: `user@hostname` shows that
+exact entry, while a bare `hostname` shows every cached user on that
+host. A lookup that matches nothing exits with a non-zero status.
+
 `--remove` is the recommended way to force a reinstall on a single
-host: drop the cache entry, and the next successful connection
+destination: drop the cache entry, and the next successful connection
 re-populates it. Use `+ssh --cache=false` when you want to bypass the
 cache entirely.
 
