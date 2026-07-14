@@ -205,17 +205,28 @@ Other than that, instructions are nearly identical to NixOS.
 
 ### openSUSE
 
-Ghostty is available from OpenSUSE `repo-oss` repository:
+Ghostty is available from official openSUSE `repo-oss` repository:
 
 ```sh
 sudo zypper in ghostty
 ```
 
-#### Removed from repo until March 2026
+You can check the package's details if you want:
 
-> [!WARNING]
-> Seems like it is [back online](https://build.opensuse.org/package/show/openSUSE%3AFactory/ghostty).
-> Note below kept for historical value.
+```sh
+sudo zypper info ghostty
+```
+
+<details>
+<summary>In the past, <code>ghostty</code> was removed from the official repo because of a mismatch between Zig versions. <strong>If your install command is not working, see here.</strong></summary>
+
+#### Removed from official repo: end of 2025 to ~March 2026
+
+> This note is kept for future reference, to provide relevant info to users
+> in case it happens again. Right now (July 2026) Ghostty should be back in
+> [the official repo.](https://build.opensuse.org/package/show/openSUSE%3AFactory/ghostty)
+
+---
 
 openSUSE has [dropped][opensuse-dropped] Ghostty from its official repositories
 as it does not allow packages to depend on a specific version of Zig. This is a
@@ -226,6 +237,8 @@ changes, preventing software targeting a previous Zig version to be compiled.
 
 openSUSE users should try to build Ghostty from source instead, or try
 installing Ghostty from a third-party, community-maintained repository.
+
+</details>
 
 ### Snap
 
