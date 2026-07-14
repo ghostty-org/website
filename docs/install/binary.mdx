@@ -203,8 +203,19 @@ OpenGL driver paths, or use a more permanent solution like
 
 Other than that, instructions are nearly identical to NixOS.
 
-
 ### openSUSE
+
+Ghostty is available from OpenSUSE `repo-oss` repository:
+
+```sh
+sudo zypper in ghostty
+```
+
+#### Removed from repo until March 2026
+
+> [!WARNING]
+> Seems like it is [back online](https://build.opensuse.org/package/show/openSUSE%3AFactory/ghostty).
+> Note below kept for historical value.
 
 openSUSE has [dropped][opensuse-dropped] Ghostty from its official repositories
 as it does not allow packages to depend on a specific version of Zig. This is a
