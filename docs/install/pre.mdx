@@ -144,7 +144,7 @@ e.g. `x86_64-linux`), or use the overlay at `overlays.default`.
 {
   # Installing the package directly
   users.users.somebody.packages = [
-    inputs.ghostty.${pkgs.stdenv.hostPlatform.system}.default
+    inputs.ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 
   # Alternatively, using overlays:
