@@ -10,6 +10,10 @@
     display: none;
   }
 
+  @media (prefers-color-scheme: light) {
+    background: var(--gray-5);
+  }
+
   & .gridContainer {
     height: 100%;
     display: flex;
@@ -30,6 +34,10 @@
         & a {
           color: var(--gray-5);
           text-decoration: none;
+
+          @media (prefers-color-scheme: light) {
+            color: var(--gray-1);
+          }
           &.active {
             text-decoration: underline;
           }
@@ -41,6 +49,13 @@
 
       & .cta {
         margin-left: 30px;
+
+        @media (prefers-color-scheme: light) {
+          background-color: var(--gray-1);
+          &:hover {
+            background-color: var(--button-color);
+          }
+        }
       }
     }
   }

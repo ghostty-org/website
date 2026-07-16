@@ -59,7 +59,7 @@
   line-height: 1.6;
 }
 
-.button {
+a.button {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -81,6 +81,10 @@
 
   &:active {
     transform: translateY(0);
+  }
+
+  @media (prefers-color-scheme: light) {
+    color: var(--gray-1);
   }
 }
 

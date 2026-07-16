@@ -49,6 +49,10 @@
     background: var(--gray-1);
     border: 1px solid var(--gray-5);
     display: block;
+
+    @media (prefers-color-scheme: light) {
+      background: var(--gray-3);
+    }
   }
   & :global(.mermaid-diagram *[fill]) {
     fill: var(--brand-color) !important;

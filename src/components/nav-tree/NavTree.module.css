@@ -81,6 +81,9 @@ ul.nodesList {
       &.active {
         background: var(--brand-color);
         color: var(--gray-9);
+        @media (prefers-color-scheme: light) {
+          color: var(--gray-1);
+        }
       }
     }
   }
