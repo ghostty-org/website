@@ -192,11 +192,16 @@ distros, and will fail to find them if not manually worked around.
 
 </Warning>
 
-There are multiple ways to fix this, either by running Ghostty with a
-wrapper program like [`nixGL`] or [`nix-gl-host`] that sets up the correct
-OpenGL driver paths, or use a more permanent solution like
-[`nix-system-graphics`].
+There are multiple ways to fix this: if you use Home Manager, you can 
+[`modify your system`] and put your graphics drivers where they are located on NixOS, 
+or [`wrap your programs`] and point them at the correct drivers.
 
+If you use neither NixOS nor Home Manager, you can also use standalone wrapper tools 
+like [`nixGL`], [`nix-gl-host`] and [`nix-system-graphics`], who all achieve 
+the same end goal in slightly different ways.
+
+[`modify your system`]: https://nix-community.github.io/home-manager/index.xhtml#sec-usage-gpu-sudo
+[`wrap your programs`]: https://nix-community.github.io/home-manager/index.xhtml#sec-usage-gpu-nosudo
 [`nixGL`]: https://github.com/nix-community/nixGL
 [`nix-gl-host`]: https://github.com/numtide/nix-gl-host
 [`nix-system-graphics`]: https://github.com/soupglasses/nix-system-graphics
