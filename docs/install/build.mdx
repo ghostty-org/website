@@ -309,6 +309,15 @@ ensure that `~/.local/bin` is on your _system_ `PATH`. The desktop environment
 itself must have that path in the `PATH`. Google for your specific desktop
 environment and distribution to learn how to do that.
 
+If you built ghostty with the flag `-fno-sys=gtk4-layer-shell` you may additionally
+require the `LD_LIBRARY_PATH` environment variable to be set to `$HOME/.local/lib`.
+To avoid however globally polluting `LD_LIBRARY_PATH` when launching from a desktop
+environment, you can simply patch the installed ghostty elf with `patchelf`:
+
+```shell-session
+patchelf --set-rpath '$ORIGIN/../lib' $HOME/.local/bin/ghostty
+```
+
 For system-wide installs, we recommend `/usr` (likely requires `sudo`):
 
 ```shell-session
