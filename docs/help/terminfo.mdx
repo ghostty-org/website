@@ -56,14 +56,40 @@ terminal: xterm-ghostty`, `Error opening terminal: xterm-ghostty.` or
 `WARNING: terminal is not fully functional`.
 
 Hopefully someday Ghostty will have terminfo entries pre-distributed
-everywhere, but in the meantime there are two ways to resolve the situation:
+everywhere, but in the meantime there are two methods to resolve the situation:
 
-1. Copy Ghostty's terminfo entry to the remote machine. The easiest way is using
-   the following one-liner:
+### Method 1: Copy Ghostty's terminfo entry to the remote machine
+1. On your local machine, run the following one-liner:
    ```sh
    infocmp -x xterm-ghostty | ssh YOUR-SERVER -- tic -x -
    ```
-2. Configure SSH to fall back to a known terminfo entry using the following SSH
+2. On the server, confirm the configuration was saved into 
+   `/usr/share/terminfo/...`.
+   If not, check `$HOME/.terminfo/...` and move it across. 
+
+The `tic` command on the server may give the warning `"<stdin>", line 2, col 31, terminal 
+'xterm-ghostty': older tic versions may treat the description
+field as an alias` which can be safely ignored.
+
+`tic` will normally place its results in the system database, `/usr/share/terminfo`.
+This location can be overridden with the `TERMINFO` environment variable.
+If `TERMINFO` is not set and `tic` cannot write to the
+system location, it will place the results in `$HOME/.terminfo` if it exists.
+If this happens, `man tic` for details.
+
+<Note>
+  **macOS versions before Sonoma cannot use the system-bundled `infocmp`.** The
+  bundled version of `ncurses` is too old to emit a terminfo entry that can be
+  read by more recent versions of `tic`, and the command will fail with a bunch
+  of `Illegal character` messages. You can fix this by using Homebrew to install
+  a recent version of `ncurses` with `brew install ncurses` and replacing
+  `infocmp` above with the full path `/opt/homebrew/opt/ncurses/bin/infocmp` or
+  `/usr/local/opt/ncurses/bin/infocmp`.
+</Note>
+
+
+### Method 2: Configure SSH to fall back to a known terminfo entry
+1. On your local machine, add the following SSH
    configuration (**requires [OpenSSH 8.7](https://www.openssh.com/txt/release-8.7)
    or newer**):
    ```ssh-config
@@ -76,30 +102,6 @@ Ghostty can automate both variants. See [SSH](/docs/features/ssh) for
 details on the `ghostty +ssh` CLI action and the `ssh-env` /
 `ssh-terminfo` shell integration features, including important
 limitations around when the automation applies.
-
-<Note>
-  The `tic` command on the server may give the warning `"<stdin>", line 2,
-  col 31, terminal 'xterm-ghostty': older tic versions may treat the description
-  field as an alias` which can be safely ignored.
-</Note>
-
-<Note>
-  `tic` will normally place its results in the system database,
-  `/usr/share/terminfo`. This location can be overridden with the `TERMINFO`
-  environment variable. If `TERMINFO` is not set and `tic` cannot write to the
-  system location, it will place the results in `$HOME/.terminfo` if it exists.
-  `man tic` for details.
-</Note>
-
-<Note>
-  **macOS versions before Sonoma cannot use the system-bundled `infocmp`.** The
-  bundled version of `ncurses` is too old to emit a terminfo entry that can be
-  read by more recent versions of `tic`, and the command will fail with a bunch
-  of `Illegal character` messages. You can fix this by using Homebrew to install
-  a recent version of `ncurses` with `brew install ncurses` and replacing
-  `infocmp` above with the full path `/opt/homebrew/opt/ncurses/bin/infocmp` or
-  `/usr/local/opt/ncurses/bin/infocmp`.
-</Note>
 
 <Warning>
   **Fallback does not support advanced terminal features.** Because
