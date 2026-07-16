@@ -215,6 +215,24 @@ tell application "Ghostty"
 end tell
 ```
 
+### Set Tab Titles
+
+Use `perform action` with `set_tab_title` to label tabs from a script.
+
+An example creating a new tab and setting title:
+
+```AppleScript
+tell application "Ghostty"
+    set win to front window
+    set cfg to new surface configuration
+
+    set t1 to new tab in win with configuration cfg
+    perform action "set_tab_title:Editor" on focused terminal of t1
+    input text "nvim .\n" to focused terminal of t1
+
+end tell
+```
+
 ### Jump to a Terminal by Working Directory
 
 ```AppleScript
