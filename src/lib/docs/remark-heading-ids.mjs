@@ -3,10 +3,10 @@ import { visit } from "unist-util-visit";
 
 // remarkHeadingIds applies stable IDs and de-duplication indices to heading nodes.
 export default function remarkHeadingIds() {
-  // encounteredIDs tracks duplicate IDs so each heading receives a unique anchor.
-  const encounteredIDs = new Map();
-
   return (node) => {
+    // encounteredIDs tracks duplicate IDs so each heading receives a unique anchor.
+    const encounteredIDs = new Map();
+
     visit(node, "heading", (headingNode) => {
       if (!Array.isArray(headingNode.children) || headingNode.children.length === 0) {
         return;
