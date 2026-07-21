@@ -2461,10 +2461,15 @@ the system clipboard.
 The value `clipboard` will always copy text to the selection clipboard
 as well as the system clipboard.
 
-Middle-click paste will always use the selection clipboard. Middle-click
-paste is always enabled even if this is `false`.
-
 The default value is true on Linux and macOS.
+
+Middle-click paste always uses the selection clipboard, even if `copy-on-select`
+is false. On GTK, middle-click paste also requires `gtk-enable-primary-paste`
+be set to true. Check its effective value with:
+
+```
+gsettings get org.gnome.desktop.interface gtk-enable-primary-paste
+```
 
 ## `right-click-action`
 
