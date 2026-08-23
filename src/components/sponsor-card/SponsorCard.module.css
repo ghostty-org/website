@@ -15,6 +15,16 @@
       background: hsl(var(--brand-color-hsl) / 0.03);
     }
   }
+
+  @media (prefers-color-scheme: light) {
+    background: var(--gray-3);
+
+    &:hover {
+      @media (hover: hover) {
+        background: hsl(var(--brand-color-hsl) / 0.4);
+      }
+    }
+  }
 }
 
 .logoContainer {
@@ -36,15 +46,23 @@
   gap: 8px;
 }
 
-.description {
+p.description {
   margin: 0;
   color: var(--gray-6);
   font-size: 14px;
   line-height: 1.6;
+
+  @media (prefers-color-scheme: light) {
+    color: var(--gray-1);
+  }
 }
 
 .since {
   font-size: 12px;
   color: var(--gray-5);
   font-weight: 500;
+
+  @media (prefers-color-scheme: light) {
+    color: var(--gray-2);
+  }
 }
