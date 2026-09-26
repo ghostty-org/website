@@ -16,7 +16,7 @@
   * Additionally, `inherit` here didn't seem to be working? So we're
   * setting the font-family explicitly. 
   */
-  font-family: var(--jetbrains-mono), monospace;
+  font-family: var(--jetbrains-mono);
 }
 
 .copyButton {
