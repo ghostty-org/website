@@ -1,0 +1,50 @@
+---
+title: Next Line (NEL)
+description: Move cursor to the beginning of the next line, scrolling if necessary.
+---
+
+<VTSequence sequence={["ESC", "E"]} />
+
+This sequence always unsets the pending wrap state.
+
+Moves the cursor to the next line and performs a carriage return. If the cursor is outside
+the scrolling region, it will move to the next line without scrolling, stopping at the bottom of the screen.
+
+## Validation
+
+### NEL V-1: Move down, return to first column
+
+```bash
+printf "\033[1;1H" # move to top-left
+printf "\033[0J" # clear screen
+printf "\033[2;5HA" # Print A at row 2, column 5
+printf "\033EX" # NEL, then print X
+```
+```
+|__________|
+|____A_____|
+|Xc________|
+```
+
+### NEL V-2: Scroll at the bottom margin
+
+```bash
+printf "\033[1;1H" # move to top-left
+printf "\033[0J" # clear screen
+printf "\033[2;1H" # move to row 2
+printf "A"
+printf "\033[3;1H" # move to row 3
+printf "B"
+printf "\033[4;1H" # move to row 4
+printf "C"
+printf "\033[2;4r" # scroll region
+printf "\033[4;5H" # move to last row of region, column 5
+printf "\033EX" # next line, print X
+```
+
+```
+|__________|
+|B_________|
+|C_________|
+|Xc________|
+```

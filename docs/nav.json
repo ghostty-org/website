@@ -303,6 +303,11 @@
             },
             {
               "type": "link",
+              "path": "/nel",
+              "title": "Next Line (NEL)"
+            },
+            {
+              "type": "link",
               "path": "/ri",
               "title": "Reverse Index (RI)"
             },
