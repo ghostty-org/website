@@ -370,6 +370,11 @@
             },
             {
               "type": "link",
+              "path": "/decrqcra",
+              "title": "Request Checksum of Rectangular Area (DECRQCRA)"
+            },
+            {
+              "type": "link",
               "path": "/decscusr",
               "title": "Set Cursor Style (DECSCUSR)"
             },
@@ -457,6 +462,11 @@
               "type": "link",
               "path": "/vpr",
               "title": "Vertical Position Relative (VPR)"
+            },
+            {
+              "type": "link",
+              "path": "/xtchecksum",
+              "title": "Select Checksum Extension (XTCHECKSUM)"
             },
             {
               "type": "link",
