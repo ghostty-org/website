@@ -217,3 +217,91 @@ AcceptEnv COLORTERM TERM_PROGRAM TERM_PROGRAM_VERSION
 This is a property of the remote host, not Ghostty, and many managed
 or hardened servers will not have it configured. `TERM` itself is
 always forwarded by `ssh` and is not affected by `AcceptEnv`.
+
+## Troubleshooting
+
+### Mouse, Focus, and Keyboard Reports After a Disconnect
+
+If moving the mouse after an SSH connection ends inserts text such as
+`35;48;1M` at the local shell prompt, a remote application may have
+enabled mouse reporting without getting a chance to disable it before
+the connection ended. The mode remains enabled in the local terminal.
+
+Similarly, `^[[I` and `^[[O` appearing when switching windows are focus
+reports. An application may have left focus reporting (DEC mode 1004)
+enabled. These reports can appear during the next SSH connection attempt
+or while an ordinary command such as `sleep` or `caffeinate` is waiting,
+because the terminal still has reporting enabled. The same problem can
+follow a local application's abnormal exit.
+
+If Ctrl+C prints `^[[99;5u` instead of interrupting an ordinary command
+such as `caffeinate -u`, an extended keyboard reporting mode may have been
+left enabled. `99;5u` encodes Ctrl+C, while `13;5u` encodes Ctrl+Enter.
+The terminal sends an escape sequence instead of the Ctrl+C control
+character that ordinarily causes the terminal driver to send SIGINT. This
+symptom does not identify which application enabled the mode.
+
+Once you have returned to the local shell prompt, disable mouse, focus,
+and extended keyboard reporting with:
+
+```sh
+printf '\033[?9;1000;1002;1003;1004;1005;1006;1015;1016l\033[<999u\033[=0u\033[>4;0m'
+```
+
+This disables the modes without clearing scrollback. It clears the Kitty
+keyboard protocol stack and disables its current flags, then disables
+`modifyOtherKeys`. Do this before starting another command if reports are
+still appearing. If you cannot enter the command on macOS, try holding
+Shift while right-clicking to open Ghostty's context menu, then choose
+**Reset Terminal**.
+
+For Bash and Zsh, you can define an optional wrapper in your local shell
+configuration to clean up reporting both before an SSH connection attempt
+and when the SSH command returns:
+
+```bash
+# Write only to a terminal, keeping redirected SSH output clean.
+disable_input_reporting() {
+  if [ -t 1 ]; then
+    builtin printf '\033[?9;1000;1002;1003;1004;1005;1006;1015;1016l\033[<999u\033[=0u\033[>4;0m'
+  elif [ -t 2 ]; then
+    builtin printf '\033[?9;1000;1002;1003;1004;1005;1006;1015;1016l\033[<999u\033[=0u\033[>4;0m' >&2
+  fi
+  return 0
+}
+
+# Clean up inherited modes, run SSH, then clean up before returning.
+ssh_with_reporting_cleanup() {
+  local rc=0
+  disable_input_reporting
+  ssh "$@" || rc=$?
+  disable_input_reporting
+  return "$rc"
+}
+```
+
+Start a new shell after saving the functions, or define them in your
+current shell. Existing shells do not automatically reload their
+configuration. Connect using:
+
+```sh
+ssh_with_reporting_cleanup user@example.com
+```
+
+The wrapper calls `ssh`, preserving any SSH alias or shell function
+already defined when you add it. It keeps SSH's exit status and only
+writes the cleanup sequence to a terminal, so redirected output is not
+modified. This works with Ghostty 1.3.x as well as tip; it does not
+require `ghostty +ssh`. A remote application can enable the reporting
+modes it needs after the connection starts.
+
+<Note>
+  This wrapper disables mouse, focus, and extended keyboard reporting before
+  and after every SSH invocation when at least one output stream is a
+  terminal. If both standard output and standard error are redirected,
+  cleanup is skipped. The Kitty keyboard cleanup affects only the active
+  screen; it does not switch screens or clear the other screen's stack. It
+  does not restore the state from before the connection. Use it in a local
+  shell where these modes should be off, rather than a shell or program that
+  uses them. It cannot clean up if the wrapper's shell itself is killed.
+</Note>
