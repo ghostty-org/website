@@ -13,6 +13,7 @@ import {
   loadDocsNavTreeData,
   navTreeToBreadcrumbs,
 } from "@/lib/docs/navigation";
+import { canonicalMetadata } from "@/lib/metadata";
 import DocsPageContent from "../DocsPageContent";
 
 interface DocsRouteProps {
@@ -30,6 +31,15 @@ function normalizePathSegments(path: string[] | undefined): string[] {
 // toActivePageSlug maps an optional catch-all route to the docs slug used by loaders.
 function toActivePageSlug(path: string[]): string {
   return path.length === 0 ? "index" : path.join("/");
+}
+
+// toCanonicalPath maps an optional catch-all route to the URL it is served at.
+// The docs index is served at `/docs` rather than `/docs/index`, matching
+// `toActivePageSlug`'s handling of the same case.
+function toCanonicalPath(path: string[]): string {
+  return path.length === 0
+    ? DOCS_PAGES_ROOT_PATH
+    : `${DOCS_PAGES_ROOT_PATH}/${path.join("/")}`;
 }
 
 // isErrorWithCode narrows unknown errors so filesystem codes can be checked safely.
@@ -81,11 +91,11 @@ export async function generateMetadata({
   params,
 }: DocsRouteProps): Promise<Metadata> {
   const { path } = await params;
-  const { docsPageData, breadcrumbs } = await loadDocsRouteData(
-    normalizePathSegments(path),
-  );
+  const pathSegments = normalizePathSegments(path);
+  const { docsPageData, breadcrumbs } = await loadDocsRouteData(pathSegments);
 
   return {
+    ...canonicalMetadata(toCanonicalPath(pathSegments)),
     title: docsMetadataTitle(breadcrumbs),
     description: docsPageData.description,
   };

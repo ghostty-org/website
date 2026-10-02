@@ -5,6 +5,8 @@ import Navbar from "@/components/navbar";
 import PreviewBanner from "@/components/preview-banner";
 import { jetbrainsMono, pretendardStdVariable } from "@/components/text";
 import { DOCS_DIRECTORY } from "@/lib/docs/config";
+import { siteOpenGraph } from "@/lib/metadata";
+import { SITE_URL } from "@/lib/site";
 import { loadDocsNavTreeData } from "@/lib/docs/navigation";
 import "@/styles/globals.css";
 import classNames from "classnames";
@@ -32,24 +34,13 @@ const navLinks: Array<SimpleLink> = [
 const NO_CHROME_PATHS = ["/"];
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://ghostty.org"),
+  metadataBase: new URL(SITE_URL),
   title: "Ghostty",
   description:
     "Ghostty is a fast, feature-rich, and cross-platform terminal emulator that uses platform-native UI and GPU acceleration.",
-  openGraph: {
-    type: "website",
-    siteName: "Ghostty",
-    url: "https://ghostty.org",
-    images: [
-      {
-        url: "/social-share-card.jpg",
-        width: 1800,
-        height: 3200,
-      },
-    ],
-  },
+  openGraph: siteOpenGraph,
   twitter: {
-    images: ["https://ghostty.org/social-share-card.jpg"],
+    images: ["/social-share-card.jpg"],
   },
   icons: {
     icon: [
