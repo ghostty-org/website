@@ -137,7 +137,7 @@ Each shell integration's installation instructions are documented inline:
 | `bash`    | `${GHOSTTY_RESOURCES_DIR}/shell-integration/bash/ghostty.bash`                                 |
 | `elvish`  | `${GHOSTTY_RESOURCES_DIR}/shell-integration/elvish/lib/ghostty-integration.elv`                |
 | `fish`    | `"$GHOSTTY_RESOURCES_DIR"/shell-integration/fish/vendor_conf.d/ghostty-shell-integration.fish` |
-| `nushell` | `$GHOSTTY_RESOURCES_DIR/shell-integration/nushell/vendor/autoload/ghostty.nu`                  |
+| `nushell` | `$"($env.GHOSTTY_RESOURCES_DIR)/shell-integration/nushell/vendor/autoload/ghostty.nu"`         |
 | `zsh`     | `${GHOSTTY_RESOURCES_DIR}/shell-integration/zsh/ghostty-integration`                           |
 
 For shell-specific details see <a href="https://github.com/ghostty-org/ghostty/blob/main/src/shell-integration/README.md">shell-integration/README.md</a>.
