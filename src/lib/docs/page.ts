@@ -4,7 +4,7 @@ import { createElement, type ComponentType, type ReactNode } from "react";
 import remarkMdx from "remark-mdx";
 import remarkParse from "remark-parse";
 import remarkGfm from "remark-gfm";
-import slugify from "slugify";
+import { resolveHeadingBaseId } from "./resolve-heading-id.mjs";
 import { unified } from "unified";
 import type { Node } from "unist";
 import { visit } from "unist-util-visit";
@@ -152,7 +152,7 @@ function parseAnchorLinks({
           const headingNode = visitedNode as HeadingNode;
           if (headingNode.children.length > 0) {
             const text = headingNode.children.map((v) => v.value).join("");
-            const baseId = slugify(text.toLowerCase());
+            const baseId = resolveHeadingBaseId(text);
 
             // If this is not the first occurrence, add a data-index attribute
             const encounteredCount = (encounteredIDs.get(baseId) || 0) + 1;
