@@ -1,5 +1,5 @@
-import slugify from "slugify";
 import { visit } from "unist-util-visit";
+import { resolveHeadingBaseId } from "./resolve-heading-id.mjs";
 
 // remarkHeadingIds applies stable IDs and de-duplication indices to heading nodes.
 export default function remarkHeadingIds() {
@@ -15,7 +15,7 @@ export default function remarkHeadingIds() {
       const text = headingNode.children
         .map((child) => (typeof child.value === "string" ? child.value : ""))
         .join("");
-      const baseId = slugify(text.toLowerCase());
+      const baseId = resolveHeadingBaseId(text);
       const encounteredCount = (encounteredIDs.get(baseId) || 0) + 1;
       encounteredIDs.set(baseId, encounteredCount);
       const resolvedID = encounteredCount >= 2 ? `${baseId}-${encounteredCount}` : baseId;
