@@ -13,6 +13,7 @@ import NavTree, {
   type NavTreeNode,
 } from "../nav-tree";
 import { DOCS_PAGES_ROOT_PATH } from "@/lib/docs/config";
+import Search from "../search";
 import GhosttyWordmark from "./ghostty-wordmark.svg";
 import s from "./Navbar.module.css";
 
@@ -90,32 +91,35 @@ export default function Navbar({
         <NextLink href="/">
           <Image src={GhosttyWordmark} alt="Ghostty" />
         </NextLink>
-        <div className={s.desktopLinks}>
-          {links && (
-            <ul className={s.linkList}>
-              {links.map((link) => {
-                return (
-                  <li key={link.text}>
-                    <Link {...link} />
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-          {cta && (
-            <ButtonLink
-              className={s.cta}
-              size="large"
-              theme="brand"
-              href={cta.href}
-              text={cta.text}
-            />
-          )}
+        <div className={s.actions}>
+          <Search />
+          <div className={s.desktopLinks}>
+            {links && (
+              <ul className={s.linkList}>
+                {links.map((link) => {
+                  return (
+                    <li key={link.text}>
+                      <Link {...link} />
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+            {cta && (
+              <ButtonLink
+                className={s.cta}
+                size="large"
+                theme="brand"
+                href={cta.href}
+                text={cta.text}
+              />
+            )}
+          </div>
+          <MenuToggle
+            isOpen={mobileMenuOpen}
+            onToggle={() => setMobileMenuOpen(!mobileMenuOpen)}
+          />
         </div>
-        <MenuToggle
-          isOpen={mobileMenuOpen}
-          onToggle={() => setMobileMenuOpen(!mobileMenuOpen)}
-        />
       </GridContainer>
       <div
         ref={mobileContentRef}

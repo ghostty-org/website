@@ -16,6 +16,15 @@
     justify-content: space-between;
     align-items: center;
 
+    & .actions {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      @media(max-width: 768px) {
+        gap: 8px;
+      }
+    }
+
     & .desktopLinks {
       display: flex;
       align-items: center;
