@@ -1,3 +1,5 @@
-.github {
+/* Element-qualified so this beats Link's `.link { display: flex }`
+   regardless of the order the CSS modules get bundled in. */
+a.github {
   display: inline-flex;
 }
