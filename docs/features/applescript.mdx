@@ -45,8 +45,8 @@ application -> windows -> tabs -> terminals
 | ------ | -------------- | ------------ |
 | `application` | `name`, `frontmost`, `front window`, `version` | `windows`, `terminals` |
 | `window` | `id`, `name`, `selected tab` | `tabs`, `terminals` |
-| `tab` | `id`, `name`, `index`, `selected`, `focused terminal` | `terminals` |
-| `terminal` | `id`, `name`, `working directory` | None |
+| `tab` | `id`, `name`, `index`, `selected`, `focused terminal`, `name override` | `terminals` |
+| `terminal` | `id`, `name`,`working directory`, `name override` | None |
 
 `front window` returns the frontmost Ghostty window. `focused terminal`
 returns the active terminal in a tab, which is useful for scripts that
@@ -215,11 +215,13 @@ tell application "Ghostty"
 end tell
 ```
 
-### Set Tab Titles
+### Set Tab and Terminal Titles
 
-Use `perform action` with `set_tab_title` to label tabs from a script.
+Both `tab` and `terminal` objects expose a read-write `name override` property.
+Setting it overrides the automatically reported title, and setting it to an
+empty string (`""`) clears the override.
 
-An example of creating a new tab and setting the title:
+An example of creating a new tab and setting its title override:
 
 ```AppleScript
 tell application "Ghostty"
@@ -227,9 +229,8 @@ tell application "Ghostty"
     set cfg to new surface configuration
 
     set t1 to new tab in win with configuration cfg
-    perform action "set_tab_title:Editor" on focused terminal of t1
+    set name override of t1 to "Editor"
     input text "nvim .\n" to focused terminal of t1
-
 end tell
 ```
 
