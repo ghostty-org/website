@@ -12,7 +12,7 @@
   * In the case a user has custom fonts disabled, this ensures
   * that the code block is still readable.
   */
-    font-family: var(--jetbrains-mono), monospace;
+    font-family: var(--jetbrains-mono);
     font-size: 14px;
     background: var(--atom-one-red);
     color: var(--gray-0);
@@ -31,7 +31,7 @@
     flex-grow: 1;
     width: 100%;
     display: flex;
-    font-family: var(--jetbrains-mono), monospace;
+    font-family: var(--jetbrains-mono);
     list-style: none;
 
     & .vtelem {

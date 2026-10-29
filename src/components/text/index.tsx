@@ -11,6 +11,7 @@ export const pretendardStdVariable = localFont({
   src: "./font/pretendard-std-variable.woff2",
   display: "auto",
   variable: "--pretendard-std-variable",
+  fallback: ["sans-serif"],
 });
 
 export const jetbrainsMono = JetBrains_Mono({
@@ -18,6 +19,7 @@ export const jetbrainsMono = JetBrains_Mono({
   weight: "400",
   variable: "--jetbrains-mono",
   subsets: ["latin"],
+  fallback: ["monospace"],
 });
 
 interface TextProps {
