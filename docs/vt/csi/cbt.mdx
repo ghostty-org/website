@@ -5,9 +5,14 @@ description: Move the cursor `n` tabs left.
 
 <VTSequence sequence={["CSI", "Pn", "Z"]} />
 
+If `n` is omitted, `n` defaults to 1. Ghostty treats a value of 0 as a
+request to move zero tabs, so the cursor does not move. Xterm treats a
+value of 0 the same as 1.
+
 The leftmost valid column for this operation is the first column. If
 [origin mode](#TODO) is enabled, then the leftmost valid column for this
-operation is the [left margin](#TODO).
+operation is the [left margin](#TODO). Without origin mode, the left
+margin has no effect and the cursor can tab backward past it.
 
 Move the cursor left until the cursor position is on a tabstop. If the
 cursor would move past the leftmost valid column, the cursor remains at
@@ -18,6 +23,25 @@ Tabstops are dynamic and can be set with escape sequences such as
 [horizontal tab set (HTS)](#TODO), [tab clear (TBC)](/docs/vt/csi/tbc), etc.
 A terminal emulator may default tabstops at any interval, though an interval
 of 8 spaces is most common.
+
+## Standards
+
+CBT is defined by [ECMA-48][ecma48-cbt], which moves the cursor to the `n`th
+preceding tabstop and gives `n` a default of 1. ECMA-48 does not say what
+happens when there are fewer than `n` tabstops to the left of the cursor.
+The [VT510 manual][vt510-cbt] fills that gap: the cursor stops at the
+first column.
+
+[DEC STD 070][std070], DEC's specification for the VT100 through VT400
+terminals, does not include CBT. It does define the tabstop model CBT
+moves through: [a tabstop can be set at every column][std070-tabs], and the
+default tabstops are at every eighth column starting with column 9. It
+also defines the other tab controls: [TBC][std070-tbc],
+[HT][std070-ht], and [HTS][std070-hts].
+
+Neither standard describes how CBT interacts with margins. Ghostty follows
+xterm, which limits CBT to the left margin only when origin mode is
+enabled.
 
 ## Validation
 
@@ -80,3 +104,48 @@ printf "A"
 ```
 |__AX______|
 ```
+
+### CBT V-5: Left Margin without Origin Mode
+
+```bash
+printf "\033[1;1H" # move to top-left
+printf "\033[0J" # clear screen
+printf "\033[?5W" # reset tab stops
+printf "\033[?69h" # enable left/right margins
+printf "\033[3;10s" # scroll region left/right
+printf "\033[1;6H" # move cursor in region
+printf "\033[Z"
+printf "A"
+```
+
+```
+|Ac________|
+```
+
+## References
+
+- [ECMA-48: Control Functions for Coded Character Sets][ecma48], 5th
+  edition, Ecma International, June 1991. Section 8.3.7,
+  ["CBT - Cursor Backward Tabulation" on page 34][ecma48-cbt].
+- [CBT—Cursor Backward Tabulation][vt510-cbt], VT510 Video Terminal
+  Programmer Information, Digital Equipment Corporation.
+- [DEC STD 070 Video Systems Reference Manual][std070], revision H,
+  Digital Equipment Corporation, 1991. Section 5.4.5, "Horizontal
+  Tabulation": [the tabstop model on page 5-65][std070-tabs],
+  [TBC on page 5-66][std070-tbc], [HT on page 5-67][std070-ht], and
+  [HTS on page 5-69][std070-hts].
+- [XTerm Control Sequences](https://invisible-island.net/xterm/ctlseqs/ctlseqs.html),
+  Thomas E. Dickey, under "CSI Ps Z".
+- [`TabToPrevStop` in xterm's `tabs.c`](https://github.com/ThomasDickey/xterm-snapshots/blob/xterm-411a/tabs.c#L161-L180)
+  (xterm patch 411a), the implementation that limits CBT to the left margin in origin mode.
+- [esctest2's CBT tests](https://github.com/ThomasDickey/esctest2/blob/master/esctest/tests/cbt.py),
+  which check that CBT ignores the left margin when origin mode is off.
+
+[ecma48]: https://archive.org/details/ecma-48-5th-edition-june-1991
+[ecma48-cbt]: https://archive.org/details/ecma-48-5th-edition-june-1991/page/n47/mode/1up
+[vt510-cbt]: https://vt100.net/docs/vt510-rm/CBT.html
+[std070]: https://archive.org/details/bitsavers_decstandar0VideoSystemsReferenceManualDec91_74264381
+[std070-tabs]: https://archive.org/details/bitsavers_decstandar0VideoSystemsReferenceManualDec91_74264381/page/n319/mode/1up
+[std070-tbc]: https://archive.org/details/bitsavers_decstandar0VideoSystemsReferenceManualDec91_74264381/page/n320/mode/1up
+[std070-ht]: https://archive.org/details/bitsavers_decstandar0VideoSystemsReferenceManualDec91_74264381/page/n321/mode/1up
+[std070-hts]: https://archive.org/details/bitsavers_decstandar0VideoSystemsReferenceManualDec91_74264381/page/n323/mode/1up
