@@ -1,0 +1,178 @@
+---
+title: Request Checksum of Rectangular Area (DECRQCRA)
+description: Request a checksum of the characters in a rectangle of the screen.
+---
+
+<VTSequence sequence={["CSI", "Pi", ";", "Pg", ";", "Pt", ";", "Pl", ";", "Pb", ";", "Pr", "*", "y"]} />
+
+Request a checksum of the characters and attributes in a rectangular area
+of the screen. The terminal replies with a checksum report in the format
+below:
+
+<VTSequence sequence={["ESC", "P", "Pi", "!", "~", "Px", "ST"]} />
+
+`i` is the request ID from the request, echoed back so that a program can
+match replies to requests. `x` is the checksum, written as exactly four
+uppercase hexadecimal digits. The report is the one DEC calls DECCKSR.
+
+This sequence is used almost entirely by terminal test suites such as
+[esctest](https://github.com/ThomasDickey/esctest2) and
+[vttest](https://invisible-island.net/vttest/), which check the contents of
+the screen by comparing checksums of it against the checksums they expect.
+It originated on the DEC VT420.
+
+## Disabled by Default
+
+Ghostty only replies to this sequence if the
+[`vt-checksum-report`](/docs/config/reference#vt-checksum-report)
+configuration is enabled. By default, the sequence is ignored and no reply
+is sent. [XTCHECKSUM](/docs/vt/csi/xtchecksum), which changes how the
+checksum is calculated, is ignored as well.
+
+A program can request the checksum of a single cell at a time. By trying
+every possible value of that cell, it can read back everything on the
+screen, including the output of other programs that ran before it. That
+makes the sequence unsafe to allow by default.
+
+## Parameters
+
+All parameters are optional. If more than six parameters are given, this
+sequence does nothing.
+
+- `i` is the request ID. If omitted, it defaults to `0`.
+- `g` is the page number. Ghostty has only one page, so this is ignored.
+- `t` and `l` are the top row and the left column of the rectangle. If
+  omitted or `0`, they default to `1`.
+- `b` and `r` are the bottom row and the right column of the rectangle. If
+  omitted or `0`, they default to the last row and the last column of
+  the screen.
+
+All coordinates are one-indexed and inclusive, and are clamped to the size
+of the screen. If [origin mode (DEC Mode 6)](#TODO) is enabled, the
+coordinates are relative to the top-left corner of the scroll region, as
+they are for [CUP](/docs/vt/csi/cup).
+
+If the rectangle is empty because `t` is greater than `b` or `l` is greater
+than `r`, the terminal still replies, with a checksum of `0000`. This follows
+xterm. [DEC STD 070][std070-decrqcra] says that such a request is ignored.
+
+Only the visible screen is checksummed. Scrollback is never included.
+[DEC STD 070][std070-decrqcra] says that a page number of `0` or omitted
+reports a checksum of all page memory and ignores the coordinates. Ghostty
+has only one page, so the coordinates are always used.
+
+## Checksum Calculation
+
+DEC STD 070 specifies [the request][std070-decrqcra] and
+[the reply][std070-deccksr], but not how the checksum is calculated. No
+real DEC terminal was available to compare against while Ghostty's support
+was being developed, so Ghostty computes the checksum the way xterm does.
+Xterm is the de facto reference for this sequence and is what the test
+suites were written against.
+
+By default, the checksum is computed the way DEC terminals do. The
+[XTCHECKSUM](/docs/vt/csi/xtchecksum) sequence and the
+[`vt-checksum-extension`](/docs/config/reference#vt-checksum-extension)
+configuration change the calculation as described on that page.
+
+The cells of the rectangle are visited from left to right and from top to
+bottom. Each cell contributes a value, and the values are added together
+modulo 2<sup>16</sup>. The result is then negated modulo 2<sup>16</sup>.
+
+The value of a cell is its character. DEC terminals work in 8-bit
+character sets, so a character is first reduced to 7 bits as below:
+
+| Character                                         | Value                   |
+| ------------------------------------------------- | ----------------------- |
+| `U+0020` to `U+007E`, `U+0080` to `U+009F`, `U+00A1` to `U+00FE` | the codepoint masked to 7 bits |
+| `U+007F` and `U+00FF`                             | `0x00`                  |
+| any other character, including `U+00A0`           | `0x1B`                  |
+| the right half of a wide character                | `0x1B`                  |
+
+Characters drawn with the [DEC special graphics](#TODO) character set count
+as the line-drawing characters they are displayed as, which are all outside
+8 bits. Xterm counts them as the ASCII characters that were sent to select
+them instead, so checksums of line drawing differ between the two.
+
+The value of each of the following attributes is then added to the value of
+the cell:
+
+| Attribute                  | Value  |
+| -------------------------- | ------ |
+| [protected](#TODO)         | `0x04` |
+| invisible                  | `0x08` |
+| underline (any style)      | `0x10` |
+| inverse                    | `0x20` |
+| blink                      | `0x40` |
+| bold                       | `0x80` |
+
+Colors, faint, italic, and strikethrough add nothing.
+
+Blank cells are omitted from the sum. A cell containing a space is only
+counted if it is the very first cell of the rectangle, or if it has a
+faint, italic, strikethrough, or double underline attribute. Cells that
+have never been written to are skipped entirely.
+
+For example, if the top-left cell contains a plain `A` (`0x41`), the
+checksum of that one cell is `0x10000 - 0x41`, which is `FFBF`.
+
+## Validation
+
+These examples require
+[`vt-checksum-report`](/docs/config/reference#vt-checksum-report) to be
+enabled.
+
+### DECRQCRA V-1: Single Cell
+
+```bash
+printf "\033[1;1H" # move to top-left
+printf "\033[0J" # clear screen
+printf "A"
+printf "\033[1;0;1;1;1;1*y"
+```
+
+```
+^[P1!~FFBF^[\
+```
+
+### DECRQCRA V-2: Bold Attribute
+
+```bash
+printf "\033[1;1H" # move to top-left
+printf "\033[0J" # clear screen
+printf "\033[1mA\033[0m"
+printf "\033[2;0;1;1;1;1*y"
+```
+
+```
+^[P2!~FF3F^[\
+```
+
+### DECRQCRA V-3: Empty Rectangle
+
+```bash
+printf "\033[3;0;2;1;1;1*y"
+```
+
+```
+^[P3!~0000^[\
+```
+
+## References
+
+- [DEC STD 070 Video Systems Reference Manual][std070], revision H,
+  Digital Equipment Corporation, 1991. Section 5.12.2, "Data Integrity":
+  [DECRQCRA on page 5-179][std070-decrqcra] and
+  [DECCKSR on page 5-181][std070-deccksr].
+- [DECRQCRA—Request Checksum of Rectangular Area](https://vt100.net/docs/vt510-rm/DECRQCRA.html),
+  VT510 Video Terminal Programmer Information, Digital Equipment Corporation.
+- [DECCKSR—Memory Checksum Report](https://vt100.net/docs/vt510-rm/DECCKSR.html),
+  VT510 Video Terminal Programmer Information, Digital Equipment Corporation.
+- [XTerm Control Sequences](https://invisible-island.net/xterm/ctlseqs/ctlseqs.html),
+  Thomas E. Dickey, under "CSI Pi ; Pg ; Pt ; Pl ; Pb ; Pr \* y".
+- [`xtermCheckRect` in xterm's `screen.c`](https://github.com/ThomasDickey/xterm-snapshots/blob/master/screen.c),
+  the implementation the calculation above follows.
+
+[std070]: https://archive.org/details/bitsavers_decstandar0VideoSystemsReferenceManualDec91_74264381
+[std070-decrqcra]: https://archive.org/details/bitsavers_decstandar0VideoSystemsReferenceManualDec91_74264381/page/n433/mode/1up
+[std070-deccksr]: https://archive.org/details/bitsavers_decstandar0VideoSystemsReferenceManualDec91_74264381/page/n435/mode/1up

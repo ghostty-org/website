@@ -1,0 +1,149 @@
+---
+title: Select Checksum Extension (XTCHECKSUM)
+description: Change how the checksum reported by DECRQCRA is calculated.
+---
+
+<VTSequence sequence={["CSI", "Pn", "#", "y"]} />
+
+Change how the checksum reported by
+[DECRQCRA](/docs/vt/csi/decrqcra) is calculated. This sequence originated
+in xterm and has no DEC equivalent.
+
+If `n` is omitted, `n` defaults to `0`. If more than one parameter is
+given, this sequence does nothing.
+
+Like [DECRQCRA](/docs/vt/csi/decrqcra), this sequence is ignored unless the
+[`vt-checksum-report`](/docs/config/reference#vt-checksum-report)
+configuration is enabled.
+
+`n` is a set of bits. Each bit that is set turns off one part of the
+checksum calculation that DEC terminals perform, as below. Bits beyond
+these are ignored.
+
+| Bit | Value | Effect when set                                                            |
+| --- | ----- | -------------------------------------------------------------------------- |
+| 0   | 1     | Do not negate the result.                                                  |
+| 1   | 2     | Do not add the attributes of each cell to its value.                       |
+| 2   | 4     | Do not omit blank cells.                                                   |
+| 3   | 8     | Count cells that have never been written to as spaces instead of skipping them. |
+| 4   | 16    | Use the full codepoint of each character instead of reducing it to 7 bits. |
+
+With `n = 0`, the checksum is the one DEC terminals compute. The effect of
+each bit is described in more detail below.
+
+**Bit 0.** The sum is reported as is instead of being negated modulo
+2<sup>16</sup>.
+
+**Bit 1.** The protected, invisible, underline, inverse, blink, and bold
+attributes no longer add to the value of a cell.
+
+**Bit 2.** Every cell of the rectangle is counted, including cells
+containing a space. Cells that have never been written to are also counted,
+as spaces. When this bit is set and bit 4 is not, the low 16 bits of any
+combining characters in a cell are added to the sum as well.
+
+**Bit 3.** Cells that have never been written to are counted as spaces.
+Without bit 2, a space is still omitted unless it is the first cell of the
+rectangle, so this bit only matters for that first cell.
+
+**Bit 4.** The value of a cell is the low 16 bits of its codepoint, rather
+than the DEC 8-bit value. The right half of a wide character is skipped
+instead of counting as `0x1B`, and combining characters are never counted.
+
+The selected calculation lasts until the terminal is reset. A full reset
+([RIS](/docs/vt/esc/ris)) returns to the calculation set by the
+[`vt-checksum-extension`](/docs/config/reference#vt-checksum-extension)
+configuration, which defaults to the DEC calculation.
+
+## Xterm Compatibility
+
+Xterm has a `checksumExtension` resource that sets the calculation used
+after a reset, just like `vt-checksum-extension`, except that its bits are
+the same as the bits of this sequence and so name what is turned _off_.
+The configuration names what is turned _on_: `negate`, `attributes`, and
+`trim` are bits 0, 1, and 2 cleared, and `undrawn` and `full` are bits 3
+and 4 set. For example, [esctest](https://github.com/ThomasDickey/esctest2)
+run with `--xterm-checksum=334` or later (an xterm patch number) expects
+xterm's `checksumExtension: 23`, which in Ghostty is:
+
+```ini
+vt-checksum-extension = no-negate,no-attributes,no-trim,full
+```
+
+Xterm's documentation describes bit 3 as "omit checksum for cells not
+explicitly initialized". Xterm's source code does the opposite, and
+describes the bit as "do not skip uninitialized cells". Ghostty follows the
+source code.
+
+Xterm's manual also describes a bit 5, "do not mask cell value to 7 bits",
+which xterm itself does not implement. Ghostty ignores it.
+
+## Validation
+
+These examples require
+[`vt-checksum-report`](/docs/config/reference#vt-checksum-report) to be
+enabled and `vt-checksum-extension` to be left at its default.
+
+### XTCHECKSUM V-1: Positive Result
+
+```bash
+printf "\033[1;1H" # move to top-left
+printf "\033[0J" # clear screen
+printf "A"
+printf "\033[1#y"
+printf "\033[1;0;1;1;1;1*y"
+printf "\033[0#y"
+```
+
+```
+^[P1!~0041^[\
+```
+
+### XTCHECKSUM V-2: No Attributes
+
+```bash
+printf "\033[1;1H" # move to top-left
+printf "\033[0J" # clear screen
+printf "\033[1mA\033[0m"
+printf "\033[3#y"
+printf "\033[2;0;1;1;1;1*y"
+printf "\033[0#y"
+```
+
+```
+^[P2!~0041^[\
+```
+
+### XTCHECKSUM V-3: Full Codepoint
+
+```bash
+printf "\033[1;1H" # move to top-left
+printf "\033[0J" # clear screen
+printf "é"
+printf "\033[17#y"
+printf "\033[3;0;1;1;1;1*y"
+printf "\033[0#y"
+```
+
+```
+^[P3!~00E9^[\
+```
+
+## References
+
+- [XTerm Control Sequences](https://invisible-island.net/xterm/ctlseqs/ctlseqs.html),
+  Thomas E. Dickey, under "CSI Ps # y".
+- [xterm(1) manual page](https://invisible-island.net/xterm/manpage/xterm.html),
+  Thomas E. Dickey, under the `checksumExtension` resource and the
+  description of a soft reset.
+- [`ptyx.h` in xterm's source](https://github.com/ThomasDickey/xterm-snapshots/blob/master/ptyx.h),
+  which defines the bits, and
+  [`xtermCheckRect` in `screen.c`](https://github.com/ThomasDickey/xterm-snapshots/blob/master/screen.c),
+  which applies them.
+- [esctest2](https://github.com/ThomasDickey/esctest2), whose
+  `--xterm-checksum` option selects the calculation it expects.
+
+XTCHECKSUM is an xterm extension. DEC's own specification of DECRQCRA,
+[DEC STD 070][std070-decrqcra], does not describe it.
+
+[std070-decrqcra]: https://archive.org/details/bitsavers_decstandar0VideoSystemsReferenceManualDec91_74264381/page/n433/mode/1up
