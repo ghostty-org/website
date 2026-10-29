@@ -5,12 +5,16 @@ description: Move the cursor right `n` tabs.
 
 <VTSequence sequence={["CSI", "Pn", "I"]} />
 
-The parameter `n` must be an integer greater than or equal to 1. If `n` is less than
-or equal to 0, adjust `n` to be 1. If `n` is omitted, `n` defaults to 1.
+If `n` is omitted, `n` defaults to 1. Ghostty treats a value of 0 as a
+request to move zero tabs, so the cursor does not move. Xterm treats a
+value of 0 the same as 1.
 
 The rightmost valid column for this operation is the rightmost column in
 the terminal screen or the [right margin](#TODO), whichever is smaller.
 This sequence does not change behavior with [origin mode](#TODO) set.
+
+If the cursor is already to the right of the right margin, Ghostty does
+not move it. Other terminals differ here; see [Standards](#standards).
 
 Move the cursor right until the cursor position is on a tabstop. If the
 cursor would move past the rightmost valid column, the cursor remains at
@@ -21,6 +25,31 @@ Tabstops are dynamic and can be set with escape sequences such as
 [horizontal tab set (HTS)](#TODO), [tab clear (TBC)](/docs/vt/csi/tbc), etc.
 A terminal emulator may default tabstops at any interval, though an interval
 of 8 spaces is most common.
+
+## Standards
+
+CHT is defined by [ECMA-48][ecma48-cht], which moves the cursor to the `n`th
+following tabstop and gives `n` a default of 1. The
+[VT510 manual][vt510-cht] describes it the same way. Neither says what
+happens when there are fewer than `n` tabstops to the right of the cursor,
+or how CHT interacts with margins.
+
+[DEC STD 070][std070], DEC's specification for the VT100 through VT400
+terminals, does not include CHT. It does define the tabstop model CHT
+moves through: [a tabstop can be set at every column][std070-tabs], and the
+default tabstops are at every eighth column starting with column 9. Its
+definition of [HT][std070-ht], which is a single forward tab, stops at the
+right margin when no tabstop is reached before it. It also defines the
+other tab controls: [TBC][std070-tbc] and [HTS][std070-hts].
+
+Ghostty follows xterm and DEC STD 070's HT in stopping at the right
+margin. The terminals disagree when the cursor starts to the right of the
+right margin:
+
+- [DEC STD 070's HT algorithm][std070-ht-algorithm] moves the cursor to
+  the next tabstop, or to the last column of the line if there is none.
+- Xterm moves the cursor left, to the right margin.
+- Ghostty does not move the cursor.
 
 ## Validation
 
@@ -67,3 +96,34 @@ printf "A"
 ```
 |__AX______|
 ```
+
+## References
+
+- [ECMA-48: Control Functions for Coded Character Sets][ecma48], 5th
+  edition, Ecma International, June 1991. Section 8.3.10,
+  ["CHT - Cursor Forward Tabulation" on page 34][ecma48-cht].
+- [CHT—Cursor Horizontal Forward Tabulation][vt510-cht], VT510 Video
+  Terminal Programmer Information, Digital Equipment Corporation.
+- [DEC STD 070 Video Systems Reference Manual][std070], revision H,
+  Digital Equipment Corporation, 1991. Section 5.4.5, "Horizontal
+  Tabulation": [the tabstop model on page 5-65][std070-tabs],
+  [TBC on page 5-66][std070-tbc], [HT on page 5-67][std070-ht] with
+  [its algorithm on page 5-68][std070-ht-algorithm], and
+  [HTS on page 5-69][std070-hts].
+- [XTerm Control Sequences](https://invisible-island.net/xterm/ctlseqs/ctlseqs.html),
+  Thomas E. Dickey, under "CSI Ps I".
+- [`TabToNextStop` in xterm's `tabs.c`](https://github.com/ThomasDickey/xterm-snapshots/blob/xterm-411a/tabs.c#L141-L159)
+  (xterm patch 411a), the implementation that stops CHT at the right
+  margin.
+- [esctest2's CHT tests](https://github.com/ThomasDickey/esctest2/blob/master/esctest/tests/cht.py),
+  which check that CHT stops at the right margin.
+
+[ecma48]: https://archive.org/details/ecma-48-5th-edition-june-1991
+[ecma48-cht]: https://archive.org/details/ecma-48-5th-edition-june-1991/page/n47/mode/1up
+[vt510-cht]: https://vt100.net/docs/vt510-rm/CHT.html
+[std070]: https://archive.org/details/bitsavers_decstandar0VideoSystemsReferenceManualDec91_74264381
+[std070-tabs]: https://archive.org/details/bitsavers_decstandar0VideoSystemsReferenceManualDec91_74264381/page/n319/mode/1up
+[std070-tbc]: https://archive.org/details/bitsavers_decstandar0VideoSystemsReferenceManualDec91_74264381/page/n320/mode/1up
+[std070-ht]: https://archive.org/details/bitsavers_decstandar0VideoSystemsReferenceManualDec91_74264381/page/n321/mode/1up
+[std070-ht-algorithm]: https://archive.org/details/bitsavers_decstandar0VideoSystemsReferenceManualDec91_74264381/page/n322/mode/1up
+[std070-hts]: https://archive.org/details/bitsavers_decstandar0VideoSystemsReferenceManualDec91_74264381/page/n323/mode/1up
