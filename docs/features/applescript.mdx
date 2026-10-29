@@ -124,6 +124,19 @@ For `send key` and `send mouse button`, `action` can be `press` or
 For `perform action`, action strings match the action names used in keybind
 configuration. See [Keybind Action Reference](/docs/config/keybind/reference).
 
+### Sending Keys
+
+| Purpose                                             | Syntax                                                        | Layout | 
+| --------------------------------------------------- | ------------------------------------------------------------- | ------ |
+| Press `Enter`                                       | `send key "enter" to t1`                                      | Any    |
+| Send `Ctrl+C`                                       | `send key "c" modifiers "control" to t1`                      | Any    |
+| Send uppercase `A` (`Shift+A`)                      | `send key "a" modifiers "shift" to t1`                        | Any    | 
+| Send lowercase `Ø` (`Option+O`)                     | `send key "o" modifiers "option" to t1`                       | US-Int |
+| Send uppercase `Ø` (`Shift+Option+O`)               | `send key "o" modifiers "shift,option" to t1`                 | US-Int | 
+| Show `Command Palette`                              | `send key "p" action press modifiers "command,shift" to t1`   | Any    |
+| Send `Option-I` release without press               | `send key "i" action release modifiers "option" to t1`        | US-Int |
+| Send `" "`                                          | `send key "space"  to t1`                                     | Any    |
+
 ## Surface Configuration Records
 
 `new surface configuration` creates a reusable value record that can be passed
