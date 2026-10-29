@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { XMLParser } from "fast-xml-parser";
 import Image from "next/image";
 import SectionWrapper from "@/components/section-wrapper";
+import { canonicalMetadata } from "@/lib/metadata";
 import { H1, P } from "@/components/text";
 import SVGIMG from "../../../public/ghostty-logo.svg";
 import ReleaseDownloadPage from "./ReleaseDownloadPage";
@@ -23,6 +24,7 @@ type Appcast = {
 
 /** Metadata for the download page. */
 export const metadata: Metadata = {
+  ...canonicalMetadata("/download"),
   title: "Download Ghostty",
   description:
     "Ghostty is a fast, feature-rich, and cross-platform terminal emulator that uses platform-native UI and GPU acceleration.",
