@@ -14,6 +14,7 @@ import {
 } from "react";
 import type { SearchResult } from "@/lib/search/engine";
 import {
+  isApplePlatform,
   useDocsSearchEngine,
   useSearchQueryParam,
   useSearchShortcut,
@@ -66,10 +67,15 @@ export default function Search({ className }: SearchProps) {
     }
   }, [prepare]);
 
-  // resetSearch clears the query from both the input and the URL. The
-  // component lives in the shared layout and survives navigation, so without
-  // this a closed search would keep its old query on every later page.
+  // `resetSearch` clears the query from both the input and the URL, and makes
+  // the active element lose focus.The component lives in the shared
+  // layout and survives navigation; without this a closed search would keep
+  // its old query on every later page.
   const resetSearch = useCallback(() => {
+    inputRef.current?.blur();
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
     setQuery("");
     writeSearchQueryParam("");
   }, []);
@@ -79,6 +85,9 @@ export default function Search({ className }: SearchProps) {
   const close = useCallback(() => {
     resetSearch();
     dialogRef.current?.close();
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
   }, [resetSearch]);
 
   // toggle opens or closes the dialog from the keyboard shortcut.
@@ -118,23 +127,73 @@ export default function Search({ className }: SearchProps) {
       ?.scrollIntoView({ block: "nearest" });
   }, [activeIndex]);
 
-  // handleInputKeyDown implements arrow-key navigation, Enter to open, and
-  // Escape to close. Browsers otherwise use the first Escape in a search
-  // input to clear it, which would take two presses to close the dialog.
+  // `handleInputKeyDown` implements keyboard navigation (arrow keys, Ctrl+N/P
+  // on Apple devices, and Tab/Shift+Tab), Enter to open, and Escape to close.
+  // Browsers otherwise use the first Escape in a search input to clear it,
+  // which would take two presses to close the dialog.
   function handleInputKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+    const isAppleCtrlKey =
+      isApplePlatform() &&
+      event.ctrlKey &&
+      !event.metaKey &&
+      !event.altKey &&
+      !event.shiftKey;
+    const isNext =
+      event.key === "ArrowDown" ||
+      (isAppleCtrlKey && event.key.toLowerCase() === "n");
+    const isPrev =
+      event.key === "ArrowUp" ||
+      (isAppleCtrlKey && event.key.toLowerCase() === "p");
+
+    // dismiss
     if (event.key === "Escape") {
       event.preventDefault();
       close();
-    } else if (event.key === "ArrowDown") {
+
+      return;
+    }
+
+    // tab navigation which loops around
+    if (event.key === "Tab") {
       event.preventDefault();
-      setActiveIndex((i) => Math.min(i + 1, results.length - 1));
-    } else if (event.key === "ArrowUp") {
+      if (results.length > 0) {
+        setActiveIndex((i) =>
+          event.shiftKey
+            ? (i - 1 + results.length) % results.length
+            : (i + 1) % results.length,
+        );
+      }
+
+      return;
+    }
+
+    // next/previous navigation
+
+    if (isNext) {
       event.preventDefault();
-      setActiveIndex((i) => Math.max(i - 1, 0));
-    } else if (event.key === "Enter" && results[activeIndex]) {
+      if (results.length > 0) {
+        setActiveIndex((i) => Math.min(i + 1, results.length - 1));
+      }
+
+      return;
+    }
+
+    if (isPrev) {
+      event.preventDefault();
+      if (results.length > 0) {
+        setActiveIndex((i) => Math.max(i - 1, 0));
+      }
+
+      return;
+    }
+
+    // select
+    if (event.key === "Enter" && results[activeIndex]) {
       event.preventDefault();
       close();
       router.push(results[activeIndex].id);
+
+      return;
     }
   }
 
@@ -189,6 +248,9 @@ export default function Search({ className }: SearchProps) {
               placeholder="Search docs, config options, actions…"
               value={query}
               onChange={(event) => {
+                if (!dialogRef.current?.open) {
+                  return;
+                }
                 setQuery(event.target.value);
                 writeSearchQueryParam(event.target.value);
               }}
