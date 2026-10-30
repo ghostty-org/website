@@ -30,9 +30,15 @@ export function useDocsSearchEngine(): {
 export function useSearchShortcut(onToggle: () => void): void {
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
+      const hasModifier = event.metaKey || event.ctrlKey || event.altKey;
       const isModK =
-        (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k";
-      const isSlash = event.key === "/" && !isTypingTarget(event.target);
+        (event.metaKey || event.ctrlKey) &&
+        !event.altKey &&
+        !event.shiftKey &&
+        event.key.toLowerCase() === "k";
+      const isSlash =
+        !hasModifier && event.key === "/" && !isTypingTarget(event.target);
+
       if (isModK || isSlash) {
         event.preventDefault();
         onToggle();
@@ -54,12 +60,21 @@ export function useSearchQueryParam(onQuery: (query: string) => void): void {
   }, [query, onQuery]);
 }
 
+// isApplePlatform reports whether the browser is running on an Apple device
+// where Cmd is the primary shortcut modifier and Ctrl+N/P are navigation keys.
+export function isApplePlatform(): boolean {
+  return (
+    typeof navigator !== "undefined" &&
+    /mac|iphone|ipad/.test(navigator.platform.toLowerCase())
+  );
+}
+
 // useShortcutLabel returns the platform's label for the search shortcut.
 // The platform is only known on the client, so it starts as "Ctrl K".
 export function useShortcutLabel(): string {
   const [label, setLabel] = useState("Ctrl K");
   useEffect(() => {
-    if (/Mac|iPhone|iPad/.test(navigator.platform)) {
+    if (isApplePlatform()) {
       setLabel("⌘K");
     }
   }, []);
