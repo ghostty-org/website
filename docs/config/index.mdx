@@ -97,9 +97,9 @@ a path to another configuration file to load and can be specified
 multiple times (cycles are detected and produce a warning).
 
 Note that any `config-file` keys are processed after the _entire_
-configuration is loaded, not at the end of the current file. This
-means that any keys after a `config-file` key will not override
-the keys in the loaded file if they are set.
+configuration is loaded, including CLI flags, not at the end of the
+current file. This means that any keys after a `config-file` key
+will not override the keys in the loaded file if they are set.
 
 If the value is a relative path, it is relative to the configuration
 file that contains the `config-file` key.
