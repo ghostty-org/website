@@ -39,13 +39,13 @@ The configuration file is named `config.ghostty` (or `config` before 1.2.3),
 is loaded from these locations in the following order:
 
 #### XDG configuration Path (all platforms):
-- `$XDG_CONFIG_HOME/ghostty/config.ghostty`
 - `$XDG_CONFIG_HOME/ghostty/config`
+- `$XDG_CONFIG_HOME/ghostty/config.ghostty`
 - if **XDG_CONFIG_HOME** is not defined, it defaults to `$HOME/.config`.
 
 #### macOS-specific Path (macOS only):
-- `$HOME/Library/Application\ Support/com.mitchellh.ghostty/config.ghostty`.
 - `$HOME/Library/Application\ Support/com.mitchellh.ghostty/config`.
+- `$HOME/Library/Application\ Support/com.mitchellh.ghostty/config.ghostty`.
 - macOS also supports the XDG configuration path mentioned above.
 
 If both locations exist, they are loaded in the order above with
@@ -96,7 +96,8 @@ the `config-file` key in your configuration file. This key specifies
 a path to another configuration file to load and can be specified
 multiple times (cycles are detected and produce a warning).
 
-Note that any `config-file` keys are processed at the _end_ of the
+Note that any `config-file` keys are processed after the _entire_
+configuration is loaded, including CLI flags, not at the end of the
 current file. This means that any keys after a `config-file` key
 will not override the keys in the loaded file if they are set.
 
