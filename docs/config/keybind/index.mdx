@@ -163,3 +163,11 @@ for a complete list. Ghostty supports dozens of actions.
 | `text:text` | Send a string. Uses Zig string literal syntax. i.e. `text:\x15` sends Ctrl-U. By using a prefix of `\x1b[` you can send control sequences but the convenience actions `csi:` and `esc:` are recommended instead. |
 | `csi:text` | Send a CSI sequence. i.e. `csi:A` sends "cursor up". |
 | `esc:text` | Send an escape sequence. i.e. `esc:d` deletes to the end of the word to the right. |
+
+## Disabling all built-in keybinds
+
+If you want to start from scratch, you can use the following at the top of your configuration:
+
+```ini
+keybind = clear
+```
